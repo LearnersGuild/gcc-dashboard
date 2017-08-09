@@ -1,0 +1,46 @@
+{
+  "name": "simple-starter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server/index.js",
+    "react-dev": "webpack -d --watch",
+    "build:theme": "./node_modules/.bin/react-toolbox-themr"
+  },
+  "author": "Aaron Xavier",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
+    "nodemon": "^1.11.0",
+    "webpack": "^2.2.1"
+  },
+  "dependencies": {
+    "axios": "^0.16.2",
+    "body-parser": "^1.17.1",
+    "bookshelf": "^0.10.4",
+    "bootstrap": "^3.3.7",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.0",
+    "knex": "^0.13.0",
+    "pg": "^7.1.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-toolbox": "^2.0.0-beta.12",
+    "react-toolbox-themr": "^1.0.2"
+  },
+  "reactToolbox": {
+    "include": [
+      "APP_BAR",
+      "BUTTON",
+      "CARD",
+      "DATE_PICKER",
+      "INPUT",
+      "LINK",
+      "LIST",
+      "SWITCH"
+    ]
+  }
+}
