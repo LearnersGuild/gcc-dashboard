@@ -1,0 +1,26 @@
+---
+engines:
+  fixme:
+    enabled: false
+  csslint:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        javascript:
+          mass_threshold: 300
+  eslint:
+    enabled: false
+  fixme:
+    enabled: true
+ratings:
+  paths:
+  - "**.css"
+  - "**.inc"
+  - "**.js"
+  - "**.jsx"
+exclude_paths:
+- node_modules/
+- test/
+- "__tests__/"

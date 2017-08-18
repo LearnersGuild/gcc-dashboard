@@ -1,35 +1,58 @@
 {
-  "name": "simple-starter",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "start": "nodemon server/index.js",
-    "react-dev": "webpack -d --watch",
-    "build:theme": "./node_modules/.bin/react-toolbox-themr"
+  "name": "gcc-dashboar",
+  "version": "0.1.0",
+  "engines": {
+    "node": "8.2"
   },
-  "author": "Aaron Xavier",
-  "license": "UNLICENSED",
-  "devDependencies": {
-    "babel-core": "^6.23.1",
-    "babel-loader": "^6.3.2",
-    "babel-preset-es2015": "^6.22.0",
-    "babel-preset-react": "^6.23.0",
-    "nodemon": "^1.11.0",
-    "webpack": "^2.2.1"
+  "scripts": {
+    "dev": "node src/server",
+    "build:icons": "npm run build:staticdir && curl -s https://brand.learnersguild.org/icontags > src/static/icons-metadata.json",
+    "build:next": "./node_modules/.bin/next build src",
+    "build:staticdir": "mkdir -p src/static",
+    "build:theme": "./node_modules/.bin/react-toolbox-themr",
+    "build": "npm run build:icons && npm run build:theme && npm run build:next",
+    "postinstall": "npm run build",
+    "start": "next start src -p $PORT",
+    "test:ci": "npm run test:lint && npm run test:cov",
+    "test:cov:run": "./node_modules/.bin/nyc --reporter=lcov npm run test:run",
+    "test:cov:send": "./node_modules/.bin/codeclimate-test-reporter < ./coverage/lcov.info",
+    "test:cov": "npm run test:cov:run && npm run test:cov:send",
+    "test:lint": "./node_modules/.bin/xo",
+    "test:run": "NODE_ENV=test ./node_modules/.bin/tape -r babel-register 'src/**/__tests__/*.test.js' | ./node_modules/.bin/tap-spec",
+    "test": "npm run test:lint && npm run test:run"
   },
   "dependencies": {
+    "@learnersguild/guild-dates": "^0.4.5",
     "axios": "^0.16.2",
-    "body-parser": "^1.17.1",
-    "bookshelf": "^0.10.4",
-    "bootstrap": "^3.3.7",
+    "babel-core": "^6.25.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "classnames": "^2.2.5",
     "dotenv": "^4.0.0",
-    "express": "^4.15.0",
+    "express": "^4.15.3",
+    "express-sslify": "^1.2.0",
+    "html-to-react": "^1.2.11",
     "knex": "^0.13.0",
+    "moment": "^2.18.1",
+    "next": "3.0.1-beta.13",
     "pg": "^7.1.0",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "prop-types": "^15.5.10",
+    "react": "^15.5.4",
+    "react-addons-css-transition-group": "^15.5.2",
+    "react-dom": "^15.5.4",
     "react-toolbox": "^2.0.0-beta.12",
-    "react-toolbox-themr": "^1.0.2"
+    "react-toolbox-themr": "^1.0.2",
+    "xlsx": "^0.11.2"
+  },
+  "devDependencies": {
+    "codeclimate-test-reporter": "^0.5.0",
+    "eslint-config-xo-react": "^0.13.0",
+    "eslint-plugin-react": "^7.1.0",
+    "nyc": "^11.0.3",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.7.0",
+    "xo": "^0.18.2"
   },
   "reactToolbox": {
     "include": [
@@ -41,6 +64,86 @@
       "LINK",
       "LIST",
       "SWITCH"
-    ]
+    ],
+    "customProperties": {
+      "animation-duration": "0.3s",
+      "appbar-color": "var(--color-slate-grey)",
+      "appbar-contrast": "var(--color-light-grey)",
+      "color-blue": "#00A3DF",
+      "color-green": "#97C93D",
+      "color-red": "#ED3F60",
+      "color-yellow": "#F2BB1A",
+      "color-dark-blue": "#4A539F",
+      "color-dark-green": "#1B8C5C",
+      "color-dark-red": "#981C4D",
+      "color-orange": "#E47226",
+      "color-slate-grey": "#252531",
+      "color-light-grey": "#E2E3E4",
+      "color-divider": "var(--color-light-grey)",
+      "color-text": "var(--color-slate-grey)",
+      "color-primary": "var(--color-blue)",
+      "color-primary-dark": "var(--color-dark-blue)",
+      "color-accent": "var(--color-red)",
+      "color-accent-dark": "var(--color-dark-red)",
+      "input-text-error-color": "var(--color-red)"
+    },
+    "output": "src/static"
+  },
+  "xo": {
+    "extends": "xo-react",
+    "rules": {
+      "capitalized-comments": 0,
+      "comma-dangle": [
+        0
+      ],
+      "import/named": 1,
+      "import/no-dynamic-require": 1,
+      "import/no-extraneous-dependencies": 0,
+      "import/no-unresolved": 0,
+      "import/prefer-default-export": 1,
+      "no-mixed-operators": [
+        0
+      ],
+      "no-negated-condition": [
+        0
+      ],
+      "no-unused-vars": [
+        2,
+        {
+          "argsIgnorePattern": "_"
+        }
+      ],
+      "no-use-extend-native/no-use-extend-native": [
+        0
+      ],
+      "object-property-newline": [
+        0
+      ],
+      "quotes": [
+        2,
+        "single",
+        "avoid-escape"
+      ],
+      "react/jsx-closing-tag-location": 0,
+      "react/forbid-component-props": 0,
+      "react/jsx-indent": [
+        2,
+        2
+      ],
+      "react/jsx-indent-props": [
+        2,
+        2
+      ],
+      "react/jsx-no-bind": 0,
+      "react/no-array-index-key": 0,
+      "react/no-unused-prop-types": 0,
+      "unicorn/filename-case": 0,
+      "unicorn/no-abusive-eslint-disable": 0,
+      "xo/catch-error-name": 0,
+      "xo/filename-case": 0
+    },
+    "esnext": true,
+    "space": true,
+    "semicolon": false
   }
 }

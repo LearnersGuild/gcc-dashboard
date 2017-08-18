@@ -1,3 +1,13 @@
+.DS_Store
+.env*
+.floo
+.flooignore
+.next
+.nyc_output
+coverage
+dist
 node_modules
-client/dist
-.env
+src/static
+tmp
+*.env
+*.log
