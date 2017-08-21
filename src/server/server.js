@@ -2,6 +2,9 @@ import path from 'path';
 import express from 'express';
 import {HTTPS as https} from 'express-sslify';
 import next from 'next';
+import routes from './routes';
+import bodyParser from 'body-parser';
+
 
 export default () => {
   const dev = process.env.NODE_ENV !== 'production';
@@ -18,6 +21,10 @@ export default () => {
       if (!dev) {
         server.use(https({trustProtoHeader: true}));
       }
+      server.use(bodyParser.urlencoded({extended: false}));
+      server.use(bodyParser.json());
+
+      server.use('/api', routes.api);
 
       server.get('*', (req, res) => {
         return handle(req, res);
