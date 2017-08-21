@@ -2,8 +2,6 @@ import React from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
 import {Parser as HtmlToReactParser} from 'html-to-react'
-import axios from 'axios'
-import request from 'superagent'
 
 
 
@@ -31,36 +29,17 @@ class index extends React.Component {
   }
   
   onDrop = (files) => {
-    console.log(files);
     const data = new FormData();
     data.append('workbook', files[0]);
 
     fetch('/api/uploads', {
       method: "POST",
-      body: data,
-      // headers: {
-      //       "Content-Type": "multipart/form-data"
-      //     },   
+      body: data,  
     }).then(function(response) {
-      console.log(response.status)     //=> number 100–599
+      alert('File successfully uploaded');  
     }, function(error) {
-      console.log(error.message) //=> String
+      console.log(error.message)
     })
-
-    // let reader = new FileReader();
-    // reader.onloadend = function (event) {
-    //     console.log(files[0]);
-    //     // filename is in file.name
-    //     // ... do something here
-    // }
-    // reader.readAsArrayBuffer(files[0]);
-    // const req = request.post('/api/uploads');
-    // req.send(files[0]).type('form');
-    // req.end(function(){console.log("success")});
-    // axios.post('/api/uploads', { files }).then(response => {
-    //   console.log(response.data);
-    // })
-    // fs.createReadStream(files[0]).pipe(request.post('/api/uploads'));
   }
 
   render() {
