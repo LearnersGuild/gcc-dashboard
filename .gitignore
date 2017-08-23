@@ -11,3 +11,4 @@ src/static
 tmp
 *.env
 *.log
+uploads

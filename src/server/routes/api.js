@@ -5,11 +5,11 @@ const fs = require('fs');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const XLSX = require('xlsx');
+const controllers = require('../../controllers');
 
 
 router.post('/uploads', upload.single('workbook'), (req, res) => {
-  let workbook = XLSX.readFile(req.file.path);
-  console.log(workbook.SheetNames);
+  controllers.update_hubspot.readWorkbook(req.file.path);
 
 
   res.status(201).send({ data: 'Posted!' });

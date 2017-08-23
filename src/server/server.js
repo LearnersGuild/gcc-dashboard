@@ -4,6 +4,7 @@ import {HTTPS as https} from 'express-sslify';
 import next from 'next';
 import routes from './routes';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 
 export default () => {
@@ -23,6 +24,7 @@ export default () => {
       }
       server.use(bodyParser.urlencoded({extended: false}));
       server.use(bodyParser.json());
+      server.use(cors());
 
       server.use('/api', routes.api);
 
