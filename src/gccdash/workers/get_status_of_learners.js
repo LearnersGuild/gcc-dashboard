@@ -12,7 +12,10 @@ let lists = [
   {2496: {metaStage: 'Program', rollupStage: 'Commitment - Phase 4 End', stage: 'Phase 2 Start-End'}},
   {2495: {metaStage: 'Program', rollupStage: 'Commitment - Phase 4 End', stage: 'Crossed Commitment to End Phase 1'}},
   {2494: {metaStage: 'Program Start', rollupStage: 'Program Start prior to Commitment', stage: 'Program Start prior to Commitment'}},
-  {2493: {metaStage: 'Application', rollupStage: 'Contract Signed, Pre-Program Start', stage: 'Contract Signed, Pre-Program Start'}}
+  {2493: {metaStage: 'Application', rollupStage: 'Contract Signed, Pre-Program Start', stage: 'Contract Signed, Pre-Program Start'}},
+  {2512: {metaStage: 'ISA Payment', rollupStage: 'ISA in Payment', stage: '1st ISA Payment-5th ISA Payment'}},
+  {2513: {metaStage: 'ISA Payment', rollupStage: 'ISA in Payment', stage: '6th ISA Payment-35th ISA Payment'}},
+
   //Build new list for folks who have dropped out. Or, figure out how to deal with dropouts....
 ];
 
