@@ -4,7 +4,6 @@ const router = express.Router();
 const fs = require('fs');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
-const XLSX = require('xlsx');
 const controllers = require('../../controllers');
 
 
