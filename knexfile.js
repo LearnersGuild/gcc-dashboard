@@ -8,7 +8,7 @@ module.exports = {
   },
   migrations: {
     tableName: 'knex_migrations',
-    directory: 'db/migrations'
+    directory: 'src/db/migrations'
   },
   // Use this option to log raw queries to terminal
   // debug: true
