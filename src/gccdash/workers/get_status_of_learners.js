@@ -4,7 +4,7 @@ const axios = require('axios');
 const HUBSPOT_API_KEY = process.env.HUBSPOT_API_KEY;
 const urlStart = 'https://api.hubapi.com/contacts/v1/lists/';
 const urlEnd = `/contacts/all?hapikey=${HUBSPOT_API_KEY}&count=100&`;
-import {lists, properties} from './utils';
+import {lists, properties} from './utils/report';
 
 
 let queryString = querystring.stringify({property: properties});
@@ -20,7 +20,6 @@ lists.forEach( list => {
         contacts.forEach( contact => {
           //knex insert
           let record = Object.assign(list[listID]);
-          //TODO record.report_date = ....
           //TODO convert Hubspot timestaps to UTC -- use Moment module
           // // get the current time so we know which offset to take (DST is such bullkitten)
           // var now = moment.utc();
@@ -30,7 +29,6 @@ lists.forEach( list => {
           // // calculate the difference in hours
           // console.log((NewYork_tz_offset - HongKong_tz_offset) / 60);
 
-          //canonical-vid
 
           //need to account for list pagination
           
