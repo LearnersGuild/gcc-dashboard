@@ -1,2 +1,1 @@
-export * from './program'
-export * from './livingFund'
+export * from './program';
