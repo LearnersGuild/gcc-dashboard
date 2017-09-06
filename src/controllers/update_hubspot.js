@@ -65,7 +65,7 @@ const clearHubspotData = (email) => {
 
 export const readWorkbook = (filepath) => {
   let workbook = XLSX.readFile(filepath);
-  let sheet = XLSX.utils.sheet_to_json(workbook.Sheets['ISA\'s']);
+  let sheet = XLSX.utils.sheet_to_json(workbook.Sheets['Output']);
   let data = {};
   
   sheet.forEach(row => {

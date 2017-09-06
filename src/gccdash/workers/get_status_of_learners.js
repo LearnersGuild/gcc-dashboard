@@ -65,9 +65,7 @@ setInterval(() => {
           });
         });
       }
-      // console.log(res.data.contacts[0].properties);
     })
-    // .then(() => console.log(res.data.contacts))
     .catch(err => console.log(err)
   );
     index++;
