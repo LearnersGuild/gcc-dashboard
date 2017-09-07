@@ -14,24 +14,28 @@ const postToHubspot = (clearData, newData) => {
       axios.post(url, newData)
         .then(response => console.log('postToHubspot response', Object.keys(response)))
         .catch(error => { 
-          throw error;
+          console.error('error in newdata post', error);
           error.response.data.failureMessages.forEach(message => console.log('newData error', message.propertyValidationResult));
         });
     })
     .catch(error => {
-      throw error;
+      console.error('error in post', error);
       error.response.data.failureMessages.forEach(message => console.log('clearData error', message.propertyValidationResult));
     });
 
 };  
 
-const formatDataForHubspot = (data) => {
+const formatDataForHubspot = (data, type) => {
   let emails = Object.keys(data);
   let hubspotData = [];
   emails.forEach(email => {
-    hubspotData.push(
-      {email: email, properties: data[email].properties}
-    );
+    if (type === 'clear') {
+      hubspotData.push({email: email, properties: data[email].properties});
+    } else {
+      let isaDataValue = JSON.stringify(data[email]['isa_data']);
+      data[email].properties.push({property: 'isa_data', value: isaDataValue});
+      hubspotData.push({email: email, properties: data[email].properties});
+    }
   });
   return hubspotData;
 };
@@ -57,33 +61,37 @@ const clearHubspotData = (email) => {
     {property: 'llf_income_percent', value: ''},
     {property: 'llf_date_signed', value: ''},
     {property: 'llf_status', value: ''},
+    {property: 'isa_data', value: ''},
     ]
   };
 };
-
-
 
 export const readWorkbook = (filepath) => {
   let workbook = XLSX.readFile(filepath);
   let sheet = XLSX.utils.sheet_to_json(workbook.Sheets['Output']);
   let data = {};
-  
+  let rows = 0;
   sheet.forEach(row => {
+    rows++;
     let email = row['Email'];
     clearHubspotData(email);
+    
+    if (!data[email]) {
+      data[email] = {properties: [], llfCount: 0, 'isa_data': []};
+    }
+    data[email]['isa_data'].push(row);
 
     if (row['Current Status of Learner'] === 'Grace' || 
         row['Current Status of Learner'] === 'Payment' ||
-        row['Current Status of Learner'] === 'Payment Deferment' ||
+        row['Current Status of Learner'] === 'Deferment' ||
         row['Current Status of Learner'] === 'School' ||
-        row['Current Status of Learner'] === 'Pending ISA Adjustment' ) {
-      if (!data[email]) {
-        data[email] = {'properties': [], llfCount: 0};
-      }
-      
-      let type = row['Program'].includes('Pay It Forward') ? 'pif' : 'llf';
+        row['Current Status of Learner'] === 'Pending ISA Adjustment' || 
+        row['Current Status of Learner'] === 'Pending School'
+        ) {
 
-      if (data[email].llfCount === 0 || (type === 'pif' && row['Internal Status'] !== '3 Day Notice Sent')) {
+      let type = row['Program'].includes('Pay') ? 'pif' : 'llf';
+
+      if (data[email].llfCount === 0 || (type === 'pif' && row['Internal Status'] !== '3 Day Notice Sent' && row['Internal Status'] !== '3 Day Notice Timeout' )) {
         data[email].properties = data[email].properties.concat([
           {property: `has_${type}`, value: 'TRUE' },
           {property: `${type}_amount_eligible`, value: row['Amount Eligible'] },
@@ -115,9 +123,8 @@ export const readWorkbook = (filepath) => {
       }
     }
   });
-  let formattedClearData = formatDataForHubspot(clearData);
-  let formattedNewData = formatDataForHubspot(data);
-  
+  let formattedClearData = formatDataForHubspot(clearData, 'clear');
+  let formattedNewData = formatDataForHubspot(data, 'new');
   postToHubspot(formattedClearData, formattedNewData);
   fs.unlink(filepath, (err) => {
     if (err) { throw err; }
