@@ -2,15 +2,13 @@ import React from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
 import {Parser as HtmlToReactParser} from 'html-to-react'
-
-
-
 import AppBar from 'react-toolbox/lib/app_bar/AppBar'
 import ThemeProvider from 'react-toolbox/lib/ThemeProvider'
 import Dropzone from 'react-dropzone'
-
 import theme from '../static/theme'
 import iconsMetadata from '../static/icons-metadata'
+import DateSelect from '../components/DateSelect'
+
 
 
 // favicons
@@ -86,11 +84,15 @@ class index extends React.Component {
               leftIcon={leftIcon}
               title={title}
             />
+            <Dropzone onDrop={this.onDrop.bind(this)}>
+              <p>Try dropping some files here, or click to select files to upload.</p>
+            </Dropzone>
+            <div>
+              <DateSelect/>
+            </div>
           </div>
         </ThemeProvider>
-        <Dropzone onDrop={this.onDrop.bind(this)}>
-              <p>Try dropping some files here, or click to select files to upload.</p>
-        </Dropzone>
+
       </div>
     )
   }

@@ -14,4 +14,12 @@ router.post('/uploads', upload.single('workbook'), (req, res) => {
   res.status(201).send({ data: 'Posted!' });
 });
 
+router.get('/reports', (req, res) => {
+  controllers.createLearnerDataFile.file(
+    function(data) {
+      res.status(201).send(data);
+    }
+  );
+});
+
 module.exports = router;
