@@ -84,12 +84,10 @@ class index extends React.Component {
               leftIcon={leftIcon}
               title={title}
             />
+            <DateSelect/>
             <Dropzone onDrop={this.onDrop.bind(this)}>
               <p>Try dropping some files here, or click to select files to upload.</p>
             </Dropzone>
-            <div>
-              <DateSelect/>
-            </div>
           </div>
         </ThemeProvider>
 
