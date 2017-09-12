@@ -13,7 +13,7 @@
     "build:theme": "./node_modules/.bin/react-toolbox-themr",
     "build": "npm run build:icons && npm run build:theme && npm run build:next",
     "postinstall": "npm run build",
-    "start": "next start src -p $PORT",
+    "start": "node src/server",
     "test:ci": "npm run test:lint && npm run test:cov",
     "test:cov:run": "./node_modules/.bin/nyc --reporter=lcov npm run test:run",
     "test:cov:send": "./node_modules/.bin/codeclimate-test-reporter < ./coverage/lcov.info",
