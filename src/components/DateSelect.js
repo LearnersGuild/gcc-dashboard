@@ -36,14 +36,21 @@ class DateSelect extends Component {
       alert('Please select a date for the report');
     } else {
       axios.get('/api/reports').then(response => {
-        let wb = { SheetNames: [], Sheets: {}};
-        let ws_name = 'SheetJS';
-        let ws = XLSX.utils.aoa_to_sheet(response.data);
-        wb.SheetNames.push(ws_name);
-        wb.Sheets[ws_name] = ws;
+        let wb = { 
+          SheetNames: ['Learner Data Raw', 'Funnel by Stage Raw', 'Retention by Cohort Raw'], 
+          Sheets: {}
+        };
+        //let ws_name = 'SheetJS';
+        let learnerData = XLSX.utils.json_to_sheet(response.data[0]);
+        wb.Sheets['Learner Data Raw'] = learnerData;
+        let funnelByStageData = XLSX.utils.json_to_sheet(response.data[1]);
+        wb.Sheets['Funnel by Stage Raw'] = funnelByStageData;
+        let retentionByCohortData = XLSX.utils.json_to_sheet(response.data[2]);
+        wb.Sheets['Retention by Cohort Raw'] = retentionByCohortData; 
+
         let wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
         let wbout = XLSX.write(wb, wopts);
-        FileSaver.saveAs(new Blob([this.s2ab(wbout)], {type: 'application/octet-stream'}), 'test.xlsx');
+        FileSaver.saveAs(new Blob([this.s2ab(wbout)], {type: 'application/octet-stream'}), 'gcc_dashboard.xlsx');
 
       }).catch(error => {
         console.log(error.message);

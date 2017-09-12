@@ -1,6 +1,6 @@
 'use strict';
-require('dotenv').config();
-const XLSX = require('xlsx');
+require('dotenv').config()
+const XLSX = require('xlsx')
 const moment = require('moment');
 const axios = require('axios');
 const fs = require('fs');
@@ -68,8 +68,8 @@ const clearHubspotData = (email) => {
 
 export const readWorkbook = (filepath) => {
   let workbook = XLSX.readFile(filepath);
-  let sheet = XLSX.utils.sheet_to_json(workbook.Sheets['Output']);
-  let data = {};
+  let sheet = XLSX.utils.sheet_to_json(workbook.Sheets['Output'])
+  let data = {}
   let rows = 0;
   sheet.forEach(row => {
     rows++;
