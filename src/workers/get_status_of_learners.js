@@ -1,23 +1,23 @@
-require('dotenv').config();
-const querystring = require('querystring');
-const axios = require('axios');
-const HUBSPOT_API_KEY = process.env.HUBSPOT_API_KEY;
-const urlStart = 'https://api.hubapi.com/contacts/v1/lists/';
-const urlEnd = `/contacts/all?hapikey=${HUBSPOT_API_KEY}&count=100&`;
-const lists = require('./utils/report').lists;
-const properties = require('./utils/report').properties;
-const knex = require('../db');
-const moment = require('moment-timezone');
-let queryString = querystring.stringify({property: properties});
+require('dotenv').config()
+import querystring from 'querystring'
+import axios from 'axios'
+import { lists, properties } from './utils/report'
+import knex from '../db'
+import moment from 'moment-timezone'
+const HUBSPOT_API_KEY = process.env.HUBSPOT_API_KEY
+const urlStart = 'https://api.hubapi.com/contacts/v1/lists/'
+const urlEnd = `/contacts/all?hapikey=${HUBSPOT_API_KEY}&count=100&`
+let queryString = querystring.stringify({property: properties})
 
 //pull the data for each list from HubSpot API
-let index = 0;
+let index = 0
+
 setInterval(() => {
   if (index < lists.length) {
-    let list = lists[index];
-    let listID = Object.keys(list)[0];
-    let fullUrl = `${urlStart}${listID}${urlEnd}${queryString}`;
-    let hasMore = true;
+    let list = lists[index]
+    let listID = Object.keys(list)[0]
+    let fullUrl = `${urlStart}${listID}${urlEnd}${queryString}`
+    let hasMore = true
 
   //need to account for list pagination
   // while (hasMore) {
@@ -27,15 +27,15 @@ setInterval(() => {
       let contacts = res.data.contacts;
       if (contacts.length > 0) {
         contacts.forEach( contact => {
-          let record = Object.assign({}, list[listID]);
+          let record = Object.assign({}, list[listID])
 
           if (listID === 2592 && contact.properties['resignation_date'].value < contact.properties['cancellation_date'].value) {
-            record.metaStage = 'Program Start';
-            record.rollupStage = 'Program Start prior to Commitment';
-            record.stage = 'Program Start prior to Commitment';
+            record.metaStage = 'Program Start'
+            record.rollupStage = 'Program Start prior to Commitment'
+            record.stage = 'Program Start prior to Commitment'
           }
 
-          record['hubspot_canonical_vid'] = contact['canonical-vid'];
+          record['hubspot_canonical_vid'] = contact['canonical-vid']
 
           properties.forEach( property => {
             if (contact.properties[property]) {
@@ -50,26 +50,25 @@ setInterval(() => {
                     property === 'pif_first_payment_due_date' ||
                     property === 'llf_first_payment_due_date'
                 ) {
-                  let date = moment(parseInt(contact.properties[property].value));
-                  let offset = moment.tz.zone('America/New_York').offset(date);
-                  record[property] = date.add(offset, 'minutes');
+                  let date = moment(parseInt(contact.properties[property].value))
+                  let offset = moment.tz.zone('America/New_York').offset(date)
+                  record[property] = date.add(offset, 'minutes')
                 } else {
-                  record[property] = contact.properties[property].value;
+                  record[property] = contact.properties[property].value
                 }
               }
             }   
-          });   
+          })  
           knex.insert(record).into('status_of_learners').catch(err => {
-            console.log(err);
-            console.log('record', record);
-          });
-        });
+            console.log(err)
+            console.log('record', record)
+          })
+        })
       }
     })
-    .catch(err => console.log(err)
-  );
-    index++;
+    .catch(err => console.log(err))
+    index++
   } else {
-    return;
+    return
   }
-}, 250);
+}, 250)
