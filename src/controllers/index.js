@@ -1,2 +1,2 @@
-module.exports.update_hubspot = require('./update_hubspot')
+module.exports.updateHubspot = require('./updateHubspot')
 module.exports.createLearnerDataFile = require('./createLearnerDataFile')

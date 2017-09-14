@@ -16,7 +16,7 @@ const postClearData = (clearData) => {
     .catch(error => {
       console.error('error in post', error)
       error.response.data.failureMessages.forEach(message => console.log('clearData error', message.propertyValidationResult));
-      return error
+      return Promise.reject(error)
     })
 }  
 
@@ -28,11 +28,10 @@ const postNewData = (newData) => {
     })
     .catch(error => { 
       console.log('postNewData error')
-      error.response.data.failureMessages.forEach(message => console.log('newData error', message.propertyValidationResult));
       return Promise.reject(error)
     });
 }
-const formatDataForHubspot = (data, type) => {
+export const formatDataForHubspot = (data, type) => {
   let emails = Object.keys(data);
   let hubspotData = [];
   emails.forEach(email => {
@@ -49,7 +48,7 @@ const formatDataForHubspot = (data, type) => {
 
 let clearData = {};
 
-const clearHubspotData = (email) => {
+export const clearHubspotData = (email) => {
   clearData[email] = {
     properties: [
     {property: 'has_pif', value: ''},
@@ -88,12 +87,8 @@ export const readWorkbook = (filepath, callback) => {
     }
     data[email]['isa_data'].push(row);
 
-    if (row['Current Status of Learner'] === 'Grace' || 
-        row['Current Status of Learner'] === 'Payment' ||
-        row['Current Status of Learner'] === 'Deferment' ||
-        row['Current Status of Learner'] === 'School' ||
-        row['Current Status of Learner'] === 'Pending ISA Adjustment' || 
-        row['Current Status of Learner'] === 'Pending School'
+    if (row['Current Status of Learner'] !== "Cancelled" && 
+        row['Current Status of Learner'] !== "Cancelled/Written Off" 
         ) {
 
       let type = row['Program'].includes('Pay') ? 'pif' : 'llf';
@@ -144,8 +139,6 @@ export const readWorkbook = (filepath, callback) => {
     console.log('promise all error')
     callback(error)
   })
-  
-  
   // save for debugging
   // formattedNewData.forEach(student => {
   //   let countPif = 0;
@@ -153,7 +146,7 @@ export const readWorkbook = (filepath, callback) => {
   //     if (prop.property === 'pif_amount_accepted') {
   //       countPif++;
   //     }
-  //     if (countPif > 1) {
+  //     if (countPif > 1 && prop.property === 'pif_amount_accepted') {
   //       console.log('student', student)
   //     }
   //   })
