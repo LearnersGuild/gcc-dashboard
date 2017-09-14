@@ -32,7 +32,17 @@ class FileUpload extends Component {
       <Card style={cardStyle()}>
         <CardTitle title="Vemo Data Upload"/>
         <CardText>
-          <Dropzone onDrop={this.onDrop}>
+          <Dropzone 
+            onDrop={this.onDrop}
+            style={{
+              width: '100%',
+              height: '10em',
+              padding: '1em',
+              borderWidth: '2px',
+              borderStyle: 'dotted',
+              borderRadius: '5px' 
+            }}
+          >
               <p>Drop the vemo_input_template file here, or click to select file.</p>
           </Dropzone>
         </CardText>
