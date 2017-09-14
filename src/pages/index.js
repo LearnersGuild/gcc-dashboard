@@ -8,6 +8,7 @@ import Dropzone from 'react-dropzone'
 import theme from '../static/theme'
 import iconsMetadata from '../static/icons-metadata'
 import DateSelect from '../components/DateSelect'
+import axios from 'axios'
 
 
 
@@ -30,14 +31,15 @@ class index extends React.Component {
     const data = new FormData();
     data.append('workbook', files[0]);
 
-    fetch('/api/uploads', {
-      method: "POST",
-      body: data,  
-    }).then(function(response) {
-      alert('File successfully uploaded');  
-    }, function(error) {
-      console.log(error.message)
+    axios.post('api/uploads', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     })
+    .then(response => {
+      alert('File successfully uploaded')
+    })
+    .catch(error => console.log(error.response.data))
   }
 
   render() {
@@ -86,7 +88,7 @@ class index extends React.Component {
             />
             <DateSelect/>
             <Dropzone onDrop={this.onDrop.bind(this)}>
-              <p>Try dropping some files here, or click to select files to upload.</p>
+              <p>Drop the vemo_input_template file here, or click to select file.</p>
             </Dropzone>
           </div>
         </ThemeProvider>

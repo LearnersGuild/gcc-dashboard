@@ -19,7 +19,7 @@ module.exports = {
     directory: 'src/db/migrations'
   },
   // Use this option to log raw queries to terminal
-  // debug: true
+   debug: true
 };
 
 

@@ -5,8 +5,6 @@ const moment = require('moment')
 const fs = require('fs')
 const knex = require('../db')
 
-let startDate = '2017-09-10'
-let endDate = '2017-09-11'
 const fields = [
   'hubspot_canonical_vid',
   'email',
@@ -55,20 +53,20 @@ const fields = [
   'has_received_llf_financing',
 ]
 
-const getLearnerData = () => {
+const getLearnerData = (dates) => {
   return knex.select(...fields).from('status_of_learners')
-    .where('created_at', '>', startDate)
-    .andWhere('created_at', '<', endDate)
+    .where('created_at', '>', dates.reportStart)
+    .andWhere('created_at', '<', dates.reportEnd)
     .then(rows => {
       return rows;
     })
     .catch(err => console.log(err))
 }
 
-const getFunnelByStage = () => {
+const getFunnelByStage = (dates) => {
   return knex.select('stage', 'stageStatus').from('status_of_learners').count('stage')
-      .where('created_at', '>', startDate)
-      .andWhere('created_at', '<', endDate)
+      .where('created_at', '>', dates.reportStart)
+      .andWhere('created_at', '<', dates.reportEnd)
       .groupBy('stage')
       .groupBy('stageStatus')
     .then(rows => {
@@ -93,10 +91,10 @@ const getFunnelByStage = () => {
     .catch(err => console.log(err))
 }
 
-const getRetentionByCohort = () => {
+const getRetentionByCohort = (dates) => {
   return knex('status_of_learners').select(knex.raw('stage, to_char(enrollee_start_date, \'Mon-YY\'), "stageStatus", COUNT(*)'))
-      .where('created_at', '>=', startDate)
-      .andWhere('created_at', '<', endDate)
+      .where('created_at', '>=', dates.reportStart)
+      .andWhere('created_at', '<', dates.reportEnd)
       .groupByRaw('stage, "stageStatus", to_char(enrollee_start_date, \'Mon-YY\')')
     .then(rows => {
       let stages = {};
@@ -120,11 +118,11 @@ const getRetentionByCohort = () => {
     .catch(err => console.log(err))
 }
 
-export const file = cb => {
+export const file = (dates, cb) => {
   Promise.all([
-   getLearnerData(),
-   getFunnelByStage(),
-   getRetentionByCohort()
+   getLearnerData(dates),
+   getFunnelByStage(dates),
+   getRetentionByCohort(dates)
   ])
   .then(values => cb(values))
   .catch(error => console.log(error))

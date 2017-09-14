@@ -35,7 +35,7 @@ class DateSelect extends Component {
     if (this.state.reportDate === '') {
       alert('Please select a date for the report');
     } else {
-      axios.get('/api/reports').then(response => {
+      axios.get('/api/reports', {params: {reportStart: this.state.reportStart, reportEnd: this.state.reportEnd}}).then(response => {
         let wb = { 
           SheetNames: ['Learner Data Raw', 'Funnel by Stage Raw', 'Retention by Cohort Raw'], 
           Sheets: {}
@@ -60,22 +60,23 @@ class DateSelect extends Component {
 
   handleChange(date) {
     this.setState({
-      reportDate: moment.utc(date).toDate(),
-      reportStart: moment.utc(date).subtract(1, 'days').format('YYYY-MM-DD'),
-      reportEnd: moment.utc(date).add(1, 'days').format('YYYY-MM-DD')
+      reportDate: moment(date).toDate(),
+      reportStart: moment(date).add(1, 'days').format('YYYY-MM-DD'),
+      reportEnd: moment(date).add(2, 'days').format('YYYY-MM-DD')
     });
   }
 
   render() {
     return (
       <Card style={cardStyle()}>
-        <CardTitle title="Select Report Date"/>
+        <CardTitle title="Report Download"/>
         <CardText>
           <DatePicker
             icon="event"
-            label="Report Date"
+            label="Select a Report Date"
             onChange={this.handleChange}
             maxDate={moment().subtract(1, 'days').toDate()}
+            minDate={moment('2017-09-05').toDate()}
             value={this.state.reportDate}
           />
           <Button

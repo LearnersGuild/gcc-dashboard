@@ -7,24 +7,31 @@ const fs = require('fs');
 const HUBSPOT_API_KEY = process.env.HUBSPOT_API_KEY;
 const url = `https://api.hubapi.com/contacts/v1/contact/batch/?hapikey=${HUBSPOT_API_KEY}`;
 
-const postToHubspot = (clearData, newData) => {
-  axios.post(url, clearData)
+const postClearData = (clearData) => {
+  return axios.post(url, clearData)
     .then((response) => {
-      console.log('cleardata success');
-      axios.post(url, newData)
-        .then(response => console.log('postToHubspot response', Object.keys(response)))
-        .catch(error => { 
-          console.error('error in newdata post', error);
-          error.response.data.failureMessages.forEach(message => console.log('newData error', message.propertyValidationResult));
-        });
+      console.log('cleardata success')
+      return response
     })
     .catch(error => {
-      console.error('error in post', error);
+      console.error('error in post', error)
       error.response.data.failureMessages.forEach(message => console.log('clearData error', message.propertyValidationResult));
+      return error
+    })
+}  
+
+const postNewData = (newData) => {
+  return axios.post(url, newData)
+    .then(response => { 
+      console.log('postNewData success')
+      return response 
+    })
+    .catch(error => { 
+      console.log('postNewData error')
+      error.response.data.failureMessages.forEach(message => console.log('newData error', message.propertyValidationResult));
+      return Promise.reject(error)
     });
-
-};  
-
+}
 const formatDataForHubspot = (data, type) => {
   let emails = Object.keys(data);
   let hubspotData = [];
@@ -66,7 +73,7 @@ const clearHubspotData = (email) => {
   };
 };
 
-export const readWorkbook = (filepath) => {
+export const readWorkbook = (filepath, callback) => {
   let workbook = XLSX.readFile(filepath);
   let sheet = XLSX.utils.sheet_to_json(workbook.Sheets['Output'])
   let data = {}
@@ -91,7 +98,7 @@ export const readWorkbook = (filepath) => {
 
       let type = row['Program'].includes('Pay') ? 'pif' : 'llf';
 
-      if (data[email].llfCount === 0 || (type === 'pif' && row['Internal Status'] !== '3 Day Notice Sent' && row['Internal Status'] !== '3 Day Notice Timeout' )) {
+      if ((data[email].llfCount === 0 && type ==='llf') || (type === 'pif' && row['Internal Status'] !== '3 Day Notice Sent' && row['Internal Status'] !== '3 Day Notice Timeout' )) {
         data[email].properties = data[email].properties.concat([
           {property: `has_${type}`, value: 'TRUE' },
           {property: `${type}_amount_eligible`, value: row['Amount Eligible'] },
@@ -125,9 +132,35 @@ export const readWorkbook = (filepath) => {
   });
   let formattedClearData = formatDataForHubspot(clearData, 'clear');
   let formattedNewData = formatDataForHubspot(data, 'new');
-  postToHubspot(formattedClearData, formattedNewData);
+
+  Promise.all([
+   postClearData(formattedClearData),
+   postNewData(formattedNewData)
+  ])
+  .then(values => {
+    callback(null, values)
+  })
+  .catch(error => {
+    console.log('promise all error')
+    callback(error)
+  })
+  
+  
+  // save for debugging
+  // formattedNewData.forEach(student => {
+  //   let countPif = 0;
+  //   student.properties.forEach(prop => {
+  //     if (prop.property === 'pif_amount_accepted') {
+  //       countPif++;
+  //     }
+  //     if (countPif > 1) {
+  //       console.log('student', student)
+  //     }
+  //   })
+  // })
+
   fs.unlink(filepath, (err) => {
-    if (err) { throw err; }
+    if (err) { console.log(err); }
     console.log(`sucessfully deleted ${filepath}`);
   });
 };
