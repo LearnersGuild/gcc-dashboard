@@ -6,7 +6,7 @@ const urlStart = 'https://api.hubapi.com/contacts/v1/lists/';
 const urlEnd = `/contacts/all?hapikey=${HUBSPOT_API_KEY}&count=100&`;
 const lists = require('./utils/report').lists;
 const properties = require('./utils/report').properties;
-const knex = require('../../db');
+const knex = require('../db');
 const moment = require('moment-timezone');
 let queryString = querystring.stringify({property: properties});
 
