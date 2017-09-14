@@ -4,13 +4,10 @@ import Head from 'next/head'
 import {Parser as HtmlToReactParser} from 'html-to-react'
 import AppBar from 'react-toolbox/lib/app_bar/AppBar'
 import ThemeProvider from 'react-toolbox/lib/ThemeProvider'
-import Dropzone from 'react-dropzone'
 import theme from '../static/theme'
 import iconsMetadata from '../static/icons-metadata'
 import DateSelect from '../components/DateSelect'
-import axios from 'axios'
-
-
+import FileUpload from '../components/FileUpload'
 
 // favicons
 const h2r = new HtmlToReactParser()
@@ -22,24 +19,6 @@ const iconsMetadataElements = iconsMetadata.map((link, i) => {
 class index extends React.Component {
   constructor(props)  {
     super(props);
-    this.state = {
-      files: []
-    }
-  }
-  
-  onDrop = (files) => {
-    const data = new FormData();
-    data.append('workbook', files[0]);
-
-    axios.post('api/uploads', data, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-    .then(response => {
-      alert('File successfully uploaded')
-    })
-    .catch(error => console.log(error.response.data))
   }
 
   render() {
@@ -87,9 +66,7 @@ class index extends React.Component {
               title={title}
             />
             <DateSelect/>
-            <Dropzone onDrop={this.onDrop.bind(this)}>
-              <p>Drop the vemo_input_template file here, or click to select file.</p>
-            </Dropzone>
+            <FileUpload/>
           </div>
         </ThemeProvider>
 
