@@ -76,9 +76,7 @@ export const readWorkbook = (filepath, callback) => {
   let workbook = XLSX.readFile(filepath);
   let sheet = XLSX.utils.sheet_to_json(workbook.Sheets['Output'])
   let data = {}
-  let rows = 0;
   sheet.forEach(row => {
-    rows++;
     let email = row['Email'];
     clearHubspotData(email);
     
