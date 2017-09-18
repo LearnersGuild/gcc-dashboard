@@ -5,7 +5,7 @@ import next from 'next';
 import routes from './routes';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-
+import { addUserToRequestFromJWT } from '@learnersguild/idm-jwt-auth/lib/middlewares';
 
 export default () => {
   const dev = process.env.NODE_ENV !== 'production';
@@ -21,6 +21,22 @@ export default () => {
 
       if (!dev) {
         server.use(https({trustProtoHeader: true}));
+        server.use(addUserToRequestFromJWT)
+        server.use((request, response, next) => {
+          const { user } = request
+          if (!user){
+            const completeUrl = `${request.protocol}://${request.get('host')}${request.originalUrl}`
+            response.redirect(
+              `${process.env.IDM_BASE_URL}/sign-in?redirect=${encodeURIComponent(completeUrl)}`
+            )
+            return
+          }else{
+            next()
+          }
+        })
+        server.get('/whoami', (request, response) => {
+          response.json(request.user)
+        })
       }
       server.use(bodyParser.urlencoded({extended: false}));
       server.use(bodyParser.json());
