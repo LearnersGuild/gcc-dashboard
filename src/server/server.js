@@ -19,7 +19,7 @@ export default () => {
       const server = express();
       const port = process.env.PORT || 3000;
       server.use(require('cookie-parser')())
-      //server.use(addUserToRequestFromJWT)
+      server.use(addUserToRequestFromJWT)
       server.get('/whoami', (request, response) => {
         response.json(request.user)
       })
