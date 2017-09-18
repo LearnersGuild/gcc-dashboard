@@ -19,9 +19,12 @@ export default () => {
       const server = express();
       const port = process.env.PORT || 3000;
       server.use(require('cookie-parser')())
+      server.use(bodyParser.urlencoded({extended: false}));
+      server.use(bodyParser.json());
+      server.use(cors());
       if (!dev) {
-        server.use(addUserToRequestFromJWT)
         server.use(https({trustProtoHeader: true}));
+        server.use(addUserToRequestFromJWT)
         server.use((request, response, next) => {
           const { user } = request
           if (!user){
@@ -39,9 +42,6 @@ export default () => {
         })
       }
 
-      server.use(bodyParser.urlencoded({extended: false}));
-      server.use(bodyParser.json());
-      server.use(cors());
 
       server.use('/api', routes.api);
 
