@@ -19,27 +19,24 @@ export default () => {
       const server = express();
       const port = process.env.PORT || 3000;
       server.use(require('cookie-parser')())
-      server.use(addUserToRequestFromJWT)
-      server.get('/whoami', (request, response) => {
-        response.json(request.user)
-      })
       if (!dev) {
+        server.use(addUserToRequestFromJWT)
         server.use(https({trustProtoHeader: true}));
-        // server.use((request, response, next) => {
-        //   const { user } = request
-        //   if (!user){
-        //     const completeUrl = `${request.protocol}://${request.get('host')}${request.originalUrl}`
-        //     response.redirect(
-        //       `${process.env.IDM_BASE_URL}/sign-in?redirect=${encodeURIComponent(completeUrl)}`
-        //     )
-        //     return
-        //   }else{
-        //     next()
-        //   }
-        // })
-        // server.get('/whoami', (request, response) => {
-        //   response.json(request.user)
-        // })
+        server.use((request, response, next) => {
+          const { user } = request
+          if (!user){
+            const completeUrl = `${request.protocol}://${request.get('host')}${request.originalUrl}`
+            response.redirect(
+              `${process.env.IDM_BASE_URL}/sign-in?redirect=${encodeURIComponent(completeUrl)}`
+            )
+            return
+          }else{
+            next()
+          }
+        })
+        server.get('/whoami', (request, response) => {
+          response.json(request.user)
+        })
       }
 
       server.use(bodyParser.urlencoded({extended: false}));
