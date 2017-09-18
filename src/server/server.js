@@ -18,7 +18,7 @@ export default () => {
     .then(() => {
       const server = express();
       const port = process.env.PORT || 3000;
-
+      server.use(require('cookie-parser')())
       if (!dev) {
         server.use(https({trustProtoHeader: true}));
         server.use(addUserToRequestFromJWT)
@@ -34,10 +34,11 @@ export default () => {
             next()
           }
         })
-        server.get('/whoami', (request, response) => {
-          response.json(request.user)
-        })
+        // server.get('/whoami', (request, response) => {
+        //   response.json(request.user)
+        // })
       }
+
       server.use(bodyParser.urlencoded({extended: false}));
       server.use(bodyParser.json());
       server.use(cors());
