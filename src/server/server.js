@@ -5,7 +5,7 @@ import {HTTPS as https} from 'express-sslify';
 import next from 'next';
 import routes from './routes';
 import bodyParser from 'body-parser';
-import { addUserToRequestFromJWT, refreshUserFromIDMService } from '@learnersguild/idm-jwt-auth/lib/middlewares';
+import { addUserToRequestFromJWT } from '@learnersguild/idm-jwt-auth/lib/middlewares';
 
 export default () => {
   const dev = process.env.NODE_ENV !== 'production';
