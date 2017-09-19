@@ -1,10 +1,10 @@
+
 import path from 'path';
 import express from 'express';
 import {HTTPS as https} from 'express-sslify';
 import next from 'next';
 import routes from './routes';
 import bodyParser from 'body-parser';
-import cors from 'cors';
 import { addUserToRequestFromJWT } from '@learnersguild/idm-jwt-auth/lib/middlewares';
 
 export default () => {
@@ -21,7 +21,6 @@ export default () => {
       server.use(require('cookie-parser')())
       server.use(bodyParser.urlencoded({extended: false}));
       server.use(bodyParser.json());
-      server.use(cors());
       if (!dev) {
         server.use(https({trustProtoHeader: true}));
         server.use(addUserToRequestFromJWT)
