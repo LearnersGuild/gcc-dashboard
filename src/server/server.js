@@ -5,7 +5,7 @@ import {HTTPS as https} from 'express-sslify';
 import next from 'next';
 import routes from './routes';
 import bodyParser from 'body-parser';
-import { addUserToRequestFromJWT } from '@learnersguild/idm-jwt-auth/lib/middlewares';
+import { addUserToRequestFromJWT, refreshUserFromIDMService } from '@learnersguild/idm-jwt-auth/lib/middlewares';
 
 export default () => {
   const dev = process.env.NODE_ENV !== 'production';
@@ -18,14 +18,16 @@ export default () => {
     .then(() => {
       const server = express();
       const port = process.env.PORT || 3000;
-      server.use(require('cookie-parser')())
+      server.use(require('cookie-parser')());
       server.use(bodyParser.urlencoded({extended: false}));
       server.use(bodyParser.json());
       if (!dev) {
         server.use(https({trustProtoHeader: true}));
+      }
         server.use(addUserToRequestFromJWT)
         server.use((request, response, next) => {
           const { user } = request
+          console.log(request.user)
           if (!user){
             const completeUrl = `${request.protocol}://${request.get('host')}${request.originalUrl}`
             response.redirect(
@@ -39,7 +41,6 @@ export default () => {
         server.get('/whoami', (request, response) => {
           response.json(request.user)
         })
-      }
 
 
       server.use('/api', routes.api);
