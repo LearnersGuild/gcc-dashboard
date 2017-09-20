@@ -53,11 +53,53 @@ const fields = [
   'has_received_llf_financing',
 ]
 
+const numFields = [
+  'llf_amount_eligible',
+  'llf_amount_accepted',
+  'llf_amount_received',
+  'llf_payment_count',
+  'llf_income_percent',
+  'llf_amount_paid',
+  'pif_amount_eligible',
+  'pif_amount_accepted',
+  'pif_amount_received',
+  'pif_payment_count',
+  'pif_income_percent',
+  'pif_amount_paid',
+  'learner_s_starting_salary'
+ ]
+
+ const dateFields = [
+  'dob_mm_dd_yyyy_',
+  'createdate',
+  'enrollee_start_date',
+  'cancellation_date',
+  'resignation_date',
+  'llf_date_signed',
+  'llf_first_payment_due_date',
+  'pif_date_signed',
+  'pif_first_payment_due_date'
+ ]
+
 const getLearnerData = (dates) => {
   return knex.select(...fields).from('status_of_learners')
-    .where('created_at', '>', dates.reportStart)
+    .where('created_at', '>=', dates.reportStart)
     .andWhere('created_at', '<', dates.reportEnd)
     .then(rows => {
+      rows.forEach(row => {
+        numFields.forEach(field => {
+          if (row[field] === '') {
+            row[field] = 0
+          } else {
+            row[field] = parseFloat(row[field])
+          }
+        })
+        dateFields.forEach(field => {
+          if (row[field]) {
+            row[field] = moment(row[field]).format('YYYY-MM-DD')
+          }
+        })
+      })
       return rows;
     })
     .catch(err => console.log(err))
@@ -65,7 +107,7 @@ const getLearnerData = (dates) => {
 
 const getFunnelByStage = (dates) => {
   return knex.select('stage', 'stageStatus').from('status_of_learners').count('stage')
-      .where('created_at', '>', dates.reportStart)
+      .where('created_at', '>=', dates.reportStart)
       .andWhere('created_at', '<', dates.reportEnd)
       .groupBy('stage')
       .groupBy('stageStatus')

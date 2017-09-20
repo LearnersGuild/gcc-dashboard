@@ -23,7 +23,6 @@ export default () => {
       server.use(bodyParser.json());
       if (!dev) {
         server.use(https({trustProtoHeader: true}));
-      }
         server.use(addUserToRequestFromJWT)
         server.use((request, response, next) => {
           const { user } = request
@@ -38,6 +37,7 @@ export default () => {
             next()
           }
         })
+      }
         server.get('/whoami', (request, response) => {
           response.json(request.user)
         })

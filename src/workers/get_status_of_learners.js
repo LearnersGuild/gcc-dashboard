@@ -1,9 +1,10 @@
 require('dotenv').config()
-import querystring from 'querystring'
-import axios from 'axios'
-import { lists, properties } from './utils/report'
-import knex from '../db'
-import moment from 'moment-timezone'
+const querystring = require('querystring')
+const axios = require('axios')
+const lists = require('./utils/report').lists
+const properties =  require('./utils/report').properties
+const knex = require('../db')
+const moment = require('moment-timezone')
 const HUBSPOT_API_KEY = process.env.HUBSPOT_API_KEY
 const urlStart = 'https://api.hubapi.com/contacts/v1/lists/'
 const urlEnd = `/contacts/all?hapikey=${HUBSPOT_API_KEY}&count=100&`
