@@ -1,6 +1,6 @@
 'use strict';
-require('dotenv').config()
-const XLSX = require('xlsx')
+require('dotenv').config();
+const XLSX = require('xlsx');
 const moment = require('moment');
 const axios = require('axios');
 const fs = require('fs');
@@ -14,8 +14,7 @@ const postClearData = (clearData) => {
       return response
     })
     .catch(error => {
-      console.error('error in post', error)
-      error.response.data.failureMessages.forEach(message => console.log('clearData error', message.propertyValidationResult));
+      //error.response.data.failureMessages.forEach(message => console.log('clearData error', message.propertyValidationResult));
       return Promise.reject(error)
     })
 }  
