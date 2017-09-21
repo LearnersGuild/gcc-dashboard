@@ -16,7 +16,7 @@ exports.lists = [
   {2593: {stageStatus: 'Out During Stage', metaStage: 'Program', rollupStage: 'Commitment - Phase 4 End', stage: 'Phase 2 Start-End'}},
   {2594: {stageStatus: 'Out During Stage', metaStage: 'Program', rollupStage: 'Commitment - Phase 4 End', stage: 'Phase 3 Start-End'}},
   {2595: {stageStatus: 'Out During Stage', metaStage: 'Program', rollupStage: 'Commitment - Phase 4 End', stage: 'Phase 4 Start-End'}},
-];
+]
 
 exports.properties = [
   'exit_phase',
@@ -56,4 +56,4 @@ exports.properties = [
   'learner_s_starting_salary',
   'have_you_accepted_a_job_offer',
   'isa_data'
-];
+]

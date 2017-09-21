@@ -1,13 +1,11 @@
 import test from 'tape'
-import { 
+import {
   clearHubspotData,
-  formatDataForHubspot 
-} from '../updateHubspot.js'
-
+  formatDataForHubspot
+} from '../updateHubspot'
 
 test('controllers/updateHubspot', t => {
   t.test('clearHubspotData', tt => {
-
     tt.test('should create a new object with the properties ti clear', ttt => {
       ttt.plan(1)
       const clearData = clearHubspotData({}, 'email@test.com')
@@ -29,7 +27,7 @@ test('controllers/updateHubspot', t => {
   t.test('formatDataForHubspot', tt => {
     tt.test('should correctly format clear data', ttt => {
       ttt.plan(2)
-      const clearData =  {'email@test.com': {
+      const clearData = {'email@test.com': {
         properties: [
           {property: 'has_pif', value: ''},
           {property: 'pif_amount_eligible', value: ''}
@@ -37,12 +35,12 @@ test('controllers/updateHubspot', t => {
       }
       const formattedClearData = formatDataForHubspot(clearData, 'clear')
       ttt.equal(formattedClearData.length, 1, 'should be an array with length of 1')
-      ttt.equal(formattedClearData[0].email, 'email@test.com' , 'should have correct email value')
+      ttt.equal(formattedClearData[0].email, 'email@test.com', 'should have correct email value')
     })
 
     tt.test('should correctly format new data', ttt => {
       ttt.plan(3)
-      const newData =  {
+      const newData = {
         'email@test.com': {
           properties: [
             {property: 'has_pif', value: 'TRUE'},
@@ -53,7 +51,7 @@ test('controllers/updateHubspot', t => {
       }
       const formattedNewData = formatDataForHubspot(newData, 'new')
       ttt.equal(formattedNewData.length, 1, 'should be an array with length of 1')
-      ttt.equal(formattedNewData[0].email, 'email@test.com' , 'should have correct email value')
+      ttt.equal(formattedNewData[0].email, 'email@test.com', 'should have correct email value')
       ttt.equal(formattedNewData[0].properties[formattedNewData[0].properties.length - 1].property, 'isa_data', 'should have isa_data')
     })
   })

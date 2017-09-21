@@ -1,8 +1,6 @@
-'use strict';
+'use strict'
 require('dotenv').config()
-const XLSX = require('xlsx')
 const moment = require('moment')
-const fs = require('fs')
 const knex = require('../db')
 
 const fields = [
@@ -67,9 +65,9 @@ const numFields = [
   'pif_income_percent',
   'pif_amount_paid',
   'learner_s_starting_salary'
- ]
+]
 
- const dateFields = [
+const dateFields = [
   'dob_mm_dd_yyyy_',
   'createdate',
   'enrollee_start_date',
@@ -79,9 +77,9 @@ const numFields = [
   'llf_first_payment_due_date',
   'pif_date_signed',
   'pif_first_payment_due_date'
- ]
+]
 
-const getLearnerData = (dates) => {
+const getLearnerData = dates => {
   return knex.select(...fields).from('status_of_learners')
     .where('created_at', '>=', dates.reportStart)
     .andWhere('created_at', '<', dates.reportEnd)
@@ -100,19 +98,19 @@ const getLearnerData = (dates) => {
           }
         })
       })
-      return rows;
+      return rows
     })
     .catch(err => console.log(err))
 }
 
-const getFunnelByStage = (dates) => {
+const getFunnelByStage = dates => {
   return knex.select('stage', 'stageStatus').from('status_of_learners').count('stage')
       .where('created_at', '>=', dates.reportStart)
       .andWhere('created_at', '<', dates.reportEnd)
       .groupBy('stage')
       .groupBy('stageStatus')
     .then(rows => {
-      let stages = {};
+      const stages = {}
       rows.forEach(row => {
         if (stages[row.stage]) {
           stages[row.stage][row.stageStatus] = row.count
@@ -121,25 +119,25 @@ const getFunnelByStage = (dates) => {
           stages[row.stage][row.stageStatus] = row.count
         }
       })
-      let stageKeys = Object.keys(stages)
-      let formatted = []
+      const stageKeys = Object.keys(stages)
+      const formatted = []
       stageKeys.forEach(key => {
-        let currentlyIn = parseInt(stages[key]["Curently In"]) || 0
-        let outDuringStage = parseInt(stages[key]["Out During Stage"]) || 0
-        formatted.push({stage: key, "Currently In": currentlyIn, "Out During Stage": outDuringStage})
+        const currentlyIn = parseInt(stages[key]['Curently In'], 10) || 0
+        const outDuringStage = parseInt(stages[key]['Out During Stage'], 10) || 0
+        formatted.push({stage: key, 'Currently In': currentlyIn, 'Out During Stage': outDuringStage})
       })
       return formatted
     })
     .catch(err => console.log(err))
 }
 
-const getRetentionByCohort = (dates) => {
+const getRetentionByCohort = dates => {
   return knex('status_of_learners').select(knex.raw('stage, to_char(enrollee_start_date, \'Mon-YY\'), "stageStatus", COUNT(*)'))
       .where('created_at', '>=', dates.reportStart)
       .andWhere('created_at', '<', dates.reportEnd)
       .groupByRaw('stage, "stageStatus", to_char(enrollee_start_date, \'Mon-YY\')')
     .then(rows => {
-      let stages = {};
+      const stages = {}
       rows.forEach(row => {
         if (stages[`${row.stage} ${row.to_char}`]) {
           stages[`${row.stage} ${row.to_char}`][row.stageStatus] = row.count
@@ -148,24 +146,24 @@ const getRetentionByCohort = (dates) => {
           stages[`${row.stage} ${row.to_char}`][row.stageStatus] = row.count
         }
       })
-      let stageKeys = Object.keys(stages)
-      let formatted = []
+      const stageKeys = Object.keys(stages)
+      const formatted = []
       stageKeys.forEach(key => {
-        let currentlyIn = parseInt(stages[key]["Curently In"]) || 0
-        let outDuringStage = parseInt(stages[key]["Out During Stage"]) || 0
-        formatted.push({stage: key, "Currently In": currentlyIn, "Out During Stage": outDuringStage})
+        const currentlyIn = parseInt(stages[key]['Curently In'], 10) || 0
+        const outDuringStage = parseInt(stages[key]['Out During Stage'], 10) || 0
+        formatted.push({stage: key, 'Currently In': currentlyIn, 'Out During Stage': outDuringStage})
       })
-       return formatted
+      return formatted
     })
     .catch(err => console.log(err))
 }
 
 export const file = (dates, cb) => {
   Promise.all([
-   getLearnerData(dates),
-   getFunnelByStage(dates),
-   getRetentionByCohort(dates)
+    getLearnerData(dates),
+    getFunnelByStage(dates),
+    getRetentionByCohort(dates)
   ])
   .then(values => cb(values))
-  .catch(error => console.log(error))
+  .catch(err => console.log(err))
 }

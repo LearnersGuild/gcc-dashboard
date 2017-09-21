@@ -17,9 +17,6 @@ const iconsMetadataElements = iconsMetadata.map((link, i) => {
 })
 
 class index extends React.Component {
-  constructor(props)  {
-    super(props);
-  }
 
   render() {
     const leftIconSrc = 'https://brand.learnersguild.org/assets/learners-guild-icon.svg'
@@ -36,18 +33,18 @@ class index extends React.Component {
         </span>
       </Link>
 
-  const title =
-    <span>
-      <h1 className="title">GCC Dashboard</h1>
-      <style jsx>{`
-        h1.title {
-          display: inline-block;
-          margin-left: 10px;
-          font-family: Roboto;
-          font-size: 1.3em;
-        }
-      `}</style>
-    </span>
+    const title =
+      <span>
+        <h1 className="title">GCC Dashboard</h1>
+        <style jsx>{`
+          h1.title {
+            display: inline-block;
+            margin-left: 10px;
+            font-family: Roboto;
+            font-size: 1.3em;
+          }
+        `}</style>
+      </span>
 
     return (
       <div>

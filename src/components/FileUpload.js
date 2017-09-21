@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import Dropzone from 'react-dropzone'
 import axios from 'axios'
 import Card from 'react-toolbox/lib/card/Card'
@@ -9,22 +9,22 @@ import cardStyle from './cardStyle'
 class FileUpload extends Component {
   constructor(props) {
     super(props)
-    this.onDrop = this.onDrop.bind(this)
+    this.handleDrop = this.handleDrop.bind(this)
   }
 
-  onDrop = (files) => {
-    const data = new FormData();
-    data.append('workbook', files[0]);
+  handleDrop(files) {
+    const data = new FormData()
+    data.append('workbook', files[0])
 
     axios.post('api/uploads', data, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     })
-    .then(response => {
+    .then(() => {
       alert('File successfully uploaded')
     })
-    .catch(error => console.log(error.response.data))
+    .catch(err => console.log(err.response.data))
   }
 
   render() {
@@ -32,18 +32,18 @@ class FileUpload extends Component {
       <Card style={cardStyle()}>
         <CardTitle title="Vemo Data Upload"/>
         <CardText>
-          <Dropzone 
-            onDrop={this.onDrop}
+          <Dropzone
+            onDrop={this.handleDrop}
             style={{
               width: '100%',
               height: '10em',
               padding: '1em',
               borderWidth: '2px',
               borderStyle: 'dotted',
-              borderRadius: '5px' 
+              borderRadius: '5px'
             }}
           >
-              <p>Drop the vemo_input_template file here, or click to select file.</p>
+            <p>Drop the vemo_input_template file here, or click to select file.</p>
           </Dropzone>
         </CardText>
       </Card>

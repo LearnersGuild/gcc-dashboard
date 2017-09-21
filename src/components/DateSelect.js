@@ -1,60 +1,59 @@
-import React, { Component } from 'react';
-import FileSaver from 'file-saver';
-import XLSX from 'xlsx';
-import axios from 'axios';
-import DatePicker from 'react-toolbox/lib/date_picker/DatePicker';
-import Button from 'react-toolbox/lib/button/Button';
-import Card from 'react-toolbox/lib/card/Card';
-import CardText from 'react-toolbox/lib/card/CardText';
-import CardTitle from 'react-toolbox/lib/card/CardTitle';
-import cardStyle from './cardStyle';
-import moment from 'moment-timezone';
-
+import React, {Component} from 'react'
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
+import axios from 'axios'
+import DatePicker from 'react-toolbox/lib/date_picker/DatePicker'
+import Button from 'react-toolbox/lib/button/Button'
+import Card from 'react-toolbox/lib/card/Card'
+import CardText from 'react-toolbox/lib/card/CardText'
+import CardTitle from 'react-toolbox/lib/card/CardTitle'
+import moment from 'moment-timezone'
+import cardStyle from './cardStyle'
 
 class DateSelect extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       reportDate: '',
       reportStart: '',
       reportEnd: ''
-    };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.s2ab = this.s2ab.bind(this);
+    }
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.s2ab = this.s2ab.bind(this)
   }
 
   s2ab(s) {
-    let buf = new ArrayBuffer(s.length);
-    let view = new Uint8Array(buf);
-    for (let i = 0; i !== s.length; ++i) { view[i] = s.charCodeAt(i) & 0xFF; }
-    return buf;
+    const buf = new ArrayBuffer(s.length)
+    const view = new Uint8Array(buf)
+    for (let i = 0; i !== s.length; ++i) {
+      view[i] = s.charCodeAt(i) & 0xFF
+    }
+    return buf
   }
 
-  handleSubmit(e) {
+  handleSubmit() {
     if (this.state.reportDate === '') {
-      alert('Please select a date for the report');
+      alert('Please select a date for the report')
     } else {
       axios.get('/api/reports', {params: {reportStart: this.state.reportStart, reportEnd: this.state.reportEnd}}).then(response => {
-        let wb = { 
-          SheetNames: ['Learner Data Raw', 'Funnel by Stage Raw', 'Retention by Cohort Raw'], 
+        const wb = {
+          SheetNames: ['Learner Data Raw', 'Funnel by Stage Raw', 'Retention by Cohort Raw'],
           Sheets: {}
-        };
-        //let ws_name = 'SheetJS';
-        let learnerData = XLSX.utils.json_to_sheet(response.data[0]);
-        wb.Sheets['Learner Data Raw'] = learnerData;
-        let funnelByStageData = XLSX.utils.json_to_sheet(response.data[1]);
-        wb.Sheets['Funnel by Stage Raw'] = funnelByStageData;
-        let retentionByCohortData = XLSX.utils.json_to_sheet(response.data[2]);
-        wb.Sheets['Retention by Cohort Raw'] = retentionByCohortData; 
+        }
+        const learnerData = XLSX.utils.json_to_sheet(response.data[0])
+        wb.Sheets['Learner Data Raw'] = learnerData
+        const funnelByStageData = XLSX.utils.json_to_sheet(response.data[1])
+        wb.Sheets['Funnel by Stage Raw'] = funnelByStageData
+        const retentionByCohortData = XLSX.utils.json_to_sheet(response.data[2])
+        wb.Sheets['Retention by Cohort Raw'] = retentionByCohortData
 
-        let wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
-        let wbout = XLSX.write(wb, wopts);
-        FileSaver.saveAs(new Blob([this.s2ab(wbout)], {type: 'application/octet-stream'}), 'gcc_dashboard.xlsx');
-
-      }).catch(error => {
-        console.log(error.message);
-      });
+        const wopts = {bookType: 'xlsx', bookSST: false, type: 'binary'}
+        const wbout = XLSX.write(wb, wopts)
+        FileSaver.saveAs(new Blob([this.s2ab(wbout)], {type: 'application/octet-stream'}), 'gcc_dashboard.xlsx')
+      }).catch(err => {
+        console.log(err.message)
+      })
     }
   }
 
@@ -63,7 +62,7 @@ class DateSelect extends Component {
       reportDate: moment(date).toDate(),
       reportStart: moment(date).add(1, 'days').format('YYYY-MM-DD'),
       reportEnd: moment(date).add(2, 'days').format('YYYY-MM-DD')
-    });
+    })
   }
 
   render() {
@@ -80,7 +79,7 @@ class DateSelect extends Component {
             value={this.state.reportDate}
           />
           <Button
-            label='Download Report'
+            label="Download Report"
             style={{
               backgroundColor: '#97C93D',
               color: 'white',
@@ -92,8 +91,8 @@ class DateSelect extends Component {
           />
         </CardText>
       </Card>
-    );
+    )
   }
 }
 
-export default DateSelect;
+export default DateSelect
