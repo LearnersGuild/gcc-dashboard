@@ -37,7 +37,7 @@ export const formatDataForHubspot = (data, type) => {
     if (type === 'clear') {
       hubspotData.push({email: email, properties: data[email].properties});
     } else {
-      let isaDataValue = JSON.stringify(data[email]['isa_data']);
+      let isaDataValue = JSON.stringify(data[email].isa_data);
       data[email].properties.push({property: 'isa_data', value: isaDataValue});
       hubspotData.push({email: email, properties: data[email].properties});
     }
@@ -45,39 +45,40 @@ export const formatDataForHubspot = (data, type) => {
   return hubspotData;
 };
 
-let clearData = {};
-
-export const clearHubspotData = (email) => {
-  clearData[email] = {
+export const clearHubspotData = (data, email) => {
+  let newData = Object.assign({}, data)
+  newData[email] = {
     properties: [
-    {property: 'has_pif', value: ''},
-    {property: 'pif_amount_eligible', value: ''},
-    {property: 'pif_amount_accepted', value: ''},
-    {property: 'pif_amount_received', value: ''},
-    {property: 'pif_payment_count', value: ''},
-    {property: 'pif_income_percent', value: ''},
-    {property: 'pif_date_signed', value: ''},
-    {property: 'pif_status', value: ''},
-    {property: 'has_llf', value: ''},
-    {property: 'llf_amount_eligible', value: ''},
-    {property: 'llf_amount_accepted', value: ''},
-    {property: 'llf_amount_received', value: ''},
-    {property: 'llf_payment_count', value: ''},
-    {property: 'llf_income_percent', value: ''},
-    {property: 'llf_date_signed', value: ''},
-    {property: 'llf_status', value: ''},
-    {property: 'isa_data', value: ''},
+      {property: 'has_pif', value: ''},
+      {property: 'pif_amount_eligible', value: ''},
+      {property: 'pif_amount_accepted', value: ''},
+      {property: 'pif_amount_received', value: ''},
+      {property: 'pif_payment_count', value: ''},
+      {property: 'pif_income_percent', value: ''},
+      {property: 'pif_date_signed', value: ''},
+      {property: 'pif_status', value: ''},
+      {property: 'has_llf', value: ''},
+      {property: 'llf_amount_eligible', value: ''},
+      {property: 'llf_amount_accepted', value: ''},
+      {property: 'llf_amount_received', value: ''},
+      {property: 'llf_payment_count', value: ''},
+      {property: 'llf_income_percent', value: ''},
+      {property: 'llf_date_signed', value: ''},
+      {property: 'llf_status', value: ''},
+      {property: 'isa_data', value: ''},
     ]
-  };
+  }
+  return newData;
 };
 
 export const readWorkbook = (filepath, callback) => {
   let workbook = XLSX.readFile(filepath);
   let sheet = XLSX.utils.sheet_to_json(workbook.Sheets['Output'])
   let data = {}
+  let clearData = {}
   sheet.forEach(row => {
     let email = row['Email'];
-    clearHubspotData(email);
+    clearData = clearHubspotData(clearData, email);
     
     if (!data[email]) {
       data[email] = {properties: [], llfCount: 0, 'isa_data': []};

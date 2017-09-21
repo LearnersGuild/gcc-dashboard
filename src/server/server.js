@@ -26,7 +26,6 @@ export default () => {
         server.use(addUserToRequestFromJWT)
         server.use((request, response, next) => {
           const { user } = request
-          console.log(request.user)
           if (!user){
             const completeUrl = `${request.protocol}://${request.get('host')}${request.originalUrl}`
             response.redirect(

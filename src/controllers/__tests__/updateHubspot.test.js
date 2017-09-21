@@ -1,114 +1,60 @@
 import test from 'tape'
+import { 
+  clearHubspotData,
+  formatDataForHubspot 
+} from '../updateHubspot.js'
 
-import {
-  expectedExitDate,
-  momentDayOnly,
-  throwsIfInvalidDates,
-} from '@learnersguild/guild-dates'
 
-import {
-  PROGRAM_COST,
-  PROGRAM_ISA_MAX_PERCENTAGE,
-  PROGRAM_REBATE_AMOUNT,
-  SESSION_COST,
-  SESSION_ISA_MAX_PERCENTAGE,
-  isaSessionISAPercentage,
-  isaProgramISAPercentage,
-  isaProgramFundingAmount,
-  isaProgramPaymentCap,
-  isaProgramRebateAmount,
-} from '../program'
+test('controllers/updateHubspot', t => {
+  t.test('clearHubspotData', tt => {
 
-test('isacalc/program', t => {
-  t.test('isaSessionISAPercentage', tt => {
-    tt.test('throws if the given dates are not dates', throwsIfInvalidDates(isaSessionISAPercentage))
-
-    tt.test('returns SESSION_ISA_MAX_PERCENTAGE if session > 60% completed', ttt => {
+    tt.test('should create a new object with the properties ti clear', ttt => {
       ttt.plan(1)
-      const sessionPct = isaSessionISAPercentage(momentDayOnly('2016-11-28'), momentDayOnly('2017-07-07'), 2)
-      ttt.equal(sessionPct, SESSION_ISA_MAX_PERCENTAGE, 'should be SESSION_ISA_MAX_PERCENTAGE')
+      const clearData = clearHubspotData({}, 'email@test.com')
+
+      ttt.equal(clearData['email@test.com'].properties[0].property, 'has_pif', 'should be has_pif')
     })
 
-    tt.test('returns pro-rated amount of SESSION_ISA_MAX_PERCENTAGE if session < 60% completed', ttt => {
-      ttt.plan(1)
-      const sessionPct = isaSessionISAPercentage(momentDayOnly('2016-11-28'), momentDayOnly('2017-04-27'), 2)
-      const expectedPct = (23 / 39) * SESSION_ISA_MAX_PERCENTAGE
-      ttt.equal(sessionPct, expectedPct, 'should be pro-rated amount of SESSION_ISA_MAX_PERCENTAGE')
+    tt.test('should return a new object with the addition of each email', ttt => {
+      ttt.plan(3)
+      const oneEmail = clearHubspotData({}, 'email@test.com')
+      const twoEmail = clearHubspotData(oneEmail, 'email2@test.com')
+
+      ttt.equal(twoEmail.hasOwnProperty('email@test.com'), true, 'should be true')
+      ttt.equal(twoEmail.hasOwnProperty('email2@test.com'), true, 'should be true')
+      ttt.equal(oneEmail.hasOwnProperty('email2@test.com'), false, 'should be false')
     })
   })
 
-  t.test('isaProgramISAPercentage', tt => {
-    tt.test('throws if the given dates are not dates', throwsIfInvalidDates(isaProgramISAPercentage))
-
-    tt.test('returns PROGRAM_ISA_MAX_PERCENTAGE if stayed for close-to full program', ttt => {
-      ttt.plan(1)
-      const startDate = momentDayOnly('2016-11-28')
-      const exitDate = momentDayOnly(expectedExitDate(startDate)).subtract(2, 'weeks').toDate()
-      const programPct = isaProgramISAPercentage(startDate, exitDate)
-      ttt.equal(programPct, PROGRAM_ISA_MAX_PERCENTAGE, 'should be PROGRAM_ISA_MAX_PERCENTAGE')
+  t.test('formatDataForHubspot', tt => {
+    tt.test('should correctly format clear data', ttt => {
+      ttt.plan(2)
+      const clearData =  {'email@test.com': {
+        properties: [
+          {property: 'has_pif', value: ''},
+          {property: 'pif_amount_eligible', value: ''}
+        ]}
+      }
+      const formattedClearData = formatDataForHubspot(clearData, 'clear')
+      ttt.equal(formattedClearData.length, 1, 'should be an array with length of 1')
+      ttt.equal(formattedClearData[0].email, 'email@test.com' , 'should have correct email value')
     })
 
-    tt.test('returns < PROGRAM_ISA_MAX_PERCENTAGE if left early', ttt => {
-      ttt.plan(1)
-      const startDate = momentDayOnly('2016-11-28')
-      const exitDate = momentDayOnly('2017-06-19')
-      const programPct = isaProgramISAPercentage(startDate, exitDate)
-      const expectedPct = (3 * SESSION_ISA_MAX_PERCENTAGE) + (15 / 37 * SESSION_ISA_MAX_PERCENTAGE)
-      ttt.equal(programPct, expectedPct, 'should be 3 sessions plus ([completed days in 4th session] / [num days in 4th session] * 100)% of a 4th')
-    })
-  })
-
-  t.test('isaProgramFundingAmount', tt => {
-    tt.test('throws if the given dates are not dates', throwsIfInvalidDates(isaProgramFundingAmount))
-
-    tt.test('returns PROGRAM_COST if stayed for close-to full program', ttt => {
-      ttt.plan(1)
-      const startDate = momentDayOnly('2016-11-28')
-      const exitDate = momentDayOnly(expectedExitDate(startDate)).subtract(2, 'weeks').toDate()
-      const fundingAmount = isaProgramFundingAmount(startDate, exitDate)
-      ttt.equal(fundingAmount, PROGRAM_COST, 'should be PROGRAM_COST')
-    })
-
-    tt.test('returns < PROGRAM_COST if left early', ttt => {
-      ttt.plan(1)
-      const startDate = momentDayOnly('2016-11-28')
-      const exitDate = momentDayOnly('2017-06-19')
-      const fundingAmount = isaProgramFundingAmount(startDate, exitDate)
-      const expectedAmount = SESSION_COST * 3 + (15 / 37 * SESSION_COST)
-      ttt.equal(fundingAmount, expectedAmount, 'should be cost of 3 sessions plus ([completed days in 4th session] / [num days in 4th session] * 100)% cost of a 4th')
-    })
-  })
-
-  t.test('isaProgramPaymentCap', tt => {
-    tt.test('throws if the given dates are not dates', throwsIfInvalidDates(isaProgramPaymentCap))
-
-    tt.test('returns 2x the funding amount', ttt => {
-      ttt.plan(1)
-      const startDate = momentDayOnly('2016-11-28')
-      const exitDate = momentDayOnly(expectedExitDate(startDate)).subtract(2, 'weeks').toDate()
-      const fundingAmount = isaProgramFundingAmount(startDate, exitDate)
-      const paymentCap = isaProgramPaymentCap(startDate, exitDate)
-      ttt.equal(paymentCap, 2 * fundingAmount, 'should be 2x the funding amount')
-    })
-  })
-
-  t.test('isaProgramRebateAmount', tt => {
-    tt.test('throws if the given dates are not dates', throwsIfInvalidDates(isaProgramRebateAmount))
-
-    tt.test('returns PROGRAM_REBATE_AMOUNT if stayed for close-to full program', ttt => {
-      ttt.plan(1)
-      const startDate = momentDayOnly('2016-11-28')
-      const exitDate = momentDayOnly(expectedExitDate(startDate)).subtract(2, 'weeks').toDate()
-      const rebate = isaProgramRebateAmount(startDate, exitDate)
-      ttt.equal(rebate, PROGRAM_REBATE_AMOUNT, 'should be PROGRAM_REBATE_AMOUNT')
-    })
-
-    tt.test('returns 0 if stayed < 4.6 full sessions', ttt => {
-      ttt.plan(1)
-      const startDate = momentDayOnly('2016-11-28')
-      const exitDate = momentDayOnly(expectedExitDate(startDate)).subtract(5, 'weeks').toDate()
-      const rebate = isaProgramRebateAmount(startDate, exitDate)
-      ttt.equal(rebate, 0)
+    tt.test('should correctly format new data', ttt => {
+      ttt.plan(3)
+      const newData =  {
+        'email@test.com': {
+          properties: [
+            {property: 'has_pif', value: 'TRUE'},
+            {property: 'pif_amount_eligible', value: '25000'},
+          ],
+          isa_data: 'some data'
+        }
+      }
+      const formattedNewData = formatDataForHubspot(newData, 'new')
+      ttt.equal(formattedNewData.length, 1, 'should be an array with length of 1')
+      ttt.equal(formattedNewData[0].email, 'email@test.com' , 'should have correct email value')
+      ttt.equal(formattedNewData[0].properties[formattedNewData[0].properties.length - 1].property, 'isa_data', 'should have isa_data')
     })
   })
 })
