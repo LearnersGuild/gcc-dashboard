@@ -80,16 +80,18 @@ export const readWorkbook = (filepath, callback) => {
     const email = row.Email
     clearData = clearHubspotData(clearData, email)
     if (!data[email]) {
-      data[email] = {properties: [], llfCount: 0, isa_data: []}
+      data[email] = {properties: [], llfCount: 0, pifCount: 0, isa_data: []}
     }
     data[email].isa_data.push(row)
 
     if (row['Current Status of Learner'] !== 'Cancelled' &&
-        row['Current Status of Learner'] !== "Cancelled/Written Off"
+        row['Current Status of Learner'] !== "Cancelled/Written Off" &&
+        row['Internal Status'] !== '3 Day Notice Sent' && 
+        row['Internal Status'] !== '3 Day Notice Timeout'
         ) {
       const type = row.Program.includes('Pay') ? 'pif' : 'llf'
 
-      if ((data[email].llfCount === 0 && type === 'llf') || (type === 'pif' && row['Internal Status'] !== '3 Day Notice Sent' && row['Internal Status'] !== '3 Day Notice Timeout')) {
+      if ((data[email].llfCount === 0 && type === 'llf') || (data[email].pifCount === 0 && type === 'pif')) {
         data[email].properties = data[email].properties.concat([
           {property: `has_${type}`, value: 'TRUE'},
           {property: `${type}_amount_eligible`, value: row['Amount Eligible']},
@@ -105,16 +107,18 @@ export const readWorkbook = (filepath, callback) => {
         }
         if (type === 'llf') {
           data[email].llfCount = 1
+        } else if (type === 'pif') {
+          data[email].pifCount = 1
         }
-      } else if (type !== 'pif') {
+      } else {
         data[email].properties.forEach(prop => {
-          if (prop.property === 'llf_amount_eligible') {
+          if (prop.property === `${type}_amount_eligible`) {
             prop.value = parseInt(prop.value, 10) + parseInt(row['Amount Eligible'], 10)
-          } else if (prop.property === 'llf_amount_accepted') {
+          } else if (prop.property === `${type}_amount_accepted`) {
             prop.value = parseInt(prop.value, 10) + parseInt(row['Amount Accepted'], 10)
-          } else if (prop.property === 'llf_amount_received') {
+          } else if (prop.property === `${type}_amount_received`) {
             prop.value = parseInt(prop.value, 10) + parseInt(row['Amount of Stipend Received'], 10)
-          } else if (prop.property === 'llf_income_percent') {
+          } else if (prop.property === `${type}_income_percent`) {
             prop.value = parseInt(prop.value, 10) + parseInt(row['Income Share'], 10)
           }
         })

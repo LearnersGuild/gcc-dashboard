@@ -51,7 +51,7 @@ const fields = [
   'has_received_llf_financing',
 ]
 
-const numFields = [
+export const numFields = [
   'llf_amount_eligible',
   'llf_amount_accepted',
   'llf_amount_received',
@@ -67,7 +67,7 @@ const numFields = [
   'learner_s_starting_salary'
 ]
 
-const dateFields = [
+export const dateFields = [
   'dob_mm_dd_yyyy_',
   'createdate',
   'enrollee_start_date',
