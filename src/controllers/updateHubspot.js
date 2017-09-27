@@ -102,6 +102,7 @@ export const readWorkbook = (filepath, callback) => {
           {property: `${type}_date_signed`, value: moment.utc(row.Signed, 'MM-DD-YYYY').valueOf()},
           {property: `${type}_status`, value: row['Current Status of Learner']}
         ])
+
         if (Date.parse(row['First Payment Due'])) {
           data[email].properties.push({property: `${type}_first_payment_due_date`, value: moment.utc(row['First Payment Due'], 'MM-DD-YYYY').valueOf()})
         }
