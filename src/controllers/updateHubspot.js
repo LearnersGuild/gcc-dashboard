@@ -8,10 +8,10 @@ const axios = require('axios')
 const HUBSPOT_API_KEY = process.env.HUBSPOT_API_KEY
 const url = `https://api.hubapi.com/contacts/v1/contact/batch/?hapikey=${HUBSPOT_API_KEY}`
 
-const postClearData = clearData => {
-  return axios.post(url, clearData)
+const postData = data => {
+  return axios.post(url, data)
     .then(response => {
-      console.log('cleardata success')
+      console.log('post successful')
       return response
     })
     .catch(err => {
@@ -19,17 +19,6 @@ const postClearData = clearData => {
     })
 }
 
-const postNewData = newData => {
-  return axios.post(url, newData)
-    .then(response => {
-      console.log('postNewData success')
-      return response
-    })
-    .catch(err => {
-      console.log('postNewData error')
-      return Promise.reject(err)
-    })
-}
 export const formatDataForHubspot = (data, type) => {
   const emails = Object.keys(data)
   const hubspotData = []
@@ -46,8 +35,8 @@ export const formatDataForHubspot = (data, type) => {
 }
 
 export const clearHubspotData = (data, email) => {
-  const newData = Object.assign({}, data)
-  newData[email] = {
+  const clearedData = Object.assign({}, data)
+  clearedData[email] = {
     properties: [
       {property: 'has_pif', value: ''},
       {property: 'pif_amount_eligible', value: ''},
@@ -68,7 +57,7 @@ export const clearHubspotData = (data, email) => {
       {property: 'isa_data', value: ''},
     ]
   }
-  return newData
+  return clearedData
 }
 
 export const readWorkbook = (filepath, callback) => {
@@ -130,8 +119,8 @@ export const readWorkbook = (filepath, callback) => {
   const formattedNewData = formatDataForHubspot(data, 'new')
 
   Promise.all([
-    postClearData(formattedClearData),
-    postNewData(formattedNewData)
+    postData(formattedClearData),
+    postData(formattedNewData)
   ])
   .then(values => {
     callback(null, values)
@@ -140,18 +129,6 @@ export const readWorkbook = (filepath, callback) => {
     console.log('promise all error')
     callback(err)
   })
-  // save for debugging
-  // formattedNewData.forEach(student => {
-  //   let countPif = 0;
-  //   student.properties.forEach(prop => {
-  //     if (prop.property === 'pif_amount_accepted') {
-  //       countPif++;
-  //     }
-  //     if (countPif > 1 && prop.property === 'pif_amount_accepted') {
-  //       console.log('student', student)
-  //     }
-  //   })
-  // })
 
   fs.unlink(filepath, err => {
     if (err) {
