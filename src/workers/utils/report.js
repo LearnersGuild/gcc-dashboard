@@ -55,5 +55,7 @@ exports.properties = [
   'has_received_llf_financing',
   'learner_s_starting_salary',
   'have_you_accepted_a_job_offer',
-  'isa_data'
+  'isa_data',
+  'total_payments_received',
+  'isa_payments_past_due'
 ]

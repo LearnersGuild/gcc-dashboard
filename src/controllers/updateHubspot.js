@@ -95,6 +95,20 @@ export const readWorkbook = (filepath, callback) => {
         if (Date.parse(row['First Payment Due'])) {
           data[email].properties.push({property: `${type}_first_payment_due_date`, value: moment.utc(row['First Payment Due'], 'MM-DD-YYYY').valueOf()})
         }
+
+        if (row['Total Payments Received']) {
+          data[email].properties.push({property: 'total_payments_received', value: row['Total Payments Received']})
+        }
+
+        if (row['Collection Status']) {
+          data[email].properties.push({property: 'isa_payments_past_due', value: 'TRUE'})
+        }
+
+        if (row['Income Documents Received'] === 'Income Docs Received') {
+          let value = row['Learners Monthly Salary'].replace(/[^0-9\.]+/g,"") * 12
+          data[email].properties.push({property: 'learner_s_starting_salary', value: value})
+        }
+
         if (type === 'llf') {
           data[email].llfCount = 1
         } else if (type === 'pif') {
