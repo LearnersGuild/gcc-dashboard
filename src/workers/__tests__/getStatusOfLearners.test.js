@@ -25,7 +25,7 @@ const contacts = [
 
 test('workers/getStatusOfLearners', t => {
   t.test('formatContacts', tt => {
-    const records = formatContacts(contacts, lists[13][2592], 2592)
+    const records = formatContacts(contacts, lists[13][2592], '2592')
     tt.test('should return an array of 2 records', ttt => {
       ttt.plan(2)
       ttt.equal(Array.isArray(records), true, 'should be true')

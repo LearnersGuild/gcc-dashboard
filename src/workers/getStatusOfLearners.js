@@ -15,7 +15,7 @@ const queryString = querystring.stringify({property: properties})
 const formatContacts = (contacts, listObject, listID) => {
   return contacts.map(contact => {
     const record = Object.assign({}, listObject)
-    if (listID === 2592 && contact.properties.resignation_date.value < contact.properties.cancellation_date.value) {
+    if (listID === '2592' && contact.properties.resignation_date.value < contact.properties.cancellation_date.value) {
       record.metaStage = 'Program Start'
       record.rollupStage = 'Program Start prior to Commitment'
       record.stage = 'Program Start prior to Commitment'
