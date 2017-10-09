@@ -58,6 +58,39 @@ const formatDataTotals = (data) => {
 
 }
 
+const getSegment = (learner, type) => {
+  if (type === 'cohort') {
+      return moment(learner.enrollee_start_date).format('MMM-YY')
+  }
+
+  if (type === 'gender') {
+    if (learner.gender) {
+      return learner.gender
+    } else {
+      return 'Undefined'
+    }
+  }
+
+  if (type === 'race_ethnicity') {
+    if (!learner.race_ethnicity) {
+      return 'Undefined'
+    } else if (learner.race_ethnicity.includes(';')) {
+      return 'Multi-Racial'
+    } else {
+      return learner.race_ethnicity
+    }
+  }
+
+  if (type === 'income_level') {
+    if (learner.income_level) {
+      return learner.income_level
+    } else {
+      return 'Undefined'
+    }
+  }
+  
+}
+
 const formatData = (data, type) => {
   const segments = []
   let segmentData = {
@@ -73,28 +106,16 @@ const formatData = (data, type) => {
   let llfPercent = []
 
   data.forEach((learner, index) => {
-    let segment
-    if (type === 'cohort') {
-      segment = moment(learner.enrollee_start_date).format('MMM-YY')
-    }
-    if (type === 'gender') {
-      if (learner.gender) {
-        segment = learner.gender
-      } else {
-        segment = 'Undefined'
-      }
-    }
+    let segment = getSegment(learner, type)
     console.log(segment)
-    if (segment === 'May-17') {
-      console.log(learner)
-    }
+
     if (index === 0) {
       segmentData.segment = segment
     }
     if (segmentData.segment !== segment) {
-      segmentData.avgSalary = _.round(_.mean(salary))
-      segmentData.avgPIFPercent = _.mean(pifPercent).toFixed(4)
-      segmentData.avgLLFPercent = _.mean(llfPercent).toFixed(4)
+      segmentData.avgSalary = isNaN(_.round(_.mean(salary))) ? 0 : _.round(_.mean(salary))
+      segmentData.avgPIFPercent = isNaN(_.mean(pifPercent).toFixed(4)) ? 0 : _.mean(pifPercent).toFixed(4)
+      segmentData.avgLLFPercent = isNaN(_.mean(llfPercent).toFixed(4)) ? 0 : _.mean(llfPercent).toFixed(4)
       segments.push(segmentData)
       segmentData = {
         segment: segment,
@@ -109,6 +130,7 @@ const formatData = (data, type) => {
       llfPercent = []
     }
     segmentData.inJob++
+
     if ((learner.pif_status === 'Payment' || learner.llf_status === 'Payment')) {
       segmentData.inPayment++
       if (!learner.isa_payments_past_due) {
@@ -156,6 +178,16 @@ getJobData({reportStart: '2017-10-06', reportEnd: '2017-10-07'}, 'enrollee_start
 getJobData({reportStart: '2017-10-06', reportEnd: '2017-10-07'}, 'gender' ).then(data => {
   let byGender = formatData(data, 'gender')
   console.log(byGender)
+}).catch(err => {console.log(err)})
+
+getJobData({reportStart: '2017-10-06', reportEnd: '2017-10-07'}, 'race_ethnicity' ).then(data => {
+  let byRace = formatData(data, 'race_ethnicity')
+  console.log(byRace)
+}).catch(err => {console.log(err)})
+
+getJobData({reportStart: '2017-10-06', reportEnd: '2017-10-07'}, 'income_level' ).then(data => {
+  let byIncome = formatData(data, 'income_level')
+  console.log(byIncome)
 }).catch(err => {console.log(err)})
 
 const report = (dates, cb) => {
