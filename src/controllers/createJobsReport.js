@@ -5,73 +5,46 @@ const knex = require('../db')
 const _ = require('lodash')
 
 const fields = [
-  'email',
   'gender',
   'race_ethnicity',
   'income_level',
   'enrollee_start_date',
   'resignation_date',
-  'rollupStage',
-  'has_llf',
   'llf_payment_count',
   'llf_income_percent',
-  'llf_first_payment_due_date',
   'llf_status',
-  'has_pif',
   'pif_payment_count',
   'pif_income_percent',
-  'pif_first_payment_due_date',
   'pif_status',
   'learner_s_starting_salary',
   'total_payments_received',
   'isa_payments_past_due'
 ]
 
-const numFields = [
-  'llf_payment_count',
-  'llf_income_percent',
-  'pif_payment_count',
-  'pif_income_percent',
-  'learner_s_starting_salary',
-  'total_payments_received'
-]
-
-const dateFields = [
-  'enrollee_start_date',
-  'resignation_date',
-  'llf_first_payment_due_date',
-  'pif_first_payment_due_date'
-]
-
-const getJobData = (dates, order) => {
-  return knex.select(...fields).from('status_of_learners')
+const getJobData = (dates, order, type) => {
+  let weeks = knex.raw('resignation_date::DATE - enrollee_start_date::DATE').wrap('(', ')/7::INT AS weeks')
+  return knex.select(...fields, weeks).from('status_of_learners')
     .whereRaw('("rollupStage" = ? OR "rollupStage" = ?) AND created_at >= ? AND created_at < ?' ,
     ['Job Accepted, prior to first ISA Payment', 'ISA in Payment', dates.reportStart, dates.reportEnd])
     .orderBy(order, 'asc')
     .then(rows => {
-      return rows
+      return formatData(rows, type)
     })
     .catch(err => console.log(err))
 }
 
-const formatDataTotals = (data) => {
-
-}
-
 const getSegment = (learner, type) => {
-  if (type === 'cohort') {
+  if (type === 'byCohort') {
       return moment(learner.enrollee_start_date).format('MMM-YY')
   }
-
-  if (type === 'gender') {
+  if (type === 'byGender') {
     if (learner.gender) {
       return learner.gender
     } else {
       return 'Undefined'
     }
   }
-
-  if (type === 'race_ethnicity') {
+  if (type === 'byRace') {
     if (!learner.race_ethnicity) {
       return 'Undefined'
     } else if (learner.race_ethnicity.includes(';')) {
@@ -80,15 +53,29 @@ const getSegment = (learner, type) => {
       return learner.race_ethnicity
     }
   }
-
-  if (type === 'income_level') {
+  if (type === 'byIncome') {
     if (learner.income_level) {
       return learner.income_level
     } else {
       return 'Undefined'
     }
   }
-  
+  if (type === 'byWeeksInProgram') {
+    if (learner.weeks < 20 ) {
+      return '< 20'
+    } else if (learner.weeks < 30) {
+      return '20 - 29'
+    } else if (learner.weeks < 40) {
+      return '30 - 39'
+    } else if (learner.weeks === 40) {
+      return '40'
+    } else {
+      return '> 40'
+    }
+  }
+  if (type === 'Total') {
+    return 'Total'
+  }
 }
 
 const formatData = (data, type) => {
@@ -107,7 +94,6 @@ const formatData = (data, type) => {
 
   data.forEach((learner, index) => {
     let segment = getSegment(learner, type)
-    console.log(segment)
 
     if (index === 0) {
       segmentData.segment = segment
@@ -166,55 +152,15 @@ const formatData = (data, type) => {
   return segments
 }
 
-    // let start = moment(record.enrollee_start_date)
-    // let end = moment(record.resignation_date)
-    // console.log(end.diff(start, 'week'))
-
-getJobData({reportStart: '2017-10-06', reportEnd: '2017-10-07'}, 'enrollee_start_date' ).then(data => {
-  let byCohort = formatData(data, 'cohort')
-  console.log(byCohort)
-}).catch(err => {console.log(err)})
-
-getJobData({reportStart: '2017-10-06', reportEnd: '2017-10-07'}, 'gender' ).then(data => {
-  let byGender = formatData(data, 'gender')
-  console.log(byGender)
-}).catch(err => {console.log(err)})
-
-getJobData({reportStart: '2017-10-06', reportEnd: '2017-10-07'}, 'race_ethnicity' ).then(data => {
-  let byRace = formatData(data, 'race_ethnicity')
-  console.log(byRace)
-}).catch(err => {console.log(err)})
-
-getJobData({reportStart: '2017-10-06', reportEnd: '2017-10-07'}, 'income_level' ).then(data => {
-  let byIncome = formatData(data, 'income_level')
-  console.log(byIncome)
-}).catch(err => {console.log(err)})
-
-const report = (dates, cb) => {
-  getJobData(dates)
-    .then(result => {
-      const reportData = {}
-      reportData.byCohort = formatDataByCohort(result)
-      reportData.byGender = formatDataByGender(result)
-      reportData.byRace = formatDataByRace(result)
-      reportData.byIncome = formatDataByIncome(result)
-      reportData.byWeeksInProgram = formatDataByWeeksInProgram(result)
-      cb(reportData)
-    })
-    .catch(err => {
-      console.log('Error in Jobs Report', err)
-    })
+const report =  async (dates, cb) => {
+  const reportData = {}
+  reportData.byCohort         = await getJobData(dates, 'enrollee_start_date', 'byCohort')
+  reportData.byGender         = await getJobData(dates, 'gender', 'byGender')
+  reportData.byRace           = await getJobData(dates, 'race_ethnicity', 'byRace')
+  reportData.byIncome         = await getJobData(dates, 'income_level', 'byIncome' )
+  reportData.byWeeksInProgram = await getJobData(dates, 'weeks', 'byWeeksInProgram')
+  reportData.total            = await getJobData(dates, 'enrollee_start_date', 'Total')
+  cb(reportData)
 }
 
-
-
-
-// export const file = (dates, cb) => {
-//   Promise.all([
-//     getLearnerData(dates),
-//     getFunnelByStage(dates),
-//     getRetentionByCohort(dates)
-//   ])
-//   .then(values => cb(values))
-//   .catch(err => console.log(err))
-// }
+// report({reportStart: '2017-10-09', reportEnd: '2017-10-10'}, (data) => { console.log(data)})
