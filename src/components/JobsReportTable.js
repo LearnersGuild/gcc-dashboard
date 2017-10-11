@@ -19,6 +19,7 @@ class JobsReportTable extends Component {
           <TableCell>{this.props.title}</TableCell>
           <TableCell numeric>In Job</TableCell>
           <TableCell numeric>In Payment</TableCell>
+          <TableCell numeric>In Deferment</TableCell>
           <TableCell numeric>Current On Payments</TableCell>
           <TableCell numeric>No Payments Made</TableCell>
           <TableCell numeric>Past Due but Have Made Payments</TableCell>
@@ -31,6 +32,7 @@ class JobsReportTable extends Component {
             <TableCell>{item.segment}</TableCell>
             <TableCell numeric>{item.inJob}</TableCell>
             <TableCell numeric>{item.inPayment}</TableCell>
+            <TableCell numeric>{item.inDeferment}</TableCell>
             <TableCell numeric>{item.currentOnPayments}</TableCell>
             <TableCell numeric>{item.noPaymentsMade}</TableCell>
             <TableCell numeric>{item.pastDueButHaveMadePayments}</TableCell>
@@ -43,6 +45,7 @@ class JobsReportTable extends Component {
             <TableCell><strong>{total.segment}</strong></TableCell>
             <TableCell numeric><strong>{total.inJob}</strong></TableCell>
             <TableCell numeric><strong>{total.inPayment}</strong></TableCell>
+            <TableCell numeric><strong>{total.inDeferment}</strong></TableCell>
             <TableCell numeric><strong>{total.currentOnPayments}</strong></TableCell>
             <TableCell numeric><strong>{total.noPaymentsMade}</strong></TableCell>
             <TableCell numeric><strong>{total.pastDueButHaveMadePayments}</strong></TableCell>

@@ -84,6 +84,7 @@ const formatData = (data, type) => {
           segment: '',
           inJob: 0,
           inPayment: 0,
+          inDeferment: 0,
           currentOnPayments: 0,
           noPaymentsMade: 0,
           pastDueButHaveMadePayments: 0
@@ -107,6 +108,7 @@ const formatData = (data, type) => {
         segment: segment,
         inJob: 0,
         inPayment: 0,
+        inDeferment: 0,
         currentOnPayments: 0,
         noPaymentsMade: 0,
         pastDueButHaveMadePayments: 0
@@ -133,6 +135,9 @@ const formatData = (data, type) => {
         }
       }
     }
+    if ((learner.pif_status === 'Deferment' || learner.llf_stats === 'Deferment')) {
+      segmentData.inDeferment++
+    }
     if (learner.learner_s_starting_salary) {
       salary.push(parseFloat(learner.learner_s_starting_salary))
     }
@@ -143,9 +148,9 @@ const formatData = (data, type) => {
       llfPercent.push(parseFloat(learner.llf_income_percent))
     }
     if (index === data.length - 1) {
-      segmentData.avgSalary = _.round(_.mean(salary))
-      segmentData.avgPIFPercent = _.mean(pifPercent).toFixed(4)
-      segmentData.avgLLFPercent = _.mean(llfPercent).toFixed(4)
+      segmentData.avgSalary = salary.length > 0 ? _.round(_.mean(salary)) : 0
+      segmentData.avgPIFPercent = pifPercent.length > 0 ? _.mean(pifPercent).toFixed(4) : 0
+      segmentData.avgLLFPercent = llfPercent.length > 0 ? _.mean(llfPercent).toFixed(4) : 0
       segments.push(segmentData)
     }
   })
@@ -162,5 +167,3 @@ export const report =  async (dates, cb) => {
   reportData.total            = await getJobData(dates, 'enrollee_start_date', 'Total')
   cb(reportData)
 }
-
-// report({reportStart: '2017-10-09', reportEnd: '2017-10-10'}, (data) => { console.log(data)})
