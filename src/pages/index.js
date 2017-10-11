@@ -3,10 +3,13 @@ import Link from 'next/link'
 import Head from 'next/head'
 import {Parser as HtmlToReactParser} from 'html-to-react'
 import AppBar from 'react-toolbox/lib/app_bar/AppBar'
+import Tabs from 'react-toolbox/lib/tabs/Tabs'
+import Tab from 'react-toolbox/lib/tabs/Tab'
 import ThemeProvider from 'react-toolbox/lib/ThemeProvider'
 import theme from '../static/theme'
 import iconsMetadata from '../static/icons-metadata'
-import DateSelect from '../components/DateSelect'
+import GCCFileDownload from '../components/GCCFileDownload'
+import JobsReport from '../components/JobsReport'
 import FileUpload from '../components/FileUpload'
 
 // favicons
@@ -17,6 +20,17 @@ const iconsMetadataElements = iconsMetadata.map((link, i) => {
 })
 
 class index extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      index: 0
+    }
+    this.handleTabChange = this.handleTabChange.bind(this)
+  }
+
+  handleTabChange(index) {
+    this.setState({index})
+  }
 
   render() {
     const leftIconSrc = 'https://brand.learnersguild.org/assets/learners-guild-icon.svg'
@@ -62,8 +76,11 @@ class index extends React.Component {
               leftIcon={leftIcon}
               title={title}
             />
-            <DateSelect/>
-            <FileUpload/>
+            <Tabs index={this.state.index} onChange={this.handleTabChange}>
+              <Tab label='GCC Report Download'><GCCFileDownload/></Tab>
+              <Tab label='Jobs Report'><JobsReport/></Tab>
+              <Tab label='Vemo File Upload'><FileUpload/></Tab>
+            </Tabs>
           </div>
         </ThemeProvider>
 

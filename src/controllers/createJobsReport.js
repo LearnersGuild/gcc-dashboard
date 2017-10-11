@@ -152,7 +152,7 @@ const formatData = (data, type) => {
   return segments
 }
 
-const report =  async (dates, cb) => {
+export const report =  async (dates, cb) => {
   const reportData = {}
   reportData.byCohort         = await getJobData(dates, 'enrollee_start_date', 'byCohort')
   reportData.byGender         = await getJobData(dates, 'gender', 'byGender')

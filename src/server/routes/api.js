@@ -24,4 +24,10 @@ router.get('/reports', (req, res) => {
   })
 })
 
+router.get('/reports/createjobsreport', (req, res) => {
+  controllers.createJobsReport.report(req.query, data => {
+    res.status(201).send(data)
+  })
+})
+
 module.exports = router

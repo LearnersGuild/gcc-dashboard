@@ -10,7 +10,7 @@ import CardTitle from 'react-toolbox/lib/card/CardTitle'
 import moment from 'moment-timezone'
 import cardStyle from './cardStyle'
 
-class DateSelect extends Component {
+class GCCFileDownload extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -95,4 +95,4 @@ class DateSelect extends Component {
   }
 }
 
-export default DateSelect
+export default GCCFileDownload
