@@ -90,8 +90,8 @@ class JobsReport extends Component {
             <Tab label='By Gender'>
               <JobsReportTable title='Gender' data={this.state.reportData.byGender} total={this.state.reportData.total}/>
             </Tab>
-            <Tab label='By Income'>
-              <JobsReportTable title='Income' data={this.state.reportData.byIncome} total={this.state.reportData.total}/>
+            <Tab label='By Prior Income'>
+              <JobsReportTable title='Prior Income' data={this.state.reportData.byIncome} total={this.state.reportData.total}/>
             </Tab>
             <Tab label='By Race'>
               <JobsReportTable title='Race' data={this.state.reportData.byRace} total={this.state.reportData.total}/>
