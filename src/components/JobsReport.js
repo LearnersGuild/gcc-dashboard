@@ -82,23 +82,25 @@ class JobsReport extends Component {
             />
           </CardText>
         </Card>
-        <Tabs index={this.state.index} onChange={this.handleTabChange}>
-          <Tab label='By Cohort'>
-            <JobsReportTable title='Cohort' data={this.state.reportData.byCohort} total={this.state.reportData.total}/>
-          </Tab>
-          <Tab label='By Gender'>
-            <JobsReportTable title='Gender' data={this.state.reportData.byGender} total={this.state.reportData.total}/>
-          </Tab>
-          <Tab label='By Income'>
-            <JobsReportTable title='Income' data={this.state.reportData.byIncome} total={this.state.reportData.total}/>
-          </Tab>
-          <Tab label='By Race'>
-            <JobsReportTable title='Race' data={this.state.reportData.byRace} total={this.state.reportData.total}/>
-          </Tab>
-          <Tab label='By Weeks in Program'>
-            <JobsReportTable title='Weeks in Program' data={this.state.reportData.byWeeksInProgram} total={this.state.reportData.total}/>
-          </Tab>
-        </Tabs>
+        <div style={{marginTop: '3em'}}>
+          <Tabs index={this.state.index} onChange={this.handleTabChange}>
+            <Tab label='By Cohort'>
+              <JobsReportTable title='Cohort' data={this.state.reportData.byCohort} total={this.state.reportData.total}/>
+            </Tab>
+            <Tab label='By Gender'>
+              <JobsReportTable title='Gender' data={this.state.reportData.byGender} total={this.state.reportData.total}/>
+            </Tab>
+            <Tab label='By Income'>
+              <JobsReportTable title='Income' data={this.state.reportData.byIncome} total={this.state.reportData.total}/>
+            </Tab>
+            <Tab label='By Race'>
+              <JobsReportTable title='Race' data={this.state.reportData.byRace} total={this.state.reportData.total}/>
+            </Tab>
+            <Tab label='By Weeks in Program'>
+              <JobsReportTable title='Weeks in Program' data={this.state.reportData.byWeeksInProgram} total={this.state.reportData.total}/>
+            </Tab>
+          </Tabs>
+        </div>
       </div>
     )
   }
