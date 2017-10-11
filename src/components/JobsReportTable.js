@@ -40,15 +40,15 @@ class JobsReportTable extends Component {
           </TableRow>
         ))}
         <TableRow>
-            <TableCell>{total.segment}</TableCell>
-            <TableCell numeric>{total.inJob}</TableCell>
-            <TableCell numeric>{total.inPayment}</TableCell>
-            <TableCell numeric>{total.currentOnPayments}</TableCell>
-            <TableCell numeric>{total.noPaymentsMade}</TableCell>
-            <TableCell numeric>{total.pastDueButHaveMadePayments}</TableCell>
-            <TableCell numeric>${total.avgSalary}</TableCell>
-            <TableCell numeric>{(total.avgPIFPercent * 100).toFixed(2)}%</TableCell>
-            <TableCell numeric>{(total.avgLLFPercent * 100).toFixed(2)}%</TableCell>
+            <TableCell><strong>{total.segment}</strong></TableCell>
+            <TableCell numeric><strong>{total.inJob}</strong></TableCell>
+            <TableCell numeric><strong>{total.inPayment}</strong></TableCell>
+            <TableCell numeric><strong>{total.currentOnPayments}</strong></TableCell>
+            <TableCell numeric><strong>{total.noPaymentsMade}</strong></TableCell>
+            <TableCell numeric><strong>{total.pastDueButHaveMadePayments}</strong></TableCell>
+            <TableCell numeric><strong>${total.avgSalary}</strong></TableCell>
+            <TableCell numeric><strong>{(total.avgPIFPercent * 100).toFixed(2)}%</strong></TableCell>
+            <TableCell numeric><strong>{(total.avgLLFPercent * 100).toFixed(2)}%</strong></TableCell>
           </TableRow>
       </Table>
     )
