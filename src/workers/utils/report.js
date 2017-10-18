@@ -57,5 +57,6 @@ exports.properties = [
   'have_you_accepted_a_job_offer',
   'isa_data',
   'total_payments_received',
-  'isa_payments_past_due'
+  'isa_payments_past_due',
+  'learner_reported_salary'
 ]
