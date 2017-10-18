@@ -17,6 +17,7 @@ const fields = [
   'pif_income_percent',
   'pif_status',
   'learner_s_starting_salary',
+  'learner_reported_salary',
   'total_payments_received',
   'isa_payments_past_due'
 ]
@@ -90,6 +91,7 @@ const formatData = (data, type) => {
           pastDueButHaveMadePayments: 0
         }
   let salary = []
+  let reportedSalary = []
   let pifPercent = []
   let llfPercent = []
 
@@ -101,6 +103,7 @@ const formatData = (data, type) => {
     }
     if (segmentData.segment !== segment) {
       segmentData.avgSalary = isNaN(_.round(_.mean(salary))) ? 0 : _.round(_.mean(salary))
+      segmentData.avgReportedSalary = isNaN(_.round(_.mean(reportedSalary))) ? 0 : _.round(_.mean(reportedSalary))
       segmentData.avgPIFPercent = isNaN(_.mean(pifPercent).toFixed(4)) ? 0 : _.mean(pifPercent).toFixed(4)
       segmentData.avgLLFPercent = isNaN(_.mean(llfPercent).toFixed(4)) ? 0 : _.mean(llfPercent).toFixed(4)
       segments.push(segmentData)
@@ -114,6 +117,7 @@ const formatData = (data, type) => {
         pastDueButHaveMadePayments: 0
       }
       salary = []
+      reportedSalary = []
       pifPercent = []
       llfPercent = []
     }
@@ -141,6 +145,9 @@ const formatData = (data, type) => {
     if (learner.learner_s_starting_salary) {
       salary.push(parseFloat(learner.learner_s_starting_salary))
     }
+    if (learner.learner_reported_salary) {
+      reportedSalary.push(parseFloat(learner.learner_reported_salary))
+    }
     if (learner.pif_income_percent) {
       pifPercent.push(parseFloat(learner.pif_income_percent))
     }
@@ -149,6 +156,7 @@ const formatData = (data, type) => {
     }
     if (index === data.length - 1) {
       segmentData.avgSalary = salary.length > 0 ? _.round(_.mean(salary)) : 0
+      segmentData.avgReportedSalary = reportedSalary.length > 0 ? _.round(_.mean(reportedSalary)) : 0
       segmentData.avgPIFPercent = pifPercent.length > 0 ? _.mean(pifPercent).toFixed(4) : 0
       segmentData.avgLLFPercent = llfPercent.length > 0 ? _.mean(llfPercent).toFixed(4) : 0
       segments.push(segmentData)

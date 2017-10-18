@@ -47,6 +47,7 @@ const fields = [
   'pif_first_payment_due_date',
   'pif_status',
   'learner_s_starting_salary',
+  'learner_reported_salary',
   'have_you_accepted_a_job_offer',
   'has_received_llf_financing',
 ]
@@ -64,7 +65,8 @@ export const numFields = [
   'pif_payment_count',
   'pif_income_percent',
   'pif_amount_paid',
-  'learner_s_starting_salary'
+  'learner_s_starting_salary',
+  'learner_reported_salary'
 ]
 
 export const dateFields = [
