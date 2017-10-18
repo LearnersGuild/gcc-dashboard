@@ -50,6 +50,8 @@ const fields = [
   'learner_reported_salary',
   'have_you_accepted_a_job_offer',
   'has_received_llf_financing',
+  'total_payments_received',
+  'isa_payments_past_due'
 ]
 
 export const numFields = [
@@ -66,7 +68,8 @@ export const numFields = [
   'pif_income_percent',
   'pif_amount_paid',
   'learner_s_starting_salary',
-  'learner_reported_salary'
+  'learner_reported_salary',
+  'total_payments_received'
 ]
 
 export const dateFields = [
