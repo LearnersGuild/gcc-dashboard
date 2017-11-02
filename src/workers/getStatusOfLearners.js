@@ -21,6 +21,7 @@ const formatContacts = (contacts, listObject, listID) => {
       record.stage = 'Program Start prior to Commitment'
     }
     record.hubspot_canonical_vid = contact['canonical-vid']
+    record.race = contact['race-new']
     properties.forEach(property => {
       if (contact.properties[property]) {
         if (contact.properties[property].value !== '') {

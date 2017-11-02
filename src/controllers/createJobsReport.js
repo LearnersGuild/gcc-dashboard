@@ -6,7 +6,7 @@ const _ = require('lodash')
 
 const fields = [
   'gender',
-  'race_ethnicity',
+  'race',
   'income_level',
   'enrollee_start_date',
   'resignation_date',
@@ -46,12 +46,10 @@ const getSegment = (learner, type) => {
     }
   }
   if (type === 'byRace') {
-    if (!learner.race_ethnicity) {
+    if (!learner.race) {
       return 'Undefined'
-    } else if (learner.race_ethnicity.includes(';')) {
-      return 'Multi-Racial'
     } else {
-      return learner.race_ethnicity
+      return learner.race
     }
   }
   if (type === 'byIncome') {
@@ -169,7 +167,7 @@ export const report =  async (dates, cb) => {
   const reportData = {}
   reportData.byCohort         = await getJobData(dates, 'enrollee_start_date', 'byCohort')
   reportData.byGender         = await getJobData(dates, 'gender', 'byGender')
-  reportData.byRace           = await getJobData(dates, 'race_ethnicity', 'byRace')
+  reportData.byRace           = await getJobData(dates, 'race', 'byRace')
   reportData.byIncome         = await getJobData(dates, 'income_level', 'byIncome' )
   reportData.byWeeksInProgram = await getJobData(dates, 'weeks', 'byWeeksInProgram')
   reportData.total            = await getJobData(dates, 'enrollee_start_date', 'Total')
