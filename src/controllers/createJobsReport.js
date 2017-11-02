@@ -77,6 +77,32 @@ const getSegment = (learner, type) => {
   }
 }
 
+const orderIncomeSegments = segArr => {
+  let byIncomeSegments = []
+    segArr.forEach(seg => {
+      if (seg.segment === '< $20K') {
+        byIncomeSegments[0] = seg
+      } else if (seg.segment === '$20K - $35K') {
+        byIncomeSegments[1] = seg
+      } else if (seg.segment === '$35K - $50K') {
+        byIncomeSegments[2] = seg
+      } else if (seg.segment === '$50K - $75K') {
+        byIncomeSegments[3] = seg
+      } else if (seg.segment === '$75K - $100K') {
+        byIncomeSegments[4] = seg
+      } else if (seg.segment === '$100K - $150K') {
+        byIncomeSegments[5] = seg
+      } else if (seg.segment === '$150K - $200K') {
+        byIncomeSegments[6] = seg
+      } else if (seg.segment === '> $200K') {
+        byIncomeSegments[7] = seg
+      } else {
+        byIncomeSegments[8] = seg
+      }
+    })
+    return byIncomeSegments.filter(Boolean)
+}
+
 const formatData = (data, type) => {
   const segments = []
   let segmentData = {
@@ -161,29 +187,7 @@ const formatData = (data, type) => {
     }
   })
   if (type === 'byIncome') {
-    let byIncomeSegments = []
-    segments.forEach(seg => {
-      if (seg.segment === '< $20K') {
-        byIncomeSegments[0] = seg
-      } else if (seg.segment === '$20K - $35K') {
-        byIncomeSegments[1] = seg
-      } else if (seg.segment === '$35K - $50K') {
-        byIncomeSegments[2] = seg
-      } else if (seg.segment === '$50K - $75K') {
-        byIncomeSegments[3] = seg
-      } else if (seg.segment === '$75K - $100K') {
-        byIncomeSegments[4] = seg
-      } else if (seg.segment === '$100K - $150K') {
-        byIncomeSegments[5] = seg
-      } else if (seg.segment === '$150K - $200K') {
-        byIncomeSegments[6] = seg
-      } else if (seg.segment === '> $200K') {
-        byIncomeSegments[7] = seg
-      } else {
-        byIncomeSegments[8] = seg
-      }
-    })
-    return byIncomeSegments.filter(Boolean)
+    return orderIncomeSegments(segments)
   }
   return segments
 }
