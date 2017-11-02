@@ -21,7 +21,6 @@ const formatContacts = (contacts, listObject, listID) => {
       record.stage = 'Program Start prior to Commitment'
     }
     record.hubspot_canonical_vid = contact['canonical-vid']
-    record.race = contact['race-new']
     properties.forEach(property => {
       if (contact.properties[property]) {
         if (contact.properties[property].value !== '') {
@@ -38,6 +37,8 @@ const formatContacts = (contacts, listObject, listID) => {
             const date = moment(parseInt(contact.properties[property].value, 10))
             const offset = moment.tz.zone('America/New_York').offset(date)
             record[property] = date.add(offset, 'minutes')
+          } else if (property === 'race_new') {
+            record.race = contact.properties[property].value
           } else {
             record[property] = contact.properties[property].value
           }
