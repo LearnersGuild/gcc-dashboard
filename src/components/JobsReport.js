@@ -11,6 +11,7 @@ import moment from 'moment-timezone'
 import cardStyle from './cardStyle'
 import JobsReportTable from './JobsReportTable'
 import JobsReportIncomeAvgTable from './JobsReportIncomeAvgTable'
+import JobsReportIncomeCountTable from './JobsReportIncomeCountTable'
 
 class JobsReport extends Component {
   constructor(props) {
@@ -84,7 +85,13 @@ class JobsReport extends Component {
           </CardText>
         </Card>
         <Card style={cardStyle()}>
-          <CardTitle title="Post Guild Income"/>
+          <CardTitle title="Post Guild Income Ranges"/>
+          <CardText>
+            <JobsReportIncomeCountTable data={this.state.reportData.postGuildIncome}/>
+          </CardText>
+        </Card>
+        <Card style={cardStyle()}>
+          <CardTitle title="Post Guild Income Avg"/>
           <CardText>
             <JobsReportIncomeAvgTable data={this.state.reportData.postGuildIncome}/>
           </CardText>

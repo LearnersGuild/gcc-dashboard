@@ -4,7 +4,7 @@ import TableHead from 'react-toolbox/lib/table/TableHead'
 import TableCell from 'react-toolbox/lib/table/TableCell'
 import TableRow from 'react-toolbox/lib/table/TableRow'
 
-class JobsReportIncomeAvgTable extends Component {
+class JobsReportIncomeCountTable extends Component {
   constructor(props) {
     super(props)
   }
@@ -13,11 +13,12 @@ class JobsReportIncomeAvgTable extends Component {
     if (this.props.data) {
       const reportData = this.props.data
     return (
-      <Table selectable={false}>
-        {reportData.averages.map((item, idx) => (
+      <Table selectable={false} style={{ marginTop: 10 }}>
+        {reportData.counts.map((item, idx) => (
           <TableRow key={idx}>
             <TableCell>{item.segment}</TableCell>
-            <TableCell numeric>${item.value}</TableCell>
+            <TableCell numeric>{item.Count}</TableCell>
+            <TableCell numeric>{item.Count}%</TableCell>
           </TableRow>
         ))}
       </Table>
@@ -30,4 +31,4 @@ class JobsReportIncomeAvgTable extends Component {
   }
 }
 
-export default JobsReportIncomeAvgTable
+export default JobsReportIncomeCountTable
