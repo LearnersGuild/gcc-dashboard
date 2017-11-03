@@ -13,7 +13,7 @@ class JobsReportIncomeCountTable extends Component {
     if (this.props.data) {
       const reportData = this.props.data
     return (
-      <Table selectable={false} style={{ marginTop: 10 }}>
+      <Table selectable={false}>
         {reportData.counts.map((item, idx) => (
           <TableRow key={idx}>
             <TableCell>{item.segment}</TableCell>
