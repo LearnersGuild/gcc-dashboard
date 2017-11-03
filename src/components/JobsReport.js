@@ -10,6 +10,7 @@ import Tab from 'react-toolbox/lib/tabs/Tab'
 import moment from 'moment-timezone'
 import cardStyle from './cardStyle'
 import JobsReportTable from './JobsReportTable'
+import JobsReportIncomeAvgTable from './JobsReportIncomeAvgTable'
 
 class JobsReport extends Component {
   constructor(props) {
@@ -80,6 +81,12 @@ class JobsReport extends Component {
               raised={true}
               onMouseUp={this.handleSubmit}
             />
+          </CardText>
+        </Card>
+        <Card style={cardStyle()}>
+          <CardTitle title="Post Guild Income"/>
+          <CardText>
+            <JobsReportIncomeAvgTable data={this.state.reportData.postGuildIncome}/>
           </CardText>
         </Card>
         <div style={{marginTop: '3em'}}>
