@@ -38,23 +38,23 @@ const formatPostGuildIncomeData = (data) => {
     counts: [
       {
         segment: '<$20,000',
-        'Count': 0
+        'Count': _.filter(data, o => { return parseFloat(o.learner_s_starting_salary) < 20000 }).length
       },
       {
         segment: '$20,000-$49,000',
-        'Count': 0
+        'Count': _.filter(data, o => { return (parseFloat(o.learner_s_starting_salary) >= 20000 && parseFloat(o.learner_s_starting_salary) < 50000) }).length
       },
       {
         segment: '$50,000-$74,999',
-        'Count': 0
+        'Count': _.filter(data, o => { return (parseFloat(o.learner_s_starting_salary) >= 50000 && parseFloat(o.learner_s_starting_salary) < 75000) }).length
       },
       {
         segment: '$75,000-$100,000',
-        'Count': 0
+        'Count': _.filter(data, o => { return (parseFloat(o.learner_s_starting_salary) >= 75000 && parseFloat(o.learner_s_starting_salary) <= 100000) }).length
       },
       {
         segment: '>$100,000',
-        'Count': 0
+        'Count': _.filter(data, o => { return parseFloat(o.learner_s_starting_salary) > 100000 }).length
       }
     ],
     averages: [
@@ -74,7 +74,8 @@ const formatPostGuildIncomeData = (data) => {
         segment: 'Min Salary',
         value: data[0].learner_s_starting_salary
       }
-    ]
+    ],
+    total: data.length 
   }
   return tableData
 }
