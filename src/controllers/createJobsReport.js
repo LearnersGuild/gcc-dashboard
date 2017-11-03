@@ -22,6 +22,62 @@ const fields = [
   'isa_payments_past_due'
 ]
 
+const getPostGuildIncomeData = () => {
+  return knex.select('learner_s_starting_salary').from('status_of_learners')
+    .whereRaw('("rollupStage" = ? OR "rollupStage" = ?) AND created_at >= ? AND learner_s_starting_salary > ?' ,
+    ['Job Accepted, prior to first ISA Payment', 'ISA in Payment', moment().format('YYYY-MM-DD'), 0])
+    .orderBy('learner_s_starting_salary', 'asc')
+    .then(rows => {
+      return formatPostGuildIncomeData(rows)
+    })
+    .catch(err => console.log(err))
+}
+
+const formatPostGuildIncomeData = (data) => {
+  const tableData = {
+    counts: [
+      {
+        segment: '<$20,000',
+        'Count': 0
+      },
+      {
+        segment: '$20,000-$49,000',
+        'Count': 0
+      },
+      {
+        segment: '$50,000-$74,999',
+        'Count': 0
+      },
+      {
+        segment: '$75,000-$100,000',
+        'Count': 0
+      },
+      {
+        segment: '>$100,000',
+        'Count': 0
+      }
+    ],
+    averages: [
+      {
+        segment: 'Mean Salary',
+        value: _.meanBy(data, (o) => { return parseFloat(o.learner_s_starting_salary)}).toFixed(2)
+      },
+      {
+        segment: 'Median Salary',
+        value: data[Math.floor(data.length / 2)].learner_s_starting_salary
+      },
+      {
+        segment: 'Max Salary',
+        value: _.last(data).learner_s_starting_salary
+      },
+      {
+        segment: 'Min Salary',
+        value: data[0].learner_s_starting_salary
+      }
+    ]
+  }
+  return tableData
+}
 const getJobData = (dates, order, type) => {
   let weeks = knex.raw('resignation_date::DATE - enrollee_start_date::DATE').wrap('(', ')/7::INT AS weeks')
   return knex.select(...fields, weeks).from('status_of_learners')
@@ -200,5 +256,6 @@ export const report =  async (dates, cb) => {
   reportData.byIncome         = await getJobData(dates, 'income_level', 'byIncome' )
   reportData.byWeeksInProgram = await getJobData(dates, 'weeks', 'byWeeksInProgram')
   reportData.total            = await getJobData(dates, 'enrollee_start_date', 'Total')
+  reportData.postGuildIncome  = await getPostGuildIncomeData()
   cb(reportData)
 }
