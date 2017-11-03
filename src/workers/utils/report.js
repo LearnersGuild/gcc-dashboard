@@ -59,5 +59,7 @@ exports.properties = [
   'isa_data',
   'total_payments_received',
   'isa_payments_past_due',
-  'learner_reported_salary'
+  'learner_reported_salary',
+  'employed_in_or_out_of_field',
+  'employment_type'
 ]

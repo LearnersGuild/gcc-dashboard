@@ -24,8 +24,8 @@ const fields = [
 
 const getPostGuildIncomeData = () => {
   return knex.select('learner_s_starting_salary').from('status_of_learners')
-    .whereRaw('("rollupStage" = ? OR "rollupStage" = ?) AND created_at >= ? AND learner_s_starting_salary > ?' ,
-    ['Job Accepted, prior to first ISA Payment', 'ISA in Payment', moment().format('YYYY-MM-DD'), 0])
+    .whereRaw('employed_in_or_out_of_field = ? AND employment_type = ? AND created_at >= ? AND learner_s_starting_salary > ?' ,
+    ['Employed In Field', 'Full Time Position', moment().format('YYYY-MM-DD'), 0])
     .orderBy('learner_s_starting_salary', 'asc')
     .then(rows => {
       return formatPostGuildIncomeData(rows)
@@ -82,8 +82,8 @@ const formatPostGuildIncomeData = (data) => {
 const getJobData = (dates, order, type) => {
   let weeks = knex.raw('resignation_date::DATE - enrollee_start_date::DATE').wrap('(', ')/7::INT AS weeks')
   return knex.select(...fields, weeks).from('status_of_learners')
-    .whereRaw('("rollupStage" = ? OR "rollupStage" = ?) AND created_at >= ? AND created_at < ?' ,
-    ['Job Accepted, prior to first ISA Payment', 'ISA in Payment', dates.reportStart, dates.reportEnd])
+    .whereRaw('employed_in_or_out_of_field = ? AND employment_type = ? AND created_at >= ? AND created_at < ?' ,
+    ['Employed In Field', 'Full Time Position', dates.reportStart, dates.reportEnd])
     .orderBy(order, 'asc')
     .then(rows => {
       return formatData(rows, type)
