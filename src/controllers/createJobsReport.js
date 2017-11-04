@@ -25,7 +25,7 @@ const fields = [
 const getPostGuildIncomeData = () => {
   return knex.select('learner_s_starting_salary').from('status_of_learners')
     .whereRaw('employed_in_or_out_of_field = ? AND employment_type = ? AND created_at >= ? AND learner_s_starting_salary > ?' ,
-    ['Employed In Field', 'Full Time Position', moment().format('YYYY-MM-DD'), 0])
+    ['Employed In Field', 'Full Time Position', moment().subtract(8, 'hours').format('YYYY-MM-DD'), 0])
     .orderBy('learner_s_starting_salary', 'asc')
     .then(rows => {
       return formatPostGuildIncomeData(rows)
