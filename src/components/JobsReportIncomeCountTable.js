@@ -18,9 +18,14 @@ class JobsReportIncomeCountTable extends Component {
           <TableRow key={idx}>
             <TableCell>{item.segment}</TableCell>
             <TableCell numeric>{item.Count}</TableCell>
-            <TableCell numeric>{((item.Count / reportData.total) * 100).toFixed(2)}%</TableCell>
+            <TableCell numeric>{((item.Count / reportData.total) * 100).toFixed(0)}%</TableCell>
           </TableRow>
         ))}
+        <TableRow>
+          <TableCell><strong>Total In Jobs</strong></TableCell>
+          <TableCell numeric><strong>{reportData.total}</strong></TableCell>
+          <TableCell numeric><strong>100%</strong></TableCell>
+        </TableRow>
       </Table>
     )
     } else {
