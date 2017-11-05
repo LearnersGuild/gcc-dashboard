@@ -12,6 +12,7 @@ import cardStyle from './cardStyle'
 import JobsReportTable from './JobsReportTable'
 import JobsReportIncomeAvgTable from './JobsReportIncomeAvgTable'
 import JobsReportIncomeCountTable from './JobsReportIncomeCountTable'
+import JobsReportIncomeComparisonTable from './JobsReportIncomeComparisonTable'
 
 class JobsReport extends Component {
   constructor(props) {
@@ -112,6 +113,9 @@ class JobsReport extends Component {
             </Tab>
             <Tab label='By Weeks in Program'>
               <JobsReportTable title='Weeks in Program' data={this.state.reportData.byWeeksInProgram} total={this.state.reportData.total}/>
+            </Tab>
+            <Tab label='Income Comparison'>
+              <JobsReportIncomeComparisonTable data={this.state.reportData.incomeComparison}/>
             </Tab>
           </Tabs>
         </div>

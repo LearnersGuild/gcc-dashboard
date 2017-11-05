@@ -23,42 +23,47 @@ const fields = [
 ]
 
 const getIncomeComparisonData = (dates) => {
-  return knex.select('income_level', 'learner_s_starting_salary').from('status_of_learners')
-    .whereRaw('employed_in_or_out_of_field = ? AND employment_type = ? AND created_at >= ? AND created_at < ?' ,
-    ['Employed In Field', 'Full Time Position', dates.reportStart, dates.reportEnd])
-    .then(rows => {
-      return formatIncomeComparisonData(rows)
+  return knex.select('income_level').from('status_of_learners')
+    .whereRaw('created_at >= ? AND created_at < ?', [dates.reportStart, dates.reportEnd])
+    .then(preGuild => {
+       return knex.select('learner_s_starting_salary').from('status_of_learners')
+        .whereRaw('employed_in_or_out_of_field = ? AND employment_type = ? AND created_at >= ? AND created_at < ?' ,
+          ['Employed In Field', 'Full Time Position', dates.reportStart, dates.reportEnd])
+        .then(postGuild => {
+          return formatIncomeComparisonData(preGuild, postGuild)
+        })
+        .catch(err => console.log(err))
     })
     .catch(err => console.log(err))
 }
 
-const formatIncomeComparisonData = (data) => {
+const formatIncomeComparisonData = (preGuildData, postGuildData) => {
   const comparisonData = {
     segments: [
       {
         segment: '<$20,000',
-        preGuild: _.filter(data, o => { return o.income_level === '< $20K' }).length,
-        postGuild: _.filter(data, o => { return parseFloat(o.learner_s_starting_salary) < 20000 }).length
+        preGuild: _.filter(preGuildData, o => { return o.income_level === '< $20K' }).length,
+        postGuild: _.filter(postGuildData, o => { return parseFloat(o.learner_s_starting_salary) < 20000 }).length
       },
       {
         segment: '$20,000-$49,999',
-        preGuild: _.filter(data, o => { return (o.income_level === '$20K - $35K' || o.income_level === '$35K - $50K') }).length,
-        postGuild: _.filter(data, o => { return (parseFloat(o.learner_s_starting_salary) >= 20000 && parseFloat(o.learner_s_starting_salary) < 50000) }).length 
+        preGuild: _.filter(preGuildData, o => { return (o.income_level === '$20K - $35K' || o.income_level === '$35K - $50K') }).length,
+        postGuild: _.filter(postGuildData, o => { return (parseFloat(o.learner_s_starting_salary) >= 20000 && parseFloat(o.learner_s_starting_salary) < 50000) }).length 
       },
       {
         segment: '$50,000-$74,999',
-        preGuild: _.filter(data, o => { return o.income_level === '$50K - $75K' }).length,
-        postGuild: _.filter(data, o => { return (parseFloat(o.learner_s_starting_salary) >= 50000 && parseFloat(o.learner_s_starting_salary) < 75000) }).length
+        preGuild: _.filter(preGuildData, o => { return o.income_level === '$50K - $75K' }).length,
+        postGuild: _.filter(postGuildData, o => { return (parseFloat(o.learner_s_starting_salary) >= 50000 && parseFloat(o.learner_s_starting_salary) < 75000) }).length
       },
       {
         segment: '$75,000-$100,000',
-        preGuild: _.filter(data, o => { return o.income_level === '$75K - $100K' }).length,
-        postGuild: _.filter(data, o => { return (parseFloat(o.learner_s_starting_salary) >= 75000 && parseFloat(o.learner_s_starting_salary) <= 100000) }).length
+        preGuild: _.filter(preGuildData, o => { return o.income_level === '$75K - $100K' }).length,
+        postGuild: _.filter(postGuildData, o => { return (parseFloat(o.learner_s_starting_salary) >= 75000 && parseFloat(o.learner_s_starting_salary) <= 100000) }).length
       },
       {
         segment: '>$100,000',
-        preGuild: _.filter(data, o => { return (o.income_level === '$100K - $150K' || o.income_level === '$150K - $200K' || o.income_level === '> $200K') }).length,
-        postGuild: _.filter(data, o => { return parseFloat(o.learner_s_starting_salary) > 100000 }).length
+        preGuild: _.filter(preGuildData, o => { return (o.income_level === '$100K - $150K' || o.income_level === '$150K - $200K' || o.income_level === '> $200K') }).length,
+        postGuild: _.filter(postGuildData, o => { return parseFloat(o.learner_s_starting_salary) > 100000 }).length
       }
     ]
   }
