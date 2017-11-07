@@ -32,7 +32,12 @@ const formatContacts = (contacts, listObject, listID) => {
               property === 'llf_date_signed' ||
               property === 'pif_date_signed' ||
               property === 'pif_first_payment_due_date' ||
-              property === 'llf_first_payment_due_date'
+              property === 'llf_first_payment_due_date' ||
+              property === 'date_phase_1' ||
+              property === 'date_phase_2' ||
+              property === 'date_phase_3' ||
+              property === 'date_phase_4' ||
+              property === 'date_phase_5'
           ) {
             const date = moment(parseInt(contact.properties[property].value, 10))
             const offset = moment.tz.zone('America/New_York').offset(date)
@@ -51,35 +56,41 @@ const formatContacts = (contacts, listObject, listID) => {
 
 // pull the data for each list from HubSpot API
 let index = 0
+let interval = null
 
-if (process.env.NODE_ENV === 'production') {
-  setInterval(() => {
-    if (index < lists.length) {
-      const list = lists[index]
-      const listID = Object.keys(list)[0]
-      const fullUrl = `${urlStart}${listID}${urlEnd}${queryString}`
-      // let hasMore = true
+const work = () => {
+  if (index < lists.length) {
+    const list = lists[index]
+    const listID = Object.keys(list)[0]
+    const fullUrl = `${urlStart}${listID}${urlEnd}${queryString}`
+    // let hasMore = true
 
-    // need to account for list pagination
-    // while (hasMore) {
-    // }
-      axios.get(fullUrl)
-      .then(res => {
-        const contacts = res.data.contacts
-        return formatContacts(contacts, list[listID], listID)
-      })
-      .then(records => {
-        records.forEach(record => {
-          knex.insert(record).into('status_of_learners').catch(err => {
-            console.log(err)
-            console.log('record', record)
-          })
+  // need to account for list pagination
+  // while (hasMore) {
+  // }
+    axios.get(fullUrl)
+    .then(res => {
+      const contacts = res.data.contacts
+      return formatContacts(contacts, list[listID], listID)
+    })
+    .then(records => {
+      records.forEach(record => {
+        knex.insert(record).into('status_of_learners').catch(err => {
+          console.log(err)
+          console.log('record', record)
         })
       })
-      .catch(err => console.log(err))
-      index++
-    }
-  }, 250)
+    })
+    .catch(err => console.log(err))
+    index++
+  } else {
+    clearInterval(interval)
+    console.log('getStatusOfLearners Worker Complete')
+  }
+}
+
+if (process.env.NODE_ENV === 'production') {
+  interval = setInterval(work, 250)
 }
 
 module.exports.formatContacts = formatContacts;

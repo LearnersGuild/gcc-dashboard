@@ -61,5 +61,18 @@ exports.properties = [
   'isa_payments_past_due',
   'learner_reported_salary',
   'employed_in_or_out_of_field',
-  'employment_type'
+  'employment_type',
+  'date_phase_1',
+  'date_phase_2',
+  'date_phase_3',
+  'date_phase_4',
+  'date_phase_5',
+  'phase_1_attempt ',
+  'phase_2_attempt',
+  'phase_3_attempt',
+  'phase_4_attempt',
+  'phase_1_interview_outcome',
+  'phase_2_interview_outcome',
+  'phase_3_interview_outcome',
+  'phase_4_interview_outcome'
 ]
