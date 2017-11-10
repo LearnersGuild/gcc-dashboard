@@ -3,8 +3,6 @@ require('dotenv').config()
 const moment = require('moment')
 const knex = require('../db')
 const _ = require('lodash')
-// const demoSegments = require('./utils/performanceReport').demoSegments
-// const template = require('./utils/performanceReport').template
 const utils = require('./utils/performanceReport')
 
 const fields = [
@@ -28,27 +26,11 @@ const fields = [
   'phase',
   'exit_type',
   'exit_phase',
-  'metaStage'
+  'metaStage',
+  'resignation_date'
 ]
 // First, Second, Third, Fourth, Fifth
 // Accept, Not Accept
-
-const hasNotAdvanced = (learner, phase) => {
-  if (phase === 5) {
-    learner.phase === 'Phase 5' ? true : false
-  } else if (phase === 4) {
-    learner.phase === 'Phase 4' ? true : false
-  } else {
-    if (learner[`phase_${phase + 1}_interview_outcome` === 'Not Accept']) {
-      return true
-    } else if (learner.phase === `Phase ${phase}` && !learner[`phase_${phase + 1}_interview_outcome`]) {
-      console.log(learner[`phase_${phase + 1}_interview_outcome`])
-      return true
-    } else {
-      return false
-    }
-  }
-}
 
 const createContainer = async (segments) => {
   let segmentContainer = []
@@ -61,13 +43,14 @@ const createContainer = async (segments) => {
   return segmentContainer
 }
 
+// const learnerAdvanced = (type, learner, phase,  cohort) => {
+
+// }
+
 const createTableData = async (cohorts, learnerData) => {
   const phases = utils.phases
   const cohort = await createContainer(cohorts)
   const demo = await createContainer(utils.demoSegments)
-  
-  let totalAssessmentAttempts = 0
-  let totalAssessmentAdvancements = 0
 
   learnerData.forEach(learner => {
     let gender
@@ -83,28 +66,78 @@ const createTableData = async (cohorts, learnerData) => {
     let twoOrMoreRacesIndex = utils.demoSegments.indexOf('Two or More Races')
     let cohortIndex = cohorts.indexOf(moment(learner.enrollee_start_date).format('YYYY-MM'))
 
-    phases.forEach(phase => { 
-      if (hasNotAdvanced(learner, phase)) {
-        cohort[cohortIndex][`phase${phase}HasNotAdvanced`]++
-        cohort[cohortIndex]['totalHasNotAdvanced']++
-        demo[genderIndex][`phase${phase}HasNotAdvanced`]++
-        demo[genderIndex]['totalHasNotAdvanced']++
-        demo[raceIndex][`phase${phase}HasNotAdvanced`]++
-        demo[raceIndex]['totalHasNotAdvanced']++
-        if (learner.two_or_more_races) {
-          demo[twoOrMoreRacesIndex][`phase${phase}HasNotAdvanced`]++
-          demo[twoOrMoreRacesIndex]['totalHasNotAdvanced']++
-        }
-      // } else {
+    phases.forEach(phase => {
+      if (utils.didLearnerAdvance(learner, phase)) {
+        cohort[cohortIndex][`phase${phase}Advanced`]++
+        cohort[cohortIndex].totalAdvanced++
+        demo[genderIndex][`phase${phase}Advanced`]++
+        demo[genderIndex].totalAdvanced++
+        
+        let weeks = utils.numberOfWeeks(learner, phase)
+        cohort[cohortIndex][`phase${phase}AdvancedWeeks`] += weeks
+        cohort[cohortIndex].totalAdvancedWeeks += weeks
+        demo[genderIndex][`phase${phase}AdvancedWeeks`] += weeks
+        demo[genderIndex].totalAdvancedWeeks += weeks
 
-      //   isLessThan6(learner, phase)
-      //   in6(learner, phase, segment)
-      //   in7or8(learner, phase, segment)
-      //   moreThan8(learner, phase, segment)
-      //   in1Try(learner, phase, segment)
-      //   moreThan1Try(learner, phase, segment)
-      //   advancedTries(learner, phase, segment)
-      //   advanced(learner, phase, segment)
+        
+
+        if (learner.two_or_more_races) {
+          demo[twoOrMoreRacesIndex][`phase${phase}Advanced`]++
+          demo[twoOrMoreRacesIndex].totalAdvanced++
+          demo[twoOrMoreRacesIndex][`phase${phase}AdvancedWeeks`] += weeks
+          demo[twoOrMoreRacesIndex].totalAdvancedWeeks += weeks
+        }
+
+        if (phase < 4) {
+          let tries = utils.numberOfTries(learner, phase)
+          cohort[cohortIndex][`phase${phase}AdvancedTries`] += tries
+          cohort[cohortIndex].totalAdvancedTries += tries
+          demo[genderIndex][`phase${phase}AdvancedTries`] += tries
+          demo[genderIndex].totalAdvancedTries += tries
+          if (tries > 1) {
+            cohort[cohortIndex][`phase${phase}MoreThan1Try`]++
+            cohort[cohortIndex].totalMoreThan1Try++
+            demo[genderIndex][`phase${phase}MoreThan1Try`]++
+            demo[genderIndex].totalMoreThan1Try++
+            if (learner.two_or_more_races) {
+              demo[twoOrMoreRacesIndex][`phase${phase}AdvancedTries`] += tries
+              demo[twoOrMoreRacesIndex].totalAdvancedTries += tries
+              demo[twoOrMoreRacesIndex][`phase${phase}MoreThan1Try`]++
+              demo[twoOrMoreRacesIndex].totalMoreThan1Try++
+            }
+          } else {
+            cohort[cohortIndex][`phase${phase}In1Try`]++
+            cohort[cohortIndex].totalIn1Try++
+            demo[genderIndex][`phase${phase}In1Try`]++
+            demo[genderIndex].totalIn1Try++
+            if (learner.two_or_more_races) {
+              demo[twoOrMoreRacesIndex][`phase${phase}AdvancedTries`] += tries
+              demo[twoOrMoreRacesIndex].totalAdvancedTries += tries
+              demo[twoOrMoreRacesIndex][`phase${phase}In1Try`]++
+              demo[twoOrMoreRacesIndex].totalIn1Try++
+            }
+          }
+        }
+      } else {
+        if (utils.hasNotAdvanced(learner, phase)) {
+          cohort[cohortIndex][`phase${phase}HasNotAdvanced`]++
+          cohort[cohortIndex]['totalHasNotAdvanced']++
+          demo[genderIndex][`phase${phase}HasNotAdvanced`]++
+          demo[genderIndex]['totalHasNotAdvanced']++
+          demo[raceIndex][`phase${phase}HasNotAdvanced`]++
+          demo[raceIndex]['totalHasNotAdvanced']++
+          if (learner.two_or_more_races) {
+            demo[twoOrMoreRacesIndex][`phase${phase}HasNotAdvanced`]++
+            demo[twoOrMoreRacesIndex]['totalHasNotAdvanced']++
+          }
+        } else if (utils.graduatedEarly(learner, phase)) {
+          cohort[cohortIndex][`phase${phase}GraduatedEarly`]++
+          demo[genderIndex][`phase${phase}GraduatedEarly`]++
+          demo[raceIndex][`phase${phase}GraduatedEarly`]++
+          if (learner.two_or_more_races) {
+            demo[twoOrMoreRacesIndex][`phase${phase}GraduatedEarly`]
+          }
+        }
       }
     })
   })

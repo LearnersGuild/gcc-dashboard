@@ -43,20 +43,14 @@ exports.template = {
   phase1In1Try: 0,
   phase2In1Try: 0,
   phase3In1Try: 0,
-  phase4In1Try: 0,
-  phase5In1Try: 0,
   totalIn1Try: 0,
   phase1MoreThan1Try: 0,
   phase2MoreThan1Try: 0,
   phase3MoreThan1Try: 0,
-  phase4MoreThan1Try: 0,
-  phase5MoreThan1Try: 0,
   totalMoreThan1Try: 0,
   phase1AdvancedTries: 0,
   phase2AdvancedTries: 0,
   phase3AdvancedTries: 0,
-  phase4AdvancedTries: 0,
-  phase5AdvancedTries: 0,
   totalAdvancedTries: 0,
   phase1AdvancedWeeks: 0,
   phase2AdvancedWeeks: 0,
@@ -69,7 +63,7 @@ exports.template = {
   phase3Advanced: 0,
   phase4Advanced: 0,
   phase5Advanced: 0,
-  totalAdvanced: 0,
+  totalAdvanced: 0, // need to subtract phase 4 and 5 to calculate avg tries for total
   phase1GraduatedEarly: 0,
   phase2GraduatedEarly: 0,
   phase3GraduatedEarly: 0,
@@ -78,12 +72,76 @@ exports.template = {
 
 exports.phases = [1, 2, 3, 4, 5]
 
-exports.isLessThan6 = (learner, phase) => {
+exports.hasNotAdvanced = (learner, phase) => {
+  if (phase === 5) {
+    learner.phase === 'Phase 5' ? true : false
+  } else if (phase === 4) {
+    learner.phase === 'Phase 4' ? true : false
+  } else {
+    if (learner[`phase_${phase + 1}_interview_outcome` === 'Not Accept']) {
+      return true
+    } else if (learner.phase === `Phase ${phase}` && !learner[`phase_${phase + 1}_interview_outcome`]) {
+      console.log(learner[`phase_${phase + 1}_interview_outcome`])
+      return true
+    } else {
+      return false
+    }
+  }
+}
+
+exports.graduatedEarly = (learner, phase) => {
+  if (phase !== 5) {
+    if (learner.exit_phase === `Phase ${phase}` && learner.exit_type.contains('Graduate')) {
+      return true
+    } else {
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+exports.didLearnerAdvance = (learner, phase) => {
+  if (phase === 1 && learner.phase_2_interview_outcome === 'Accept' && learner.date_phase_2) {
+    return true
+  } else if ((phase === 2 || phase === 3) && learner[`phase_${phase + 1}_interview_outcome`] === 'Accept' &&
+    learner[`date_phase_${phase}`] && learner[`date_phase_${phase}`]) {
+      return true
+  } else if (phase === 4 && (learner.date_phase_4 && learner.date_phase_5)) {
+    true
+  } else if (phase === 5 && (learner.date_phase_5 && learner.resignation_date)) {
+    true
+  } else {
+    return false
+  }
+}
+
+exports.numberOfWeeks = (learner, phase) => {
   if (phase === 1) {
     if (learner.date_phase_1) {
-      return Math.round(moment(learner.date_phase_1).diff(moment(learner.date_phase_2), 'days')/7) < 6
+      return Math.round(moment(learner.date_phase_1).diff(moment(learner.date_phase_2), 'days')/7)
     } else {
-      
+      return Math.round(moment(learner.enrollee_start_date).diff(moment(learner.date_phase_2), 'days')/7)
     }
+  } else if (phase === 5) {
+    return Math.round(moment(learner.date_phase_5).diff(moment(learner.resignation_date), 'days')/7)
+  } else {
+    return Math.round(moment(learner[`date_phase_${phase}`]).diff(moment(learner[`date_phase_${phase + 1}`]), 'days')/7)
+  }
+}
+
+exports.numberOfTries = (learner, phase) => {
+  if (learner[`phase_${phase}_attempt`] === 'First') {
+    return 1
+  } else if (learner[`phase_${phase}_attempt`] === 'Second') {
+    return 2
+  } else if (learner[learner[`phase_${phase}_attempt`] === 'Third']) {
+    return 3
+  } else if (learner[`phase_${phase}_attempt`] === 'Fourth') {
+    return 4
+  } else if (learner[`phase_${phase}_attempt`] === 'Fifth') {
+    return 5
+  } else {
+    return 0
   }
 }
