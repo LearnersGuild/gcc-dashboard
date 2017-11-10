@@ -79,13 +79,53 @@ const createTableData = async (cohorts, learnerData) => {
         demo[genderIndex][`phase${phase}AdvancedWeeks`] += weeks
         demo[genderIndex].totalAdvancedWeeks += weeks
 
-        
-
         if (learner.two_or_more_races) {
           demo[twoOrMoreRacesIndex][`phase${phase}Advanced`]++
           demo[twoOrMoreRacesIndex].totalAdvanced++
           demo[twoOrMoreRacesIndex][`phase${phase}AdvancedWeeks`] += weeks
           demo[twoOrMoreRacesIndex].totalAdvancedWeeks += weeks
+        }
+
+        if (weeks < 6) {
+          cohort[cohortIndex][`phase${phase}LessThan6`]++
+          cohort[cohortIndex].totalLessThan6++
+          demo[genderIndex][`phase${phase}LessThan6`]++
+          demo[genderIndex].totalLessThan6++
+          
+          if (learner.two_or_more_races) {
+            demo[twoOrMoreRacesIndex][`phase${phase}LessThan6`]++
+            demo[twoOrMoreRacesIndex].totalLessThan6++
+          }
+        } else if (weeks === 6) {
+          cohort[cohortIndex][`phase${phase}In6`]++
+          cohort[cohortIndex].totalIn6++
+          demo[genderIndex][`phase${phase}In6`]++
+          demo[genderIndex].totalIn6++
+          
+          if (learner.two_or_more_races) {
+            demo[twoOrMoreRacesIndex][`phase${phase}In6`]++
+            demo[twoOrMoreRacesIndex].totalIn6++
+          }
+        } else if (weeks < 9) {
+          cohort[cohortIndex][`phase${phase}In7Or8`]++
+          cohort[cohortIndex].totalIn7Or8++
+          demo[genderIndex][`phase${phase}In7Or8`]++
+          demo[genderIndex].totalIn7Or8++
+          
+          if (learner.two_or_more_races) {
+            demo[twoOrMoreRacesIndex][`phase${phase}In7Or8`]++
+            demo[twoOrMoreRacesIndex].totalIn7Or8++
+          }
+        } else {
+          cohort[cohortIndex][`phase${phase}MoreThan8`]++
+          cohort[cohortIndex].totalMoreThan8++
+          demo[genderIndex][`phase${phase}MoreThan8`]++
+          demo[genderIndex].totalMoreThan8++
+          
+          if (learner.two_or_more_races) {
+            demo[twoOrMoreRacesIndex][`phase${phase}MoreThan8`]++
+            demo[twoOrMoreRacesIndex].totalMoreThan8++
+          }
         }
 
         if (phase < 4) {
@@ -135,12 +175,14 @@ const createTableData = async (cohorts, learnerData) => {
           demo[genderIndex][`phase${phase}GraduatedEarly`]++
           demo[raceIndex][`phase${phase}GraduatedEarly`]++
           if (learner.two_or_more_races) {
-            demo[twoOrMoreRacesIndex][`phase${phase}GraduatedEarly`]
+            demo[twoOrMoreRacesIndex][`phase${phase}GraduatedEarly`]++
           }
         }
       }
     })
   })
+  const tableData = {demo, cohort}
+  return tableData
 }
 
 const getCohorts = () => {
@@ -175,10 +217,9 @@ const report = async (cb) => {
   // '2017-08',
   // '2017-09' ]
   let learnerData = await getLearnerData()
-  createTableData(cohorts, learnerData)
-  // let reportData = {}
-  // cb(reportData)
+  let reportData = await createTableData(cohorts, learnerData)
+  cb(reportData)
 }
 
-report()
+report((data) => { console.log(data)})
 

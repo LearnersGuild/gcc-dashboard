@@ -81,7 +81,6 @@ exports.hasNotAdvanced = (learner, phase) => {
     if (learner[`phase_${phase + 1}_interview_outcome` === 'Not Accept']) {
       return true
     } else if (learner.phase === `Phase ${phase}` && !learner[`phase_${phase + 1}_interview_outcome`]) {
-      console.log(learner[`phase_${phase + 1}_interview_outcome`])
       return true
     } else {
       return false
@@ -90,8 +89,8 @@ exports.hasNotAdvanced = (learner, phase) => {
 }
 
 exports.graduatedEarly = (learner, phase) => {
-  if (phase !== 5) {
-    if (learner.exit_phase === `Phase ${phase}` && learner.exit_type.contains('Graduate')) {
+  if (phase !== 5 && learner.exit_phase === `Phase ${phase}` && learner.exit_type) {
+    if (learner.exit_type.includes('Graduate')) {
       return true
     } else {
       return false
@@ -119,14 +118,14 @@ exports.didLearnerAdvance = (learner, phase) => {
 exports.numberOfWeeks = (learner, phase) => {
   if (phase === 1) {
     if (learner.date_phase_1) {
-      return Math.round(moment(learner.date_phase_1).diff(moment(learner.date_phase_2), 'days')/7)
+      return Math.round(moment(learner.date_phase_2).diff(moment(learner.date_phase_1), 'days')/7)
     } else {
-      return Math.round(moment(learner.enrollee_start_date).diff(moment(learner.date_phase_2), 'days')/7)
+      return Math.round(moment(learner.date_phase_2).diff(moment(learner.enrollee_start_date), 'days')/7)
     }
   } else if (phase === 5) {
-    return Math.round(moment(learner.date_phase_5).diff(moment(learner.resignation_date), 'days')/7)
+    return Math.round(moment(learner.resignation_date).diff(moment(learner.date_phase_5), 'days')/7)
   } else {
-    return Math.round(moment(learner[`date_phase_${phase}`]).diff(moment(learner[`date_phase_${phase + 1}`]), 'days')/7)
+    return Math.round(moment(learner[`date_phase_${phase + 1}`]).diff(moment(learner[`date_phase_${phase}`]), 'days')/7)
   }
 }
 
