@@ -35,7 +35,13 @@ const createTableData = async (cohorts, learnerData) => {
       gender = learner.gender
     }
     let genderIndex = utils.demoSegments.indexOf(gender)
-    let raceIndex = utils.demoSegments.indexOf(learner.race) === -1 ? utils.demoSegments.indexOf('Race Undefined') : utils.demoSegments.indexOf(learner.race)
+    let race
+    if (learner.race) {
+      race = learner.race
+    } else {
+      race = 'Race Undefined'
+    }
+    let raceIndex = utils.demoSegments.indexOf(race)
     let twoOrMoreRacesIndex = utils.demoSegments.indexOf('Two or More Races')
     let cohortIndex = cohorts.indexOf(moment(learner.enrollee_start_date).format('YYYY-MM'))
 
@@ -45,12 +51,16 @@ const createTableData = async (cohorts, learnerData) => {
         cohort[cohortIndex].totalAdvanced++
         demo[genderIndex][`phase${phase}Advanced`]++
         demo[genderIndex].totalAdvanced++
+        demo[raceIndex][`phase${phase}Advanced`]++
+        demo[raceIndex].totalAdvanced++
         
         let weeks = utils.numberOfWeeks(learner, phase)
         cohort[cohortIndex][`phase${phase}AdvancedWeeks`] += weeks
         cohort[cohortIndex].totalAdvancedWeeks += weeks
         demo[genderIndex][`phase${phase}AdvancedWeeks`] += weeks
         demo[genderIndex].totalAdvancedWeeks += weeks
+        demo[raceIndex][`phase${phase}AdvancedWeeks`] += weeks
+        demo[raceIndex].totalAdvancedWeeks += weeks
 
         if (learner.two_or_more_races) {
           demo[twoOrMoreRacesIndex][`phase${phase}Advanced`]++
@@ -64,6 +74,8 @@ const createTableData = async (cohorts, learnerData) => {
           cohort[cohortIndex].totalLessThan6++
           demo[genderIndex][`phase${phase}LessThan6`]++
           demo[genderIndex].totalLessThan6++
+          demo[raceIndex][`phase${phase}LessThan6`]++
+          demo[raceIndex].totalLessThan6++
           
           if (learner.two_or_more_races) {
             demo[twoOrMoreRacesIndex][`phase${phase}LessThan6`]++
@@ -74,6 +86,8 @@ const createTableData = async (cohorts, learnerData) => {
           cohort[cohortIndex].totalIn6++
           demo[genderIndex][`phase${phase}In6`]++
           demo[genderIndex].totalIn6++
+          demo[raceIndex][`phase${phase}In6`]++
+          demo[raceIndex].totalIn6++
           
           if (learner.two_or_more_races) {
             demo[twoOrMoreRacesIndex][`phase${phase}In6`]++
@@ -84,6 +98,8 @@ const createTableData = async (cohorts, learnerData) => {
           cohort[cohortIndex].totalIn7Or8++
           demo[genderIndex][`phase${phase}In7Or8`]++
           demo[genderIndex].totalIn7Or8++
+          demo[raceIndex][`phase${phase}In7Or8`]++
+          demo[raceIndex].totalIn7Or8++
           
           if (learner.two_or_more_races) {
             demo[twoOrMoreRacesIndex][`phase${phase}In7Or8`]++
@@ -94,6 +110,8 @@ const createTableData = async (cohorts, learnerData) => {
           cohort[cohortIndex].totalMoreThan8++
           demo[genderIndex][`phase${phase}MoreThan8`]++
           demo[genderIndex].totalMoreThan8++
+          demo[raceIndex][`phase${phase}MoreThan8`]++
+          demo[raceIndex].totalMoreThan8++
           
           if (learner.two_or_more_races) {
             demo[twoOrMoreRacesIndex][`phase${phase}MoreThan8`]++
@@ -107,11 +125,15 @@ const createTableData = async (cohorts, learnerData) => {
           cohort[cohortIndex].totalAdvancedTries += tries
           demo[genderIndex][`phase${phase}AdvancedTries`] += tries
           demo[genderIndex].totalAdvancedTries += tries
+          demo[raceIndex][`phase${phase}AdvancedTries`] += tries
+          demo[raceIndex].totalAdvancedTries += tries
           if (tries > 1) {
             cohort[cohortIndex][`phase${phase}MoreThan1Try`]++
             cohort[cohortIndex].totalMoreThan1Try++
             demo[genderIndex][`phase${phase}MoreThan1Try`]++
             demo[genderIndex].totalMoreThan1Try++
+            demo[raceIndex][`phase${phase}MoreThan1Try`]++
+            demo[raceIndex].totalMoreThan1Try++
             if (learner.two_or_more_races) {
               demo[twoOrMoreRacesIndex][`phase${phase}AdvancedTries`] += tries
               demo[twoOrMoreRacesIndex].totalAdvancedTries += tries
@@ -123,6 +145,8 @@ const createTableData = async (cohorts, learnerData) => {
             cohort[cohortIndex].totalIn1Try++
             demo[genderIndex][`phase${phase}In1Try`]++
             demo[genderIndex].totalIn1Try++
+            demo[raceIndex][`phase${phase}In1Try`]++
+            demo[raceIndex].totalIn1Try++
             if (learner.two_or_more_races) {
               demo[twoOrMoreRacesIndex][`phase${phase}AdvancedTries`] += tries
               demo[twoOrMoreRacesIndex].totalAdvancedTries += tries
@@ -178,7 +202,7 @@ const getLearnerData = () => {
     .catch(err => { console.log(err) })
 }
 
-const report = async (cb) => {
+export const report = async (cb) => {
   let cohorts = await getCohorts()
   let learnerData = await getLearnerData()
   let reportData = await createTableData(cohorts, learnerData)
