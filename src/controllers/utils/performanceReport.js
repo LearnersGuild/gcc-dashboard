@@ -2,6 +2,31 @@
 const moment = require('moment')
 const _ = require('lodash')
 
+exports.fields = [
+  'date_phase_1',
+  'date_phase_2',
+  'date_phase_3',
+  'date_phase_4',
+  'date_phase_5',
+  'phase_1_attempt ',
+  'phase_2_attempt',
+  'phase_3_attempt',
+  'phase_4_attempt',
+  'phase_1_interview_outcome',
+  'phase_2_interview_outcome',
+  'phase_3_interview_outcome',
+  'phase_4_interview_outcome',
+  'gender',
+  'race',
+  'two_or_more_races',
+  'enrollee_start_date',
+  'phase',
+  'exit_type',
+  'exit_phase',
+  'metaStage',
+  'resignation_date'
+]
+
 exports.demoSegments = [
   'Man', 'Woman', 'Transgender or Other', 'Gender Undefined', '', 'White', 'Hispanic or Latino', 'Black or African American',
   'American Indian and Alaska Native', 'Asian', 'Arab or Arab American',

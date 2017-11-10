@@ -5,33 +5,6 @@ const knex = require('../db')
 const _ = require('lodash')
 const utils = require('./utils/performanceReport')
 
-const fields = [
-  'date_phase_1',
-  'date_phase_2',
-  'date_phase_3',
-  'date_phase_4',
-  'date_phase_5',
-  'phase_1_attempt ',
-  'phase_2_attempt',
-  'phase_3_attempt',
-  'phase_4_attempt',
-  'phase_1_interview_outcome',
-  'phase_2_interview_outcome',
-  'phase_3_interview_outcome',
-  'phase_4_interview_outcome',
-  'gender',
-  'race',
-  'two_or_more_races',
-  'enrollee_start_date',
-  'phase',
-  'exit_type',
-  'exit_phase',
-  'metaStage',
-  'resignation_date'
-]
-// First, Second, Third, Fourth, Fifth
-// Accept, Not Accept
-
 const createContainer = async (segments) => {
   let segmentContainer = []
   
@@ -197,7 +170,7 @@ const getCohorts = () => {
     .catch(err => console.log(err))
 }
 const getLearnerData = () => {
-  return knex.select(...fields).from('status_of_learners')
+  return knex.select(...utils.fields).from('status_of_learners')
     .where('created_at', '>=', moment().subtract(8, 'hours').format('YYYY-MM-DD'))
     .then(learners => {
       return learners
@@ -207,19 +180,8 @@ const getLearnerData = () => {
 
 const report = async (cb) => {
   let cohorts = await getCohorts()
-  // [ '2016-07',
-  // '2016-09',
-  // '2016-11',
-  // '2017-02',
-  // '2017-03',
-  // '2017-04',
-  // '2017-05',
-  // '2017-08',
-  // '2017-09' ]
   let learnerData = await getLearnerData()
   let reportData = await createTableData(cohorts, learnerData)
   cb(reportData)
 }
-
-report((data) => { console.log(data)})
 
