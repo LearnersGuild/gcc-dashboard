@@ -16,10 +16,6 @@ const createContainer = async (segments) => {
   return segmentContainer
 }
 
-// const learnerAdvanced = (type, learner, phase,  cohort) => {
-
-// }
-
 const createTableData = async (cohorts, learnerData) => {
   const phases = utils.phases
   const cohort = await createContainer(cohorts)
@@ -123,10 +119,20 @@ const createTableData = async (cohorts, learnerData) => {
           let tries = utils.numberOfTries(learner, phase)
           cohort[cohortIndex][`phase${phase}AdvancedTries`] += tries
           cohort[cohortIndex].totalAdvancedTries += tries
+          cohort[cohortIndex][`phase${phase}AssessmentAdvanced`]++
+          cohort[cohortIndex].totalAssessmentAdvanced++
           demo[genderIndex][`phase${phase}AdvancedTries`] += tries
           demo[genderIndex].totalAdvancedTries += tries
+          demo[genderIndex][`phase${phase}AssessmentAdvanced`]++
+          demo[genderIndex].totalAssessmentAdvanced++
           demo[raceIndex][`phase${phase}AdvancedTries`] += tries
           demo[raceIndex].totalAdvancedTries += tries
+          demo[raceIndex][`phase${phase}AssessmentAdvanced`]++
+          demo[raceIndex].totalAssessmentAdvanced++
+          if (learner.two_or_more_races) {
+            demo[twoOrMoreRacesIndex][`phase${phase}AssessmentAdvanced`]++
+            demo[twoOrMoreRacesIndex].totalAssessmentAdvanced++
+          }
           if (tries > 1) {
             cohort[cohortIndex][`phase${phase}MoreThan1Try`]++
             cohort[cohortIndex].totalMoreThan1Try++
@@ -135,12 +141,10 @@ const createTableData = async (cohorts, learnerData) => {
             demo[raceIndex][`phase${phase}MoreThan1Try`]++
             demo[raceIndex].totalMoreThan1Try++
             if (learner.two_or_more_races) {
-              demo[twoOrMoreRacesIndex][`phase${phase}AdvancedTries`] += tries
-              demo[twoOrMoreRacesIndex].totalAdvancedTries += tries
               demo[twoOrMoreRacesIndex][`phase${phase}MoreThan1Try`]++
               demo[twoOrMoreRacesIndex].totalMoreThan1Try++
             }
-          } else {
+          } else if (tries === 1) {
             cohort[cohortIndex][`phase${phase}In1Try`]++
             cohort[cohortIndex].totalIn1Try++
             demo[genderIndex][`phase${phase}In1Try`]++
@@ -148,8 +152,6 @@ const createTableData = async (cohorts, learnerData) => {
             demo[raceIndex][`phase${phase}In1Try`]++
             demo[raceIndex].totalIn1Try++
             if (learner.two_or_more_races) {
-              demo[twoOrMoreRacesIndex][`phase${phase}AdvancedTries`] += tries
-              demo[twoOrMoreRacesIndex].totalAdvancedTries += tries
               demo[twoOrMoreRacesIndex][`phase${phase}In1Try`]++
               demo[twoOrMoreRacesIndex].totalIn1Try++
             }
@@ -158,19 +160,22 @@ const createTableData = async (cohorts, learnerData) => {
       } else {
         if (utils.hasNotAdvanced(learner, phase)) {
           cohort[cohortIndex][`phase${phase}HasNotAdvanced`]++
-          cohort[cohortIndex]['totalHasNotAdvanced']++
+          cohort[cohortIndex].totalHasNotAdvanced++
           demo[genderIndex][`phase${phase}HasNotAdvanced`]++
-          demo[genderIndex]['totalHasNotAdvanced']++
+          demo[genderIndex].totalHasNotAdvanced++
           demo[raceIndex][`phase${phase}HasNotAdvanced`]++
-          demo[raceIndex]['totalHasNotAdvanced']++
+          demo[raceIndex].totalHasNotAdvanced++
           if (learner.two_or_more_races) {
             demo[twoOrMoreRacesIndex][`phase${phase}HasNotAdvanced`]++
             demo[twoOrMoreRacesIndex]['totalHasNotAdvanced']++
           }
         } else if (utils.graduatedEarly(learner, phase)) {
           cohort[cohortIndex][`phase${phase}GraduatedEarly`]++
+          cohort[cohortIndex].totalGraduatedEarly++
           demo[genderIndex][`phase${phase}GraduatedEarly`]++
+          demo[genderIndex].totalGraduatedEarly++
           demo[raceIndex][`phase${phase}GraduatedEarly`]++
+          demo[raceIndex].totalGraduatedEarly++
           if (learner.two_or_more_races) {
             demo[twoOrMoreRacesIndex][`phase${phase}GraduatedEarly`]++
           }

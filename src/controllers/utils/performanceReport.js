@@ -88,11 +88,17 @@ exports.template = {
   phase3Advanced: 0,
   phase4Advanced: 0,
   phase5Advanced: 0,
-  totalAdvanced: 0, // need to subtract phase 4 and 5 to calculate avg tries for total
+  totalAdvanced: 0,
+  phase1AssessmentAdvanced: 0,
+  phase2AssessmentAdvanced: 0,
+  phase3AssessmentAdvanced: 0,
+  totalAssessmentAdvanced: 0,
   phase1GraduatedEarly: 0,
   phase2GraduatedEarly: 0,
   phase3GraduatedEarly: 0,
-  phase4GraduatedEarly: 0
+  phase4GraduatedEarly: 0,
+  phase5GraduatedEarly: 0,
+  totalGraduatedEarly: 0
 }
 
 exports.phases = [1, 2, 3, 4, 5]
@@ -132,9 +138,9 @@ exports.didLearnerAdvance = (learner, phase) => {
     learner[`date_phase_${phase}`] && learner[`date_phase_${phase}`]) {
       return true
   } else if (phase === 4 && (learner.date_phase_4 && learner.date_phase_5)) {
-    true
+    return true
   } else if (phase === 5 && (learner.date_phase_5 && learner.resignation_date)) {
-    true
+    return true
   } else {
     return false
   }
@@ -155,15 +161,15 @@ exports.numberOfWeeks = (learner, phase) => {
 }
 
 exports.numberOfTries = (learner, phase) => {
-  if (learner[`phase_${phase}_attempt`] === 'First') {
+  if (learner[`phase_${phase + 1}_attempt`] === 'First') {
     return 1
-  } else if (learner[`phase_${phase}_attempt`] === 'Second') {
+  } else if (learner[`phase_${phase + 1}_attempt`] === 'Second') {
     return 2
-  } else if (learner[learner[`phase_${phase}_attempt`] === 'Third']) {
+  } else if (learner[learner[`phase_${phase + 1}_attempt`] === 'Third']) {
     return 3
-  } else if (learner[`phase_${phase}_attempt`] === 'Fourth') {
+  } else if (learner[`phase_${phase + 1}_attempt`] === 'Fourth') {
     return 4
-  } else if (learner[`phase_${phase}_attempt`] === 'Fifth') {
+  } else if (learner[`phase_${phase + 1}_attempt`] === 'Fifth') {
     return 5
   } else {
     return 0

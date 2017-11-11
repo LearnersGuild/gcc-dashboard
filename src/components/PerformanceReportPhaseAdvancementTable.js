@@ -9,6 +9,39 @@ class PerformanceReportPhaseAdvancementTable extends Component {
     super(props)
   }
 
+  blankRow(idx) {
+    return (
+      <TableRow key={idx}>
+        <TableCell></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+      </TableRow>
+    )
+  }
+
+  phase45BlankRow(idx) {
+    return (
+      <TableRow key={idx}>
+        <TableCell></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+        <TableCell numeric></TableCell>
+      </TableRow>
+    )
+  }
+
   render() {
     if (this.props.data) {
       const reportData = this.props.data
@@ -29,27 +62,33 @@ class PerformanceReportPhaseAdvancementTable extends Component {
               <TableCell numeric><strong>Adv In More Than 1 Try</strong></TableCell>
               <TableCell numeric><strong>Avg Tries</strong></TableCell>
             </TableRow>
-            {reportData.map((item, idx) => (
-              <TableRow key={idx}>
-                <TableCell>{item.segment}</TableCell>
-                <TableCell numeric>{item[`${phase}LessThan6`]}</TableCell>
-                <TableCell numeric>{item[`${phase}In6`]}</TableCell>
-                <TableCell numeric>{item[`${phase}In7Or8`]}</TableCell>
-                <TableCell numeric>{item[`${phase}MoreThan8`]}</TableCell>
-                <TableCell numeric>{item[`${phase}HasNotAdvanced`]}</TableCell>
-                <TableCell numeric>{item[`${phase}GraduatedEarly`]}</TableCell>
-                <TableCell numeric>
-                  {Number.isNaN(Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])) ?
-                      'N/A' : Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])}
-                </TableCell>
-                <TableCell numeric>{item[`${phase}In1Try`]}</TableCell>
-                <TableCell numeric>{item[`${phase}MoreThan1Try`]}</TableCell>
-                <TableCell numeric>
-                  {Number.isNaN(Math.round(item[`${phase}AdvancedTries`] / item[`${phase}Advanced`])) ?
-                    'N/A' : Math.round(item[`${phase}AdvancedTries`] / item[`${phase}Advanced`])}
-                </TableCell>
-              </TableRow>
-            ))}
+            {reportData.map((item, idx) => {
+              if (item.segment === '') {
+                return this.blankRow(idx)
+              } else {
+                return (
+                  <TableRow key={idx}>
+                    <TableCell>{item.segment}</TableCell>
+                    <TableCell numeric>{item[`${phase}LessThan6`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}In6`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}In7Or8`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}MoreThan8`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}HasNotAdvanced`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}GraduatedEarly`]}</TableCell>
+                    <TableCell numeric>
+                      {Number.isNaN(Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])) ?
+                          'N/A' : Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])}
+                    </TableCell>
+                    <TableCell numeric>{item[`${phase}In1Try`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}MoreThan1Try`]}</TableCell>
+                    <TableCell numeric>
+                      {Number.isNaN((item[`${phase}AdvancedTries`] / (item[`${phase}AssessmentAdvanced`] - item.phase4Advanced - item.phase5Advanced))) ?
+                        'N/A' : (item[`${phase}AdvancedTries`] / item.totalAssessmentAdvanced).toFixed(1)}
+                    </TableCell>
+                  </TableRow>
+                )
+              }
+            })}
           </Table>
         )    
       } else if (phase !== 'phase4' && phase !== 'phase5') {
@@ -68,27 +107,33 @@ class PerformanceReportPhaseAdvancementTable extends Component {
               <TableCell numeric><strong>Adv In More Than 1 Try</strong></TableCell>
               <TableCell numeric><strong>Avg Tries</strong></TableCell>
             </TableRow>
-            {reportData.map((item, idx) => (
-              <TableRow key={idx}>
-                <TableCell>{item.segment}</TableCell>
-                <TableCell numeric>{item[`${phase}LessThan6`]}</TableCell>
-                <TableCell numeric>{item[`${phase}In6`]}</TableCell>
-                <TableCell numeric>{item[`${phase}In7Or8`]}</TableCell>
-                <TableCell numeric>{item[`${phase}MoreThan8`]}</TableCell>
-                <TableCell numeric>{item[`${phase}HasNotAdvanced`]}</TableCell>
-                <TableCell numeric>{item[`${phase}GraduatedEarly`]}</TableCell>
-                <TableCell numeric>
-                  {Number.isNaN(Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])) ?
-                      'N/A' : Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])}
-                </TableCell>
-                <TableCell numeric>{item[`${phase}In1Try`]}</TableCell>
-                <TableCell numeric>{item[`${phase}MoreThan1Try`]}</TableCell>
-                <TableCell numeric>
-                  {Number.isNaN(Math.round(item[`${phase}AdvancedTries`] / item[`${phase}Advanced`])) ?
-                    'N/A' : Math.round(item[`${phase}AdvancedTries`] / item[`${phase}Advanced`])}
-                </TableCell>
-              </TableRow>
-            ))}
+            {reportData.map((item, idx) => {
+              if (item.segment === '') {
+                return this.blankRow(idx)
+              } else {
+                return (
+                  <TableRow key={idx}>
+                    <TableCell>{item.segment}</TableCell>
+                    <TableCell numeric>{item[`${phase}LessThan6`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}In6`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}In7Or8`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}MoreThan8`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}HasNotAdvanced`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}GraduatedEarly`]}</TableCell>
+                    <TableCell numeric>
+                      {Number.isNaN(Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])) ?
+                          'N/A' : Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])}
+                    </TableCell>
+                    <TableCell numeric>{item[`${phase}In1Try`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}MoreThan1Try`]}</TableCell>
+                    <TableCell numeric>
+                      {Number.isNaN(item[`${phase}AdvancedTries`] / item[`${phase}Advanced`]) ?
+                        'N/A' : (item[`${phase}AdvancedTries`] / item[`${phase}AssessmentAdvanced`]).toFixed(1)}
+                    </TableCell>
+                  </TableRow>
+                )
+              }
+            })}
           </Table>
         )
       } else {
@@ -104,21 +149,26 @@ class PerformanceReportPhaseAdvancementTable extends Component {
               <TableCell numeric><strong>Graduated Early</strong></TableCell>
               <TableCell numeric><strong>Avg Weeks to Advance</strong></TableCell>
             </TableRow>
-            {reportData.map((item, idx) => (
-              <TableRow key={idx}>
-                <TableCell>{item.segment}</TableCell>
-                <TableCell numeric>{item[`${phase}LessThan6`]}</TableCell>
-                <TableCell numeric>{item[`${phase}In6`]}</TableCell>
-                <TableCell numeric>{item[`${phase}In7Or8`]}</TableCell>
-                <TableCell numeric>{item[`${phase}MoreThan8`]}</TableCell>
-                <TableCell numeric>{item[`${phase}HasNotAdvanced`]}</TableCell>
-                <TableCell numeric>{item[`${phase}GraduatedEarly`]}</TableCell>
-                <TableCell numeric>
-                  {Number.isNaN(Math.round(item[`${phase}AdvancedTries`] / item[`${phase}Advanced`])) ?
-                    'N/A' : Math.round(item[`${phase}AdvancedTries`] / item[`${phase}Advanced`])}
-                </TableCell>
-              </TableRow>
-            ))}
+            {reportData.map((item, idx) => {
+              if (item.segment === '') {
+                return this.phase45BlankRow(idx)
+              } else {
+                return (
+                <TableRow key={idx}>
+                  <TableCell>{item.segment}</TableCell>
+                  <TableCell numeric>{item[`${phase}LessThan6`]}</TableCell>
+                  <TableCell numeric>{item[`${phase}In6`]}</TableCell>
+                  <TableCell numeric>{item[`${phase}In7Or8`]}</TableCell>
+                  <TableCell numeric>{item[`${phase}MoreThan8`]}</TableCell>
+                  <TableCell numeric>{item[`${phase}HasNotAdvanced`]}</TableCell>
+                  <TableCell numeric>{item[`${phase}GraduatedEarly`]}</TableCell>
+                  <TableCell numeric>
+                    {Number.isNaN(Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])) ?
+                      'N/A' : Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])}
+                  </TableCell>
+                </TableRow>
+              )}
+            })}
           </Table>
         )   
       }
