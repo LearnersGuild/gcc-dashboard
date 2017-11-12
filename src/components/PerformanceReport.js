@@ -15,9 +15,9 @@ class PerformanceReport extends Component {
     super(props)
     this.state = {
       reportData: '',
-      index: 0
+      advancementIndex: 0
     }
-    this.handleTabChange = this.handleTabChange.bind(this)
+    this.handleAdvancementTabChange = this.handleAdvancementTabChange.bind(this)
   }
 
   componentDidMount() {
@@ -29,15 +29,16 @@ class PerformanceReport extends Component {
       })
   }
 
-  handleTabChange(index) {
-    this.setState({index})
+  handleAdvancementTabChange(index) {
+      this.setState({advancementIndex: index})
   }
 
   render() {
     return (
       <div>
         <div>
-          <Tabs index={this.state.index} onChange={this.handleTabChange}>
+          <h3>Phase Advancement by Demographic</h3>
+          <Tabs index={this.state.advancementIndex} onChange={this.handleAdvancementTabChange}>
             <Tab label='Phase 1 > Phase 2'>
               <PerformanceReportPhaseAdvancementTable title='Demographic' data={this.state.reportData.demo} phase={'phase1'}/>
             </Tab>
@@ -59,7 +60,8 @@ class PerformanceReport extends Component {
           </Tabs>
         </div>
         <div>
-          <Tabs index={this.state.index} onChange={this.handleTabChange}>
+          <h3>Phase Advancement by Cohort</h3>
+          <Tabs index={this.state.advancementIndex} onChange={this.handleAdvancementTabChange}>
             <Tab label='Phase 1 > Phase 2'>
               <PerformanceReportPhaseAdvancementTable title='Cohort' data={this.state.reportData.cohort} phase={'phase1'}/>
             </Tab>

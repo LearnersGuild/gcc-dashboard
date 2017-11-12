@@ -5,21 +5,21 @@ const knex = require('../db')
 const _ = require('lodash')
 const utils = require('./utils/performanceReport')
 
-const createContainer = async (segments) => {
+const createContainer = async (type, segments) => {
   let segmentContainer = []
   
   segments.forEach(segment => {
-    let segmentObject = Object.assign({}, utils.template)
+    let segmentObject = Object.assign({}, utils[`${type}Template`])
     segmentObject.segment = segment
     segmentContainer.push(segmentObject)
   })
   return segmentContainer
 }
 
-const createTableData = async (cohorts, learnerData) => {
-  const phases = utils.phases
-  const cohort = await createContainer(cohorts)
-  const demo = await createContainer(utils.demoSegments)
+const createAdvancementTableData = async (cohorts, learnerData) => {
+  const phases = utils.advancementPhases
+  const cohort = await createContainer('advancement', cohorts)
+  const demo = await createContainer('advancement', utils.demoSegments)
 
   learnerData.forEach(learner => {
     let gender
@@ -50,7 +50,7 @@ const createTableData = async (cohorts, learnerData) => {
         demo[raceIndex][`phase${phase}Advanced`]++
         demo[raceIndex].totalAdvanced++
         
-        let weeks = utils.numberOfWeeks(learner, phase)
+        let weeks = utils.advancementNumberOfWeeks(learner, phase)
         cohort[cohortIndex][`phase${phase}AdvancedWeeks`] += weeks
         cohort[cohortIndex].totalAdvancedWeeks += weeks
         demo[genderIndex][`phase${phase}AdvancedWeeks`] += weeks
@@ -187,6 +187,42 @@ const createTableData = async (cohorts, learnerData) => {
   return tableData
 }
 
+const createAssessmentTableData = async (learnerData) => {
+  const weekInPhase = await createContainer('assessment', utils.assessmentSegments)
+  learnerData.forEach(learner => {
+    let phase = learner.phase
+    if (phase) {
+      let currentPhase = parseInt(_.trimStart(phase, 'Phase '))
+      let currentWeek = utils.assessmentNumberOfWeeks(learner, currentPhase) === -1 ? "1" : utils.assessmentNumberOfWeeks(learner, currentPhase)
+      let currentWeekIndex = _.indexOf(utils.assessmentSegments, currentWeek)
+      let totalIndex = utils.assessmentSegments.length - 1
+      if (learner[`phase_${currentPhase + 1}_attempt`]) {
+        console.log(learner[`phase_${currentPhase + 1}_attempt`])
+        if (learner[`phase_${currentPhase + 1}_attempt`] === 'First') {
+          weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt1`]++
+          weekInPhase[totalIndex][`phase${currentPhase}Attempt1`]++
+        } else if (learner[`phase_${currentPhase + 1}_attempt`] === 'Second') {
+          weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt2`]++
+          weekInPhase[totalIndex][`phase${currentPhase}Attempt2`]++
+        } else if (learner[`phase_${currentPhase + 1}_attempt`] === 'Third') {
+          weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt3`]++
+          weekInPhase[totalIndex][`phase${currentPhase}Attempt3`]++
+        } else if (learner[`phase_${currentPhase + 1}_attempt`] === 'Fourth') {
+          weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt4`]++
+          weekInPhase[totalIndex][`phase${currentPhase}Attempt4`]++
+        } else {
+          weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt5`]++
+          weekInPhase[totalIndex][`phase${currentPhase}Attempt5`]++
+        }
+      } else {
+        weekInPhase[currentWeekIndex][`phase${currentPhase}HasNotAttempted`]++
+        weekInPhase[totalIndex][`phase${currentPhase}HasNotAttempted`]++
+      }
+    }
+  })
+  return weekInPhase
+}
+
 const getCohorts = () => {
   return knex('status_of_learners').select(knex.raw('to_char(enrollee_start_date, \'YYYY-MM\')'))
     .where('created_at', '>=', '2017-11-07')
@@ -208,9 +244,10 @@ const getLearnerData = () => {
 }
 
 export const report = async (cb) => {
-  let cohorts = await getCohorts()
-  let learnerData = await getLearnerData()
-  let reportData = await createTableData(cohorts, learnerData)
+  const cohorts = await getCohorts()
+  const learnerData = await getLearnerData()
+  const reportData = await createAdvancementTableData(cohorts, learnerData)
+  reportData.weekInPhase = await createAssessmentTableData(learnerData) 
   cb(reportData)
 }
 

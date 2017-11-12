@@ -9,35 +9,35 @@ class PerformanceReportPhaseAdvancementTable extends Component {
     super(props)
   }
 
-  blankRow(idx) {
+  blankRow(item, idx) {
     return (
       <TableRow key={idx}>
-        <TableCell></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
+        <TableCell>{item.segment}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
       </TableRow>
     )
   }
 
-  phase45BlankRow(idx) {
+  phase45BlankRow(item, idx) {
     return (
       <TableRow key={idx}>
-        <TableCell></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
-        <TableCell numeric></TableCell>
+        <TableCell>{item.segment}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
+        <TableCell numeric>{`''`}</TableCell>
       </TableRow>
     )
   }
@@ -64,7 +64,7 @@ class PerformanceReportPhaseAdvancementTable extends Component {
             </TableRow>
             {reportData.map((item, idx) => {
               if (item.segment === '') {
-                return this.blankRow(idx)
+                return this.blankRow(item, idx)
               } else {
                 return (
                   <TableRow key={idx}>
@@ -93,7 +93,7 @@ class PerformanceReportPhaseAdvancementTable extends Component {
         )    
       } else if (phase !== 'phase4' && phase !== 'phase5') {
         return (
-          <Table selectable={false} style={{ marginTop: '1em', marginBottom: '2em', tableLayout: 'fixed', width: '100%' }}>
+          <Table selectable={false} style={{ marginTop: '1em', tableLayout: 'fixed', width: '100%' }}>
             <TableRow style={{backgroundColor: '#e7f0f7'}}>
               <TableCell><strong>{this.props.title}</strong></TableCell>
               <TableCell numeric><strong>Adv in Less Than 6 Weeks</strong></TableCell>
@@ -109,7 +109,7 @@ class PerformanceReportPhaseAdvancementTable extends Component {
             </TableRow>
             {reportData.map((item, idx) => {
               if (item.segment === '') {
-                return this.blankRow(idx)
+                return this.blankRow(item, idx)
               } else {
                 return (
                   <TableRow key={idx}>
@@ -138,7 +138,7 @@ class PerformanceReportPhaseAdvancementTable extends Component {
         )
       } else {
         return (
-          <Table selectable={false} style={{ marginTop: '1em', marginBottom: '2em', tableLayout: 'fixed', width: '100%' }}>
+          <Table selectable={false} style={{ marginTop: '1em', tableLayout: 'fixed', width: '100%' }}>
             <TableRow style={{backgroundColor: '#e7f0f7'}}>
               <TableCell><strong>{this.props.title}</strong></TableCell>
               <TableCell numeric><strong>Adv in Less Than 6 Weeks</strong></TableCell>
@@ -151,7 +151,7 @@ class PerformanceReportPhaseAdvancementTable extends Component {
             </TableRow>
             {reportData.map((item, idx) => {
               if (item.segment === '') {
-                return this.phase45BlankRow(idx)
+                return this.phase45BlankRow(item, idx)
               } else {
                 return (
                 <TableRow key={idx}>

@@ -33,7 +33,7 @@ exports.demoSegments = [
   'Native Hawaiian or Other Pacific Islander', 'Some Other Race', 'Two or More Races', 'Race Undefined'
 ]
 
-exports.template = {
+exports.advancementTemplate = {
   segment: '',
   phase1LessThan6: 0,
   phase2LessThan6: 0,
@@ -101,7 +101,50 @@ exports.template = {
   totalGraduatedEarly: 0
 }
 
-exports.phases = [1, 2, 3, 4, 5]
+exports.advancementPhases = [1, 2, 3, 4, 5]
+
+exports.assessmentSegments = ['1', '2', '3', '4', '5', '6', '7', '8', '8+', 'Total']
+
+exports.assessmentTemplate = {
+  segment: '',
+  phase0InPhase: 0,
+  progressCheckInPhase: 0,
+  phase1InPhase: 0,
+  phase2InPhase: 0,
+  phase3InPhase: 0,
+  phase0HasNotAttempted: 0,
+  progressCheckHasNotAttempted: 0,
+  phase1HasNotAttempted: 0,
+  phase2HasNotAttempted: 0,
+  phase3HasNotAttempted: 0,
+  phase0Attempt1: 0,
+  progressCheckAttempt1: 0,
+  phase1Attempt1: 0,
+  phase2Attempt1: 0,
+  phase3Attempt1: 0,
+  phase0Attempt2: 0,
+  progressCheckAttempt2: 0,
+  phase1Attempt2: 0,
+  phase2Attempt2: 0,
+  phase3Attempt2: 0,
+  phase0Attempt3: 0,
+  progressCheckAttempt3: 0,
+  phase1Attempt3: 0,
+  phase2Attempt3: 0,
+  phase3Attempt3: 0,
+  phase0Attempt4: 0,
+  progressCheckAttempt4: 0,
+  phase1Attempt4: 0,
+  phase2Attempt4: 0,
+  phase3Attempt4: 0,
+  phase0Attempt5: 0,
+  progressCheckAttempt5: 0,
+  phase1Attempt5: 0,
+  phase2Attempt5: 0,
+  phase3Attempt5: 0
+}
+
+
 
 exports.hasNotAdvanced = (learner, phase) => {
   if (phase === 5) {
@@ -146,7 +189,7 @@ exports.didLearnerAdvance = (learner, phase) => {
   }
 }
 
-exports.numberOfWeeks = (learner, phase) => {
+exports.advancementNumberOfWeeks = (learner, phase) => {
   if (phase === 1) {
     if (learner.date_phase_1) {
       return Math.round(moment(learner.date_phase_2).diff(moment(learner.date_phase_1), 'days')/7)
@@ -159,6 +202,20 @@ exports.numberOfWeeks = (learner, phase) => {
     return Math.round(moment(learner[`date_phase_${phase + 1}`]).diff(moment(learner[`date_phase_${phase}`]), 'days')/7)
   }
 }
+
+exports.assessmentNumberOfWeeks = (learner, phase) => {
+  let weeks = Math.round(moment().subtract(8, 'hours').diff(moment(learner[`date_phase_${phase}`]).add(7, 'days'), 'days')/7)
+  if (weeks <= 8) {
+    if (weeks === -1 || weeks === 0) {
+      return '1'
+    } else {
+      return weeks.toString()
+    }
+  } else {
+    return '8+'
+  }
+}
+
 
 exports.numberOfTries = (learner, phase) => {
   if (learner[`phase_${phase + 1}_attempt`] === 'First') {
