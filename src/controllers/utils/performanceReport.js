@@ -204,9 +204,9 @@ exports.advancementNumberOfWeeks = (learner, phase) => {
 }
 
 exports.assessmentNumberOfWeeks = (learner, phase) => {
-  let weeks = Math.round(moment().subtract(8, 'hours').diff(moment(learner[`date_phase_${phase}`]).add(7, 'days'), 'days')/7)
+  let weeks = moment().utc().diff(moment(learner[`date_phase_${phase}`]).subtract(7, 'days'), 'weeks')
   if (weeks <= 8) {
-    if (weeks === -1 || weeks === 0) {
+    if (weeks <= 0) {
       return '1'
     } else {
       return weeks.toString()
@@ -215,7 +215,6 @@ exports.assessmentNumberOfWeeks = (learner, phase) => {
     return '8+'
   }
 }
-
 
 exports.numberOfTries = (learner, phase) => {
   if (learner[`phase_${phase + 1}_attempt`] === 'First') {

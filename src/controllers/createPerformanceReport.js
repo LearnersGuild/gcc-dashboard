@@ -193,30 +193,32 @@ const createAssessmentTableData = async (learnerData) => {
     let phase = learner.phase
     if (phase) {
       let currentPhase = parseInt(_.trimStart(phase, 'Phase '))
-      let currentWeek = utils.assessmentNumberOfWeeks(learner, currentPhase) === -1 ? "1" : utils.assessmentNumberOfWeeks(learner, currentPhase)
+      let currentWeek = utils.assessmentNumberOfWeeks(learner, currentPhase)
       let currentWeekIndex = _.indexOf(utils.assessmentSegments, currentWeek)
       let totalIndex = utils.assessmentSegments.length - 1
-      if (learner[`phase_${currentPhase + 1}_attempt`]) {
-        console.log(learner[`phase_${currentPhase + 1}_attempt`])
-        if (learner[`phase_${currentPhase + 1}_attempt`] === 'First') {
-          weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt1`]++
-          weekInPhase[totalIndex][`phase${currentPhase}Attempt1`]++
-        } else if (learner[`phase_${currentPhase + 1}_attempt`] === 'Second') {
-          weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt2`]++
-          weekInPhase[totalIndex][`phase${currentPhase}Attempt2`]++
-        } else if (learner[`phase_${currentPhase + 1}_attempt`] === 'Third') {
-          weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt3`]++
-          weekInPhase[totalIndex][`phase${currentPhase}Attempt3`]++
-        } else if (learner[`phase_${currentPhase + 1}_attempt`] === 'Fourth') {
-          weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt4`]++
-          weekInPhase[totalIndex][`phase${currentPhase}Attempt4`]++
+
+      if (currentPhase < 4) {
+        if (learner[`phase_${currentPhase + 1}_attempt`]) {
+          if (learner[`phase_${currentPhase + 1}_attempt`] === 'First') {
+            weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt1`]++
+            weekInPhase[totalIndex][`phase${currentPhase}Attempt1`]++
+          } else if (learner[`phase_${currentPhase + 1}_attempt`] === 'Second') {
+            weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt2`]++
+            weekInPhase[totalIndex][`phase${currentPhase}Attempt2`]++
+          } else if (learner[`phase_${currentPhase + 1}_attempt`] === 'Third') {
+            weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt3`]++
+            weekInPhase[totalIndex][`phase${currentPhase}Attempt3`]++
+          } else if (learner[`phase_${currentPhase + 1}_attempt`] === 'Fourth') {
+            weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt4`]++
+            weekInPhase[totalIndex][`phase${currentPhase}Attempt4`]++
+          } else {
+            weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt5`]++
+            weekInPhase[totalIndex][`phase${currentPhase}Attempt5`]++
+          }
         } else {
-          weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt5`]++
-          weekInPhase[totalIndex][`phase${currentPhase}Attempt5`]++
+          weekInPhase[currentWeekIndex][`phase${currentPhase}HasNotAttempted`]++
+          weekInPhase[totalIndex][`phase${currentPhase}HasNotAttempted`]++
         }
-      } else {
-        weekInPhase[currentWeekIndex][`phase${currentPhase}HasNotAttempted`]++
-        weekInPhase[totalIndex][`phase${currentPhase}HasNotAttempted`]++
       }
     }
   })
