@@ -14,17 +14,22 @@ class JobsReportIncomeCountTable extends Component {
       const reportData = this.props.data
     return (
       <Table selectable={false}>
+        <TableHead>
+          <TableCell>Income</TableCell>
+          <TableCell numeric>Full Time</TableCell>
+          <TableCell numberic>Part Time</TableCell>
+        </TableHead>
         {reportData.counts.map((item, idx) => (
           <TableRow key={idx}>
             <TableCell>{item.segment}</TableCell>
-            <TableCell numeric>{item.Count}</TableCell>
-            <TableCell numeric>{((item.Count / reportData.total) * 100).toFixed(0)}%</TableCell>
+            <TableCell numeric>{item.fullTimeCount} ({((item.fullTimeCount / reportData.total) * 100).toFixed(0)}%)</TableCell>
+            <TableCell numeric>{item.partTimeCount} ({((item.partTimeCount / reportData.total) * 100).toFixed(0)}%)</TableCell>
           </TableRow>
         ))}
         <TableRow>
-          <TableCell><strong>Total In Jobs</strong></TableCell>
-          <TableCell numeric><strong>{reportData.total}</strong></TableCell>
-          <TableCell numeric><strong>100%</strong></TableCell>
+          <TableCell><strong>Total In Jobs: {reportData.total}</strong></TableCell>
+          <TableCell numeric><strong>{reportData.fullTimeTotal}</strong></TableCell>
+          <TableCell numeric><strong>{reportData.partTimeTotal}</strong></TableCell>
         </TableRow>
       </Table>
     )

@@ -103,7 +103,7 @@ exports.advancementTemplate = {
 
 exports.advancementPhases = [1, 2, 3, 4, 5]
 
-exports.assessmentSegments = ['1', '2', '3', '4', '5', '6', '7', '8', '8+', 'Total']
+exports.assessmentSegments = ['Total', '1', '2', '3', '4', '5', '6', '7', '8', '8+']
 
 exports.assessmentTemplate = {
   segment: '',

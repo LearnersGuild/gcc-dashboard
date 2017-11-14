@@ -19,7 +19,8 @@ const fields = [
   'learner_s_starting_salary',
   'learner_reported_salary',
   'total_payments_received',
-  'isa_payments_past_due'
+  'isa_payments_past_due',
+  'employment_type'
 ]
 
 const getIncomeComparisonData = (dates) => {
@@ -72,9 +73,9 @@ const formatIncomeComparisonData = (preGuildData, postGuildData) => {
   return comparisonData
 }
 const getPostGuildIncomeData = () => {
-  return knex.select('learner_s_starting_salary').from('status_of_learners')
-    .whereRaw('employed_in_or_out_of_field = ? AND employment_type = ? AND created_at >= ? AND learner_s_starting_salary > ?' ,
-    ['Employed In Field', 'Full Time Position', moment().subtract(8, 'hours').format('YYYY-MM-DD'), 0])
+  return knex.select('learner_s_starting_salary', 'employment_type').from('status_of_learners')
+    .whereRaw('employed_in_or_out_of_field = ? AND created_at >= ? AND learner_s_starting_salary > ?' ,
+    ['Employed In Field', moment().subtract(8, 'hours').format('YYYY-MM-DD'), 0])
     .orderBy('learner_s_starting_salary', 'asc')
     .then(rows => {
       return formatPostGuildIncomeData(rows)
@@ -83,56 +84,71 @@ const getPostGuildIncomeData = () => {
 }
 
 const formatPostGuildIncomeData = (data) => {
+  const fullTime = _.filter(data, o => {return o.employment_type === 'Full Time Position'})
+  const partTime = _.filter(data, o => {return o.employment_type === 'Part Time Position'})
+  console.log('fullTime', fullTime)
+  console.log('partTime', partTime)
   const tableData = {
     counts: [
       {
         segment: '<$20,000',
-        'Count': _.filter(data, o => { return parseFloat(o.learner_s_starting_salary) < 20000 }).length
+        fullTimeCount: _.filter(fullTime, o => { return parseFloat(o.learner_s_starting_salary) < 20000 }).length,
+        partTimeCount: _.filter(partTime, o => { return parseFloat(o.learner_s_starting_salary) < 20000 }).length
       },
       {
         segment: '$20,000-$49,999',
-        'Count': _.filter(data, o => { return (parseFloat(o.learner_s_starting_salary) >= 20000 && parseFloat(o.learner_s_starting_salary) < 50000) }).length
+        fullTimeCount: _.filter(fullTime, o => { return (parseFloat(o.learner_s_starting_salary) >= 20000 && parseFloat(o.learner_s_starting_salary) < 50000) }).length,
+        partTimeCount: _.filter(partTime, o => { return (parseFloat(o.learner_s_starting_salary) >= 20000 && parseFloat(o.learner_s_starting_salary) < 50000) }).length
       },
       {
         segment: '$50,000-$74,999',
-        'Count': _.filter(data, o => { return (parseFloat(o.learner_s_starting_salary) >= 50000 && parseFloat(o.learner_s_starting_salary) < 75000) }).length
+        fullTimeCount: _.filter(fullTime, o => { return (parseFloat(o.learner_s_starting_salary) >= 50000 && parseFloat(o.learner_s_starting_salary) < 75000) }).length,
+        partTimeCount: _.filter(partTime, o => { return (parseFloat(o.learner_s_starting_salary) >= 50000 && parseFloat(o.learner_s_starting_salary) < 75000) }).length
       },
       {
         segment: '$75,000-$100,000',
-        'Count': _.filter(data, o => { return (parseFloat(o.learner_s_starting_salary) >= 75000 && parseFloat(o.learner_s_starting_salary) <= 100000) }).length
+        fullTimeCount: _.filter(fullTime, o => { return (parseFloat(o.learner_s_starting_salary) >= 75000 && parseFloat(o.learner_s_starting_salary) <= 100000) }).length,
+        partTimeCount: _.filter(partTime, o => { return (parseFloat(o.learner_s_starting_salary) >= 75000 && parseFloat(o.learner_s_starting_salary) <= 100000) }).length
       },
       {
         segment: '>$100,000',
-        'Count': _.filter(data, o => { return parseFloat(o.learner_s_starting_salary) > 100000 }).length
+        fullTimeCount: _.filter(fullTime, o => { return parseFloat(o.learner_s_starting_salary) > 100000 }).length,
+        partTimeCount: _.filter(partTime, o => { return parseFloat(o.learner_s_starting_salary) > 100000 }).length
       }
     ],
     averages: [
       {
         segment: 'Mean Salary',
-        value: _.meanBy(data, (o) => { return parseFloat(o.learner_s_starting_salary)}).toFixed(2)
+        fullTimeValue: _.meanBy(fullTime, (o) => { return parseFloat(o.learner_s_starting_salary)}).toFixed(2),
+        partTimeValue: _.meanBy(partTime, (o) => { return parseFloat(o.learner_s_starting_salary)}).toFixed(2)
       },
       {
         segment: 'Median Salary',
-        value: data[Math.floor(data.length / 2)].learner_s_starting_salary
+        fullTimeValue: fullTime[Math.floor(fullTime.length / 2)].learner_s_starting_salary,
+        partTimeValue: partTime[Math.floor(partTime.length / 2)].learner_s_starting_salary
       },
       {
         segment: 'Max Salary',
-        value: _.last(data).learner_s_starting_salary
+        fullTimeValue: _.last(fullTime).learner_s_starting_salary,
+        partTimeValue: _.last(partTime).learner_s_starting_salary
       },
       {
         segment: 'Min Salary',
-        value: data[0].learner_s_starting_salary
+        fullTimeValue: fullTime[0].learner_s_starting_salary,
+        partTimeValue: partTime[0].learner_s_starting_salary
       }
     ],
-    total: data.length 
+    total: data.length,
+    fullTimeTotal: fullTime.length,
+    partTimeTotal: partTime.length 
   }
   return tableData
 }
 const getJobData = (dates, order, type) => {
   let weeks = knex.raw('resignation_date::DATE - enrollee_start_date::DATE').wrap('(', ')/7::INT AS weeks')
   return knex.select(...fields, weeks).from('status_of_learners')
-    .whereRaw('employed_in_or_out_of_field = ? AND employment_type = ? AND created_at >= ? AND created_at < ?' ,
-    ['Employed In Field', 'Full Time Position', dates.reportStart, dates.reportEnd])
+    .whereRaw('employed_in_or_out_of_field = ? AND created_at >= ? AND created_at < ?' ,
+    ['Employed In Field', dates.reportStart, dates.reportEnd])
     .orderBy(order, 'asc')
     .then(rows => {
       return formatData(rows, type)
@@ -300,13 +316,13 @@ const formatData = (data, type) => {
 
 export const report =  async (dates, cb) => {
   const reportData = {}
-  reportData.byCohort         = await getJobData(dates, 'enrollee_start_date', 'byCohort')
-  reportData.byGender         = await getJobData(dates, 'gender', 'byGender')
-  reportData.byRace           = await getJobData(dates, 'race', 'byRace')
-  reportData.byIncome         = await getJobData(dates, 'income_level', 'byIncome' )
-  reportData.byWeeksInProgram = await getJobData(dates, 'weeks', 'byWeeksInProgram')
-  reportData.total            = await getJobData(dates, 'enrollee_start_date', 'Total')
+  // reportData.byCohort         = await getJobData(dates, 'enrollee_start_date', 'byCohort')
+  // reportData.byGender         = await getJobData(dates, 'gender', 'byGender')
+  // reportData.byRace           = await getJobData(dates, 'race', 'byRace')
+  // reportData.byIncome         = await getJobData(dates, 'income_level', 'byIncome' )
+  // reportData.byWeeksInProgram = await getJobData(dates, 'weeks', 'byWeeksInProgram')
+  // reportData.total            = await getJobData(dates, 'enrollee_start_date', 'Total')
   reportData.postGuildIncome  = await getPostGuildIncomeData()
-  reportData.incomeComparison = await getIncomeComparisonData(dates)
+  // reportData.incomeComparison = await getIncomeComparisonData(dates)
   cb(reportData)
 }

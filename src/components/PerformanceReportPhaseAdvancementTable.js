@@ -87,7 +87,7 @@ class PerformanceReportPhaseAdvancementTable extends Component {
                     <TableCell numeric>{item[`${phase}MoreThan1Try`]}</TableCell>
                     <TableCell numeric>
                       {Number.isNaN((item[`${phase}AdvancedTries`] / item[`${phase}AssessmentAdvanced`])) ?
-                        'N/A' : (item[`${phase}AdvancedTries`] / item.totalAssessmentAdvanced).toFixed(1)}
+                        'N/A' : (item[`${phase}AdvancedTries`] / item[`${phase}AssessmentAdvanced`]).toFixed(1)}
                     </TableCell>
                   </TableRow>
                 )

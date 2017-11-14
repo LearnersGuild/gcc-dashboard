@@ -14,10 +14,16 @@ class JobsReportIncomeAvgTable extends Component {
       const reportData = this.props.data
     return (
       <Table selectable={false}>
+        <TableHead>
+          <TableCell> </TableCell>
+          <TableCell numeric>Full Time</TableCell>
+          <TableCell numeric>Part Time</TableCell>
+        </TableHead>
         {reportData.averages.map((item, idx) => (
           <TableRow key={idx}>
             <TableCell>{item.segment}</TableCell>
-            <TableCell numeric>${item.value}</TableCell>
+            <TableCell numeric>${item.fullTimeValue}</TableCell>
+            <TableCell numeric>${item.partTimeValue}</TableCell>
           </TableRow>
         ))}
       </Table>

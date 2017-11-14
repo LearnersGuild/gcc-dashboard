@@ -46,13 +46,13 @@ class PerformanceReport extends Component {
         <div>
           <h3>Current Learners Phase Attempts</h3>
           <Tabs index={this.state.attemptsIndex} onChange={this.handleAttemptsTabChange}>
-            <Tab label='Phase 2 Assessment'>
+            <Tab label='Phase 2 Assessment (Currently In Phase 1)'>
               <PerformanceReportAttemptsTable title='Cohort' data={this.state.reportData.weekInPhase} phase={'phase1'}/>
             </Tab>
-            <Tab label='Phase 3 Assessment'>
+            <Tab label='Phase 3 Assessment (Currently In Phase 2)'>
               <PerformanceReportAttemptsTable title='Cohort' data={this.state.reportData.weekInPhase} phase={'phase2'}/>
             </Tab>
-            <Tab label='Phase 4 Assessment'>
+            <Tab label='Phase 4 Assessment (Currently In Phase 3)'>
               <PerformanceReportAttemptsTable title='Cohort' data={this.state.reportData.weekInPhase} phase={'phase3'}/>
             </Tab>
           </Tabs>
