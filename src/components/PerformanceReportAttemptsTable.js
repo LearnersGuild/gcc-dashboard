@@ -18,6 +18,7 @@ class PerformanceReportAttemptsTable extends Component {
         <Table selectable={false} style={{ marginTop: '1em', tableLayout: 'fixed', width: '100%' }}>
           <TableRow style={{backgroundColor: '#e7f0f7'}}>
             <TableCell><strong>Weeks in Current Phase</strong></TableCell>
+            <TableCell numeric><strong>Total in Phase</strong></TableCell>
             <TableCell numeric><strong>Has Not Attempted</strong></TableCell>
             <TableCell numeric><strong>Attempt 1</strong></TableCell>
             <TableCell numeric><strong>Attempt 2</strong></TableCell>
@@ -29,6 +30,7 @@ class PerformanceReportAttemptsTable extends Component {
             return (
               <TableRow key={idx}>
                 <TableCell>{item.segment}</TableCell>
+                <TableCell numeric>{item[`${phase}InPhase`]}</TableCell>
                 <TableCell numeric>{item[`${phase}HasNotAttempted`]}</TableCell>
                 <TableCell numeric>{item[`${phase}Attempt1`]}</TableCell>
                 <TableCell numeric>{item[`${phase}Attempt2`]}</TableCell>

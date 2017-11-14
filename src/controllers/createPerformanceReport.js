@@ -198,6 +198,8 @@ const createAssessmentTableData = async (learnerData) => {
       let totalIndex = utils.assessmentSegments.length - 1
 
       if (currentPhase < 4) {
+        weekInPhase[currentWeekIndex][`phase${currentPhase}InPhase`]++
+        weekInPhase[totalIndex][`phase${currentPhase}InPhase`]++
         if (learner[`phase_${currentPhase + 1}_attempt`]) {
           if (learner[`phase_${currentPhase + 1}_attempt`] === 'First') {
             weekInPhase[currentWeekIndex][`phase${currentPhase}Attempt1`]++

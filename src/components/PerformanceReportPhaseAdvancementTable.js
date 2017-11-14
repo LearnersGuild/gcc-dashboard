@@ -72,13 +72,13 @@ class PerformanceReportPhaseAdvancementTable extends Component {
                 return (
                   <TableRow key={idx}>
                     <TableCell>{item.segment}</TableCell>
-                    <TableCell numeric>{item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]}</TableCell>
-                    <TableCell numeric>{item[`${phase}LessThan6`]} ({Math.round(item[`${phase}LessThan6`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]) * 100)}%)</TableCell>
-                    <TableCell numeric>{item[`${phase}In6`]} ({Math.round(item[`${phase}In6`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]) * 100)}%)</TableCell>
-                    <TableCell numeric>{item[`${phase}In7Or8`]} ({Math.round(item[`${phase}In7Or8`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]) * 100)}%)</TableCell>
-                    <TableCell numeric>{item[`${phase}MoreThan8`]} ({Math.round(item[`${phase}MoreThan8`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]) * 100)}%)</TableCell>
-                    <TableCell numeric>{item[`${phase}HasNotAdvanced`]} ({Math.round(item[`${phase}HasNotAdvanced`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]) * 100)}%)</TableCell>
-                    <TableCell numeric>{item[`${phase}GraduatedEarly`]} ({Math.round(item[`${phase}GraduatedEarly`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]) * 100)}%)</TableCell>
+                    <TableCell numeric>{item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}LessThan6`]} ({Math.round(item[`${phase}LessThan6`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
+                    <TableCell numeric>{item[`${phase}In6`]} ({Math.round(item[`${phase}In6`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
+                    <TableCell numeric>{item[`${phase}In7Or8`]} ({Math.round(item[`${phase}In7Or8`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
+                    <TableCell numeric>{item[`${phase}MoreThan8`]} ({Math.round(item[`${phase}MoreThan8`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
+                    <TableCell numeric>{item[`${phase}HasNotAdvanced`]} ({Math.round(item[`${phase}HasNotAdvanced`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
+                    <TableCell numeric>{item[`${phase}GraduatedEarly`]} ({Math.round(item[`${phase}GraduatedEarly`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
                     <TableCell numeric>
                       {Number.isNaN(Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])) ?
                           'N/A' : Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])}
@@ -116,13 +116,13 @@ class PerformanceReportPhaseAdvancementTable extends Component {
                 return (
                 <TableRow key={idx}>
                   <TableCell>{item.segment}</TableCell>
-                  <TableCell numeric>{item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]}</TableCell>
-                    <TableCell numeric>{item[`${phase}LessThan6`]} ({Math.round(item[`${phase}LessThan6`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]) * 100)}%)</TableCell>
-                    <TableCell numeric>{item[`${phase}In6`]} ({Math.round(item[`${phase}In6`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]) * 100)}%)</TableCell>
-                    <TableCell numeric>{item[`${phase}In7Or8`]} ({Math.round(item[`${phase}In7Or8`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]) * 100)}%)</TableCell>
-                    <TableCell numeric>{item[`${phase}MoreThan8`]} ({Math.round(item[`${phase}MoreThan8`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]) * 100)}%)</TableCell>
-                    <TableCell numeric>{item[`${phase}HasNotAdvanced`]} ({Math.round(item[`${phase}HasNotAdvanced`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]) * 100)}%)</TableCell>
-                    <TableCell numeric>{item[`${phase}GraduatedEarly`]} ({Math.round(item[`${phase}GraduatedEarly`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`]) * 100)}%)</TableCell>
+                  <TableCell numeric>{item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]}</TableCell>
+                    <TableCell numeric>{item[`${phase}LessThan6`]} ({Math.round(item[`${phase}LessThan6`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
+                    <TableCell numeric>{item[`${phase}In6`]} ({Math.round(item[`${phase}In6`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
+                    <TableCell numeric>{item[`${phase}In7Or8`]} ({Math.round(item[`${phase}In7Or8`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
+                    <TableCell numeric>{item[`${phase}MoreThan8`]} ({Math.round(item[`${phase}MoreThan8`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
+                    <TableCell numeric>{item[`${phase}HasNotAdvanced`]} ({Math.round(item[`${phase}HasNotAdvanced`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
+                    <TableCell numeric>{item[`${phase}GraduatedEarly`]} ({Math.round(item[`${phase}GraduatedEarly`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
                   <TableCell numeric>
                     {Number.isNaN(Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])) ?
                       'N/A' : Math.round(item[`${phase}AdvancedWeeks`] / item[`${phase}Advanced`])}

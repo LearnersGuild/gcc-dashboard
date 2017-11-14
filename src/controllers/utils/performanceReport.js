@@ -178,7 +178,7 @@ exports.didLearnerAdvance = (learner, phase) => {
   if (phase === 1 && learner.phase_2_interview_outcome === 'Accept' && learner.date_phase_2) {
     return true
   } else if ((phase === 2 || phase === 3) && learner[`phase_${phase + 1}_interview_outcome`] === 'Accept' &&
-    learner[`date_phase_${phase}`] && learner[`date_phase_${phase}`]) {
+    learner[`date_phase_${phase}`] && learner[`date_phase_${phase + 1}`]) {
       return true
   } else if (phase === 4 && (learner.date_phase_4 && learner.date_phase_5)) {
     return true
