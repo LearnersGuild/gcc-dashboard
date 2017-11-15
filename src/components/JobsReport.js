@@ -98,7 +98,7 @@ class JobsReport extends Component {
           </CardText>
         </Card>
         <div style={{marginTop: '3em'}}>
-          <h3>Full Time</h3>
+          <h3>In Field Full Time</h3>
           <Tabs index={this.state.index} onChange={this.handleTabChange}>
             <Tab label='By Cohort'>
               <JobsReportTable title='Cohort' data={this.state.reportData.byCohort} total={this.state.reportData.total} type='FullTime'/>
@@ -121,7 +121,7 @@ class JobsReport extends Component {
           </Tabs>
         </div>
         <div style={{marginTop: '3em'}}>
-          <h3>Part Time</h3>
+          <h3>In Field Part Time</h3>
           <Tabs index={this.state.index} onChange={this.handleTabChange}>
             <Tab label='By Cohort'>
               <JobsReportTable title='Cohort' data={this.state.reportData.byCohort} total={this.state.reportData.total} type='PartTime'/>
