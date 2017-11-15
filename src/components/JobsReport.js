@@ -13,6 +13,7 @@ import JobsReportTable from './JobsReportTable'
 import JobsReportIncomeAvgTable from './JobsReportIncomeAvgTable'
 import JobsReportIncomeCountTable from './JobsReportIncomeCountTable'
 import JobsReportIncomeComparisonTable from './JobsReportIncomeComparisonTable'
+import JobsReportPlacementRateTable from './JobsReportPlacementRateTable'
 
 class JobsReport extends Component {
   constructor(props) {
@@ -62,33 +63,9 @@ class JobsReport extends Component {
     return (
       <div>
         <Card style={cardStyle()}>
-          <CardTitle title="Select Report Date"/>
+          <CardTitle title="Placement Rate"/>
           <CardText>
-            <DatePicker
-              icon="event"
-              label="Select a Report Date"
-              onChange={this.handleChange}
-              maxDate={moment().subtract(1, 'days').toDate()}
-              minDate={moment('2017-09-05').toDate()}
-              value={this.state.reportDate}
-            />
-            <Button
-              label="Update"
-              style={{
-                backgroundColor: '#97C93D',
-                color: 'white',
-                marginTop: '2em',
-                marginLeft: '1em'
-              }}
-              raised={true}
-              onMouseUp={this.handleSubmit}
-            />
-          </CardText>
-        </Card>
-        <Card style={cardStyle()}>
-          <CardTitle title="Post Guild Income Ranges"/>
-          <CardText>
-            <JobsReportIncomeCountTable data={this.state.reportData.postGuildIncome}/>
+            <JobsReportPlacementRateTable data={this.state.reportData.total[0]}/>
           </CardText>
         </Card>
         <Card style={cardStyle()}>
@@ -97,51 +74,83 @@ class JobsReport extends Component {
             <JobsReportIncomeAvgTable data={this.state.reportData.postGuildIncome}/>
           </CardText>
         </Card>
-        <div style={{marginTop: '3em'}}>
-          <h3>In Field Full Time</h3>
-          <Tabs index={this.state.index} onChange={this.handleTabChange}>
-            <Tab label='By Cohort'>
-              <JobsReportTable title='Cohort' data={this.state.reportData.byCohort} total={this.state.reportData.total} type='FullTime'/>
-            </Tab>
-            <Tab label='By Gender'>
-              <JobsReportTable title='Gender' data={this.state.reportData.byGender} total={this.state.reportData.total} type='FullTime'/>
-            </Tab>
-            <Tab label='By Prior Income'>
-              <JobsReportTable title='Prior Income' data={this.state.reportData.byIncome} total={this.state.reportData.total} type='FullTime'/>
-            </Tab>
-            <Tab label='By Race'>
-              <JobsReportTable title='Race' data={this.state.reportData.byRace} total={this.state.reportData.total} type='FullTime'/>
-            </Tab>
-            <Tab label='By Weeks in Program'>
-              <JobsReportTable title='Weeks in Program' data={this.state.reportData.byWeeksInProgram} total={this.state.reportData.total} type='FullTime'/>
-            </Tab>
-            <Tab label='Income Comparison'>
-              <JobsReportIncomeComparisonTable data={this.state.reportData.incomeComparison}/>
-            </Tab>
-          </Tabs>
-        </div>
-        <div style={{marginTop: '3em'}}>
-          <h3>In Field Part Time</h3>
-          <Tabs index={this.state.index} onChange={this.handleTabChange}>
-            <Tab label='By Cohort'>
-              <JobsReportTable title='Cohort' data={this.state.reportData.byCohort} total={this.state.reportData.total} type='PartTime'/>
-            </Tab>
-            <Tab label='By Gender'>
-              <JobsReportTable title='Gender' data={this.state.reportData.byGender} total={this.state.reportData.total} type='PartTime'/>
-            </Tab>
-            <Tab label='By Prior Income'>
-              <JobsReportTable title='Prior Income' data={this.state.reportData.byIncome} total={this.state.reportData.total} type='PartTime'/>
-            </Tab>
-            <Tab label='By Race'>
-              <JobsReportTable title='Race' data={this.state.reportData.byRace} total={this.state.reportData.total} type='PartTime'/>
-            </Tab>
-            <Tab label='By Weeks in Program'>
-              <JobsReportTable title='Weeks in Program' data={this.state.reportData.byWeeksInProgram} total={this.state.reportData.total} type='PartTime'/>
-            </Tab>
-            <Tab label='Income Comparison'>
-              <JobsReportIncomeComparisonTable data={this.state.reportData.incomeComparison}/>
-            </Tab>
-          </Tabs>
+        <Card style={cardStyle()}>
+          <CardTitle title="Post Guild Income Ranges"/>
+          <CardText>
+            <JobsReportIncomeCountTable data={this.state.reportData.postGuildIncome}/>
+          </CardText>
+        </Card>
+        <div>
+          <Card style={cardStyle()}>
+            <CardTitle title="Select Report Date"/>
+            <CardText>
+              <DatePicker
+                icon="event"
+                label="Select a Report Date"
+                onChange={this.handleChange}
+                maxDate={moment().subtract(1, 'days').toDate()}
+                minDate={moment('2017-09-05').toDate()}
+                value={this.state.reportDate}
+              />
+              <Button
+                label="Update"
+                style={{
+                  backgroundColor: '#97C93D',
+                  color: 'white',
+                  marginTop: '2em',
+                  marginLeft: '1em'
+                }}
+                raised={true}
+                onMouseUp={this.handleSubmit}
+              />
+            </CardText>
+          </Card>
+          <div style={{marginTop: '3em'}}>
+            <h3>In Field Full Time</h3>
+            <Tabs index={this.state.index} onChange={this.handleTabChange}>
+              <Tab label='By Cohort'>
+                <JobsReportTable title='Cohort' data={this.state.reportData.byCohort} total={this.state.reportData.total} type='FullTime'/>
+              </Tab>
+              <Tab label='By Gender'>
+                <JobsReportTable title='Gender' data={this.state.reportData.byGender} total={this.state.reportData.total} type='FullTime'/>
+              </Tab>
+              <Tab label='By Prior Income'>
+                <JobsReportTable title='Prior Income' data={this.state.reportData.byIncome} total={this.state.reportData.total} type='FullTime'/>
+              </Tab>
+              <Tab label='By Race'>
+                <JobsReportTable title='Race' data={this.state.reportData.byRace} total={this.state.reportData.total} type='FullTime'/>
+              </Tab>
+              <Tab label='By Weeks in Program'>
+                <JobsReportTable title='Weeks in Program' data={this.state.reportData.byWeeksInProgram} total={this.state.reportData.total} type='FullTime'/>
+              </Tab>
+              <Tab label='Income Comparison'>
+                <JobsReportIncomeComparisonTable data={this.state.reportData.incomeComparison}/>
+              </Tab>
+            </Tabs>
+          </div>
+          <div style={{marginTop: '3em'}}>
+            <h3>In Field Part Time</h3>
+            <Tabs index={this.state.index} onChange={this.handleTabChange}>
+              <Tab label='By Cohort'>
+                <JobsReportTable title='Cohort' data={this.state.reportData.byCohort} total={this.state.reportData.total} type='PartTime'/>
+              </Tab>
+              <Tab label='By Gender'>
+                <JobsReportTable title='Gender' data={this.state.reportData.byGender} total={this.state.reportData.total} type='PartTime'/>
+              </Tab>
+              <Tab label='By Prior Income'>
+                <JobsReportTable title='Prior Income' data={this.state.reportData.byIncome} total={this.state.reportData.total} type='PartTime'/>
+              </Tab>
+              <Tab label='By Race'>
+                <JobsReportTable title='Race' data={this.state.reportData.byRace} total={this.state.reportData.total} type='PartTime'/>
+              </Tab>
+              <Tab label='By Weeks in Program'>
+                <JobsReportTable title='Weeks in Program' data={this.state.reportData.byWeeksInProgram} total={this.state.reportData.total} type='PartTime'/>
+              </Tab>
+              <Tab label='Income Comparison'>
+                <JobsReportIncomeComparisonTable data={this.state.reportData.incomeComparison}/>
+              </Tab>
+            </Tabs>
+          </div>
         </div>
       </div>
     )
