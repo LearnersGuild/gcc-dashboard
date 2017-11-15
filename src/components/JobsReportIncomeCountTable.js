@@ -17,7 +17,7 @@ class JobsReportIncomeCountTable extends Component {
         <TableHead>
           <TableCell>Income</TableCell>
           <TableCell numeric>Full Time</TableCell>
-          <TableCell numberic>Part Time</TableCell>
+          <TableCell numeric>Part Time</TableCell>
         </TableHead>
         {reportData.counts.map((item, idx) => (
           <TableRow key={idx}>
