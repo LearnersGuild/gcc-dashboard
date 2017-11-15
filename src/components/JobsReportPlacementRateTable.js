@@ -11,7 +11,7 @@ class JobsReportPlacementRateTable extends Component {
 
   render() {
     if (this.props.data) {
-      const reportData = this.props.data
+      const reportData = this.props.data[0]
     return (
       <Table selectable={false}>
         <TableRow>

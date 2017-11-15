@@ -65,7 +65,7 @@ class JobsReport extends Component {
         <Card style={cardStyle()}>
           <CardTitle title="Placement Rate"/>
           <CardText>
-            <JobsReportPlacementRateTable data={this.state.reportData.total[0]}/>
+            <JobsReportPlacementRateTable data={this.state.reportData.total}/>
           </CardText>
         </Card>
         <Card style={cardStyle()}>
