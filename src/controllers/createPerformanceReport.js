@@ -65,29 +65,17 @@ const createAdvancementTableData = async (cohorts, learnerData) => {
           demo[twoOrMoreRacesIndex].totalAdvancedWeeks += weeks
         }
 
-        if (weeks < 6) {
-          cohort[cohortIndex][`phase${phase}LessThan6`]++
-          cohort[cohortIndex].totalLessThan6++
-          demo[genderIndex][`phase${phase}LessThan6`]++
-          demo[genderIndex].totalLessThan6++
-          demo[raceIndex][`phase${phase}LessThan6`]++
-          demo[raceIndex].totalLessThan6++
+        if (weeks <= 6) {
+          cohort[cohortIndex][`phase${phase}In6OrLess`]++
+          cohort[cohortIndex].totalIn6OrLess++
+          demo[genderIndex][`phase${phase}In6OrLess`]++
+          demo[genderIndex].totalIn6OrLess++
+          demo[raceIndex][`phase${phase}In6OrLess`]++
+          demo[raceIndex].totalIn6OrLess++
           
           if (learner.two_or_more_races) {
-            demo[twoOrMoreRacesIndex][`phase${phase}LessThan6`]++
-            demo[twoOrMoreRacesIndex].totalLessThan6++
-          }
-        } else if (weeks === 6) {
-          cohort[cohortIndex][`phase${phase}In6`]++
-          cohort[cohortIndex].totalIn6++
-          demo[genderIndex][`phase${phase}In6`]++
-          demo[genderIndex].totalIn6++
-          demo[raceIndex][`phase${phase}In6`]++
-          demo[raceIndex].totalIn6++
-          
-          if (learner.two_or_more_races) {
-            demo[twoOrMoreRacesIndex][`phase${phase}In6`]++
-            demo[twoOrMoreRacesIndex].totalIn6++
+            demo[twoOrMoreRacesIndex][`phase${phase}In6OrLess`]++
+            demo[twoOrMoreRacesIndex].totalIn6OrLess++
           }
         } else if (weeks < 9) {
           cohort[cohortIndex][`phase${phase}In7Or8`]++
