@@ -347,7 +347,7 @@ const formatData = (data, type) => {
     return orderIncomeSegments(segments)
   }
 
-  if (type === 'byWeeksInProgram') {
+  if (type === 'byWeeksInProgram' || type === 'byCohort') {
     return _.reverse(segments)
   }
   return segments

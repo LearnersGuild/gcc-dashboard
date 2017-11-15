@@ -195,7 +195,7 @@ const createAssessmentTableData = async (learnerData) => {
       let currentPhase = parseInt(_.trimStart(phase, 'Phase '))
       let currentWeek = utils.assessmentNumberOfWeeks(learner, currentPhase)
       let currentWeekIndex = _.indexOf(utils.assessmentSegments, currentWeek)
-      let totalIndex = utils.assessmentSegments.length - 1
+      let totalIndex = _.indexOf(utils.assessmentSegments, 'Total')
 
       if (currentPhase < 4) {
         weekInPhase[currentWeekIndex][`phase${currentPhase}InPhase`]++
