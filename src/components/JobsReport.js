@@ -98,21 +98,45 @@ class JobsReport extends Component {
           </CardText>
         </Card>
         <div style={{marginTop: '3em'}}>
+          <h3>Full Time</h3>
           <Tabs index={this.state.index} onChange={this.handleTabChange}>
             <Tab label='By Cohort'>
-              <JobsReportTable title='Cohort' data={this.state.reportData.byCohort} total={this.state.reportData.total}/>
+              <JobsReportTable title='Cohort' data={this.state.reportData.byCohort} total={this.state.reportData.total} type='FullTime'/>
             </Tab>
             <Tab label='By Gender'>
-              <JobsReportTable title='Gender' data={this.state.reportData.byGender} total={this.state.reportData.total}/>
+              <JobsReportTable title='Gender' data={this.state.reportData.byGender} total={this.state.reportData.total} type='FullTime'/>
             </Tab>
             <Tab label='By Prior Income'>
-              <JobsReportTable title='Prior Income' data={this.state.reportData.byIncome} total={this.state.reportData.total}/>
+              <JobsReportTable title='Prior Income' data={this.state.reportData.byIncome} total={this.state.reportData.total} type='FullTime'/>
             </Tab>
             <Tab label='By Race'>
-              <JobsReportTable title='Race' data={this.state.reportData.byRace} total={this.state.reportData.total}/>
+              <JobsReportTable title='Race' data={this.state.reportData.byRace} total={this.state.reportData.total} type='FullTime'/>
             </Tab>
             <Tab label='By Weeks in Program'>
-              <JobsReportTable title='Weeks in Program' data={this.state.reportData.byWeeksInProgram} total={this.state.reportData.total}/>
+              <JobsReportTable title='Weeks in Program' data={this.state.reportData.byWeeksInProgram} total={this.state.reportData.total} type='FullTime'/>
+            </Tab>
+            <Tab label='Income Comparison'>
+              <JobsReportIncomeComparisonTable data={this.state.reportData.incomeComparison}/>
+            </Tab>
+          </Tabs>
+        </div>
+        <div style={{marginTop: '3em'}}>
+          <h3>Part Time</h3>
+          <Tabs index={this.state.index} onChange={this.handleTabChange}>
+            <Tab label='By Cohort'>
+              <JobsReportTable title='Cohort' data={this.state.reportData.byCohort} total={this.state.reportData.total} type='PartTime'/>
+            </Tab>
+            <Tab label='By Gender'>
+              <JobsReportTable title='Gender' data={this.state.reportData.byGender} total={this.state.reportData.total} type='PartTime'/>
+            </Tab>
+            <Tab label='By Prior Income'>
+              <JobsReportTable title='Prior Income' data={this.state.reportData.byIncome} total={this.state.reportData.total} type='PartTime'/>
+            </Tab>
+            <Tab label='By Race'>
+              <JobsReportTable title='Race' data={this.state.reportData.byRace} total={this.state.reportData.total} type='PartTime'/>
+            </Tab>
+            <Tab label='By Weeks in Program'>
+              <JobsReportTable title='Weeks in Program' data={this.state.reportData.byWeeksInProgram} total={this.state.reportData.total} type='PartTime'/>
             </Tab>
             <Tab label='Income Comparison'>
               <JobsReportIncomeComparisonTable data={this.state.reportData.incomeComparison}/>

@@ -149,7 +149,7 @@ const getJobData = (dates, order, type) => {
   return knex.select(...fields, weeks).from('status_of_learners')
     .whereRaw('("metaStage" = ? OR "metaStage" = ?)  AND created_at >= ? AND created_at < ? ' ,
     ['Job Search', 'ISA Payment', dates.reportStart, dates.reportEnd])
-    .orderBy(order, 'asc')
+    .orderBy(order, 'desc')
     .then(rows => {
       return formatData(rows, type)
     })
@@ -225,7 +225,7 @@ const orderIncomeSegments = segArr => {
     return byIncomeSegments.filter(Boolean)
 }
 
-const formatData = async (data, type) => {
+const formatData = (data, type) => {
   const segments = []
   let segmentData = {
           segment: '',
@@ -254,7 +254,6 @@ const formatData = async (data, type) => {
 
   data.forEach((learner, index) => {
     let segment = getSegment(learner, type)
-
     if (index === 0) {
       segmentData.segment = segment
     }
@@ -346,6 +345,10 @@ const formatData = async (data, type) => {
   })
   if (type === 'byIncome') {
     return orderIncomeSegments(segments)
+  }
+
+  if (type === 'byWeeksInProgram') {
+    return _.reverse(segments)
   }
   return segments
 }

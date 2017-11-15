@@ -13,10 +13,12 @@ class JobsReportTable extends Component {
     if (this.props.data) {
       const reportData = this.props.data
       const total = this.props.total[0]
+      const type = this.props.type
     return (
       <Table selectable={false} style={{ marginTop: 10 }}>
         <TableHead>
           <TableCell>{this.props.title}</TableCell>
+          <TableCell numeric>In Job Search</TableCell>
           <TableCell numeric>In Job</TableCell>
           <TableCell numeric>In Payment</TableCell>
           <TableCell numeric>In Deferment</TableCell>
@@ -31,30 +33,32 @@ class JobsReportTable extends Component {
         {reportData.map((item, idx) => (
           <TableRow key={idx}>
             <TableCell>{item.segment}</TableCell>
-            <TableCell numeric>{item.inJob}</TableCell>
-            <TableCell numeric>{item.inPayment}</TableCell>
-            <TableCell numeric>{item.inDeferment}</TableCell>
-            <TableCell numeric>{item.currentOnPayments}</TableCell>
-            <TableCell numeric>{item.noPaymentsMade}</TableCell>
-            <TableCell numeric>{item.pastDueButHaveMadePayments}</TableCell>
-            <TableCell numeric>${item.avgSalary}</TableCell>
-            <TableCell numeric>${item.avgReportedSalary}</TableCell>
-            <TableCell numeric>{(item.avgPIFPercent * 100).toFixed(2)}%</TableCell>
-            <TableCell numeric>{(item.avgLLFPercent * 100).toFixed(2)}%</TableCell>
+            <TableCell numeric>{item.inJobSearch}</TableCell>
+            <TableCell numeric>{item[`inJob${type}`]}</TableCell>
+            <TableCell numeric>{item[`inPayment${type}`]}</TableCell>
+            <TableCell numeric>{item[`inDeferment${type}`]}</TableCell>
+            <TableCell numeric>{item[`currentOnPayments${type}`]}</TableCell>
+            <TableCell numeric>{item[`noPaymentsMade${type}`]}</TableCell>
+            <TableCell numeric>{item[`pastDueButHaveMadePayments${type}`]}</TableCell>
+            <TableCell numeric>${item[`avgSalary${type}`]}</TableCell>
+            <TableCell numeric>${item[`avgReportedSalary${type}`]}</TableCell>
+            <TableCell numeric>{(item[`avgPIFPercent${type}`] * 100).toFixed(2)}%</TableCell>
+            <TableCell numeric>{(item[`avgLLFPercent${type}`] * 100).toFixed(2)}%</TableCell>
           </TableRow>
         ))}
         <TableRow>
             <TableCell><strong>{total.segment}</strong></TableCell>
-            <TableCell numeric><strong>{total.inJob}</strong></TableCell>
-            <TableCell numeric><strong>{total.inPayment}</strong></TableCell>
-            <TableCell numeric><strong>{total.inDeferment}</strong></TableCell>
-            <TableCell numeric><strong>{total.currentOnPayments}</strong></TableCell>
-            <TableCell numeric><strong>{total.noPaymentsMade}</strong></TableCell>
-            <TableCell numeric><strong>{total.pastDueButHaveMadePayments}</strong></TableCell>
-            <TableCell numeric><strong>${total.avgSalary}</strong></TableCell>
-            <TableCell numeric><strong>${total.avgReportedSalary}</strong></TableCell>
-            <TableCell numeric><strong>{(total.avgPIFPercent * 100).toFixed(2)}%</strong></TableCell>
-            <TableCell numeric><strong>{(total.avgLLFPercent * 100).toFixed(2)}%</strong></TableCell>
+            <TableCell numeric><strong>{total.inJobSearch}</strong></TableCell>
+            <TableCell numeric><strong>{total[`inJob${type}`]}</strong></TableCell>
+            <TableCell numeric><strong>{total[`inPayment${type}`]}</strong></TableCell>
+            <TableCell numeric><strong>{total[`inDeferment${type}`]}</strong></TableCell>
+            <TableCell numeric><strong>{total[`currentOnPayments${type}`]}</strong></TableCell>
+            <TableCell numeric><strong>{total[`noPaymentsMade${type}`]}</strong></TableCell>
+            <TableCell numeric><strong>{total[`pastDueButHaveMadePayments${type}`]}</strong></TableCell>
+            <TableCell numeric><strong>${total[`avgSalary${type}`]}</strong></TableCell>
+            <TableCell numeric><strong>${total[`avgReportedSalary${type}`]}</strong></TableCell>
+            <TableCell numeric><strong>{(total[`avgPIFPercent${type}`] * 100).toFixed(2)}%</strong></TableCell>
+            <TableCell numeric><strong>{(total[`avgLLFPercent${type}`] * 100).toFixed(2)}%</strong></TableCell>
           </TableRow>
       </Table>
     )
