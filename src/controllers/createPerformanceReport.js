@@ -175,7 +175,7 @@ const createAdvancementTableData = async (cohorts, learnerData) => {
   return tableData
 }
 
-const createAssessmentTableData = async (learnerData) => {
+const createAssessmentTableData = async learnerData => {
   const weekInPhase = await createContainer('assessment', utils.assessmentSegments)
   learnerData.forEach(learner => {
     let phase = learner.phase
@@ -215,6 +215,50 @@ const createAssessmentTableData = async (learnerData) => {
   return weekInPhase
 }
 
+const createCurrentLearnersTableData = async learnerData => {
+  const currentLearners = {
+    phase1: _.filter(learnerData, o => { return o.phase === 'Phase 1'}).length,
+    phase2: _.filter(learnerData, o => { return o.phase === 'Phase 2'}).length,
+    phase3: _.filter(learnerData, o => { return o.phase === 'Phase 3'}).length,
+    phase4: _.filter(learnerData, o => { return o.phase === 'Phase 4'}).length,
+    phase5: _.filter(learnerData, o => { return o.phase === 'Phase 5'}).length
+  }
+  return currentLearners
+}
+
+const createAvgWeeksTableData = async learnerData => {
+  const phaseData = {
+    phase1: [],
+    phase2: [],
+    phase3: [],
+    phase4: [],
+    phase5: []
+  }
+
+  learnerData.forEach(learner => {
+    utils.advancementPhases.forEach(phase => {
+      if (learner.phase !== `Phase ${phase}`) {
+        if (phase === 1 && learner.date_phase_2) {
+          phaseData.phase1.push(utils.advancementNumberOfWeeks(learner, phase))
+        } else if (phase === 5 && learner.date_phase_5 && learner.resignation_date) {
+          phaseData.phase5.push(utils.advancementNumberOfWeeks(learner, phase))
+        } else if (learner[`date_phase_${phase}`] && learner[`date_phase_${phase + 1}`]) {
+          phaseData[`phase${phase}`].push(utils.advancementNumberOfWeeks(learner, phase))
+        }
+      }
+    })
+  })
+
+  const weeksInPhase = {
+    phase1: _.mean(phaseData.phase1).toFixed(1),
+    phase2: _.mean(phaseData.phase2).toFixed(1),
+    phase3: _.mean(phaseData.phase3).toFixed(1),
+    phase4: _.mean(phaseData.phase4).toFixed(1),
+    phase5: _.mean(phaseData.phase5).toFixed(1),
+  }
+  return weeksInPhase
+}
+
 const getCohorts = () => {
   return knex('status_of_learners').select(knex.raw('to_char(enrollee_start_date, \'YYYY-MM\')'))
     .where('created_at', '>=', '2017-11-07')
@@ -235,11 +279,18 @@ const getLearnerData = () => {
     .catch(err => { console.log(err) })
 }
 
-export const report = async (cb) => {
-  const cohorts = await getCohorts()
-  const learnerData = await getLearnerData()
-  const reportData = await createAdvancementTableData(cohorts, learnerData)
-  reportData.weekInPhase = await createAssessmentTableData(learnerData) 
-  cb(reportData)
+export const report = async cb => {
+  try {
+    const cohorts = await getCohorts()
+    const learnerData = await getLearnerData()
+    const reportData = await createAdvancementTableData(cohorts, learnerData)
+    reportData.weekInPhase = await createAssessmentTableData(learnerData)
+    reportData.currentLearners =  await createCurrentLearnersTableData(learnerData)
+    reportData.avgWeeks = await createAvgWeeksTableData(learnerData)
+    cb(null, reportData)
+  } catch(err) {
+    console.log(err)
+    cb(err)
+  }
 }
 

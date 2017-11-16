@@ -31,8 +31,12 @@ router.get('/reports/createjobsreport', (req, res) => {
 })
 
 router.get('/reports/createperformancereport', (req, res) => {
-  controllers.createPerformanceReport.report(data => {
-    res.status(201).send(data)
+  controllers.createPerformanceReport.report((err, data) => {
+    if (err) {
+      res.status(501).send(err)
+    } else {
+      res.status(201).send(data)
+    }
   })
 })
 

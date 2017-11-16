@@ -112,7 +112,6 @@ class PerformanceReportPhaseAdvancementTable extends Component {
                 <TableRow key={idx}>
                   <TableCell>{item.segment}</TableCell>
                   <TableCell numeric>{item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]}</TableCell>
-                    <TableCell numeric>{item[`${phase}LessThan6`]} ({Math.round(item[`${phase}LessThan6`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
                     <TableCell numeric>{item[`${phase}In6OrLess`]} ({Math.round(item[`${phase}In6OrLess`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
                     <TableCell numeric>{item[`${phase}In7Or8`]} ({Math.round(item[`${phase}In7Or8`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
                     <TableCell numeric>{item[`${phase}MoreThan8`]} ({Math.round(item[`${phase}MoreThan8`]/(item[`${phase}Advanced`] + item[`${phase}HasNotAdvanced`] + item[`${phase}GraduatedEarly`]) * 100)}%)</TableCell>
