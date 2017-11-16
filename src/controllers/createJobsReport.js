@@ -25,21 +25,6 @@ const fields = [
   'employed_in_or_out_of_field'
 ]
 
-const getIncomeComparisonData = (dates) => {
-  return knex.select('income_level').from('status_of_learners')
-    .whereRaw('created_at >= ? AND created_at < ?', [dates.reportStart, dates.reportEnd])
-    .then(preGuild => {
-       return knex.select('learner_s_starting_salary').from('status_of_learners')
-        .whereRaw('employed_in_or_out_of_field = ? AND employment_type = ? AND created_at >= ? AND created_at < ?' ,
-          ['Employed In Field', 'Full Time Position', dates.reportStart, dates.reportEnd])
-        .then(postGuild => {
-          return formatIncomeComparisonData(preGuild, postGuild)
-        })
-        .catch(err => console.log(err))
-    })
-    .catch(err => console.log(err))
-}
-
 const formatIncomeComparisonData = (preGuildData, postGuildData) => {
   const comparisonData = {
     segments: [
@@ -74,20 +59,28 @@ const formatIncomeComparisonData = (preGuildData, postGuildData) => {
   comparisonData.postGuildTotal = _.reduce(comparisonData.segments, (sum, o) => { return sum + o.postGuild }, 0)
   return comparisonData
 }
-const getPostGuildIncomeData = () => {
-  return knex.select('learner_s_starting_salary', 'employment_type').from('status_of_learners')
-    .whereRaw('employed_in_or_out_of_field = ? AND created_at >= ? AND learner_s_starting_salary > ?' ,
-    ['Employed In Field', moment().subtract(8, 'hours').format('YYYY-MM-DD'), 0])
-    .orderBy('learner_s_starting_salary', 'asc')
-    .then(rows => {
-      return formatPostGuildIncomeData(rows)
+
+const getIncomeComparisonData = (dates) => {
+  return knex.select('income_level').from('status_of_learners')
+    .whereRaw('created_at >= ? AND created_at < ?', [dates.reportStart, dates.reportEnd])
+    .then(preGuild => {
+       return knex.select('learner_s_starting_salary', 'employment_type').from('status_of_learners')
+        .whereRaw('employed_in_or_out_of_field = ? AND created_at >= ? AND created_at < ?' ,
+          ['Employed In Field', dates.reportStart, dates.reportEnd])
+        .then(postGuild => {
+          const comparisonData = {}
+          comparisonData.fullTime = formatIncomeComparisonData(preGuild, _.filter(postGuild, o => { return o.employment_type === 'Full Time Position' }))
+          comparisonData.partTime = formatIncomeComparisonData(preGuild, _.filter(postGuild, o => { return o.employment_type === 'Part Time Position' }))
+          return comparisonData
+        })
+        .catch(err => console.log(err))
     })
     .catch(err => console.log(err))
 }
 
 const formatPostGuildIncomeData = (data) => {
-  const fullTime = _.filter(data, o => {return o.employment_type === 'Full Time Position'})
-  const partTime = _.filter(data, o => {return o.employment_type === 'Part Time Position'})
+  const fullTime = _.filter(data, o => { return o.employment_type === 'Full Time Position' })
+  const partTime = _.filter(data, o => { return o.employment_type === 'Part Time Position' })
   const tableData = {
     counts: [
       {
@@ -144,6 +137,18 @@ const formatPostGuildIncomeData = (data) => {
   }
   return tableData
 }
+
+const getPostGuildIncomeData = () => {
+  return knex.select('learner_s_starting_salary', 'employment_type').from('status_of_learners')
+    .whereRaw('employed_in_or_out_of_field = ? AND created_at >= ? AND learner_s_starting_salary > ?' ,
+    ['Employed In Field', moment().subtract(8, 'hours').format('YYYY-MM-DD'), 0])
+    .orderBy('learner_s_starting_salary', 'asc')
+    .then(rows => {
+      return formatPostGuildIncomeData(rows)
+    })
+    .catch(err => console.log(err))
+}
+
 const getJobData = (dates, order, type) => {
   let weeks = knex.raw('resignation_date::DATE - enrollee_start_date::DATE').wrap('(', ')/7::INT AS weeks')
   return knex.select(...fields, weeks).from('status_of_learners')

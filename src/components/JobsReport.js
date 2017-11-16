@@ -124,7 +124,7 @@ class JobsReport extends Component {
                 <JobsReportTable title='Weeks in Program' data={this.state.reportData.byWeeksInProgram} total={this.state.reportData.total} type='FullTime'/>
               </Tab>
               <Tab label='Income Comparison'>
-                <JobsReportIncomeComparisonTable data={this.state.reportData.incomeComparison}/>
+                <JobsReportIncomeComparisonTable data={this.state.reportData.incomeComparison} type='fullTime'/>
               </Tab>
             </Tabs>
           </div>
@@ -147,7 +147,7 @@ class JobsReport extends Component {
                 <JobsReportTable title='Weeks in Program' data={this.state.reportData.byWeeksInProgram} total={this.state.reportData.total} type='PartTime'/>
               </Tab>
               <Tab label='Income Comparison'>
-                <JobsReportIncomeComparisonTable data={this.state.reportData.incomeComparison}/>
+                <JobsReportIncomeComparisonTable data={this.state.reportData.incomeComparison} type='partTime'/>
               </Tab>
             </Tabs>
           </div>

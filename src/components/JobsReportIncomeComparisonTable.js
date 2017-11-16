@@ -11,7 +11,7 @@ class JobsReportIncomeComparisonTable extends Component {
 
   render() {
     if (this.props.data) {
-      const incomeComparison = this.props.data
+      const incomeComparison = this.props.data[this.props.type]
     return (
       <Table selectable={false}>
         <TableHead>
