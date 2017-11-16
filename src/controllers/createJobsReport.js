@@ -298,7 +298,7 @@ const formatData = (data, type) => {
       llfPercentFullTime = []
     }
 
-    if (learner.employed_in_or_out_of_field !== 'Employed In Field') {
+    if (learner.employed_in_or_out_of_field !== 'Employed In Field' || !learner.employment_type) {
       segmentData.inJobSearch++
     } else {
       let status = learner.employment_type === 'Full Time Position' ? 'FullTime' : 'PartTime'
