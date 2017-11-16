@@ -97,7 +97,7 @@ exports.advancementTemplate = {
 
 exports.advancementPhases = [1, 2, 3, 4, 5]
 
-exports.assessmentSegments = ['Total', '1', '2', '3', '4', '5', '6', '7', '8', '8+']
+exports.assessmentSegments = ['Total', '<= 6', '7-8', '8+']
 
 exports.assessmentTemplate = {
   segment: '',
@@ -199,12 +199,10 @@ exports.advancementNumberOfWeeks = (learner, phase) => {
 
 exports.assessmentNumberOfWeeks = (learner, phase) => {
   let weeks = moment().utc().diff(moment(learner[`date_phase_${phase}`]).subtract(7, 'days'), 'weeks')
-  if (weeks <= 8) {
-    if (weeks <= 0) {
-      return '1'
-    } else {
-      return weeks.toString()
-    }
+  if (weeks <= 6) {
+      return '<= 6'
+  } else if(weeks <= 8) {
+    return '7-8'    
   } else {
     return '8+'
   }
