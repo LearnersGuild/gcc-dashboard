@@ -76,5 +76,9 @@ exports.properties = [
   'phase_3_interview_outcome',
   'phase_4_interview_outcome',
   'isa_income_docs_received',
-  'isa_deferment_type'
+  'isa_deferment_type',
+  'pif_first_payment_due_date',
+  'llf_first_payment_due_date',
+  'pif_monthly_payment_amount',
+  'llf_monthly_payment_amount'
 ]
