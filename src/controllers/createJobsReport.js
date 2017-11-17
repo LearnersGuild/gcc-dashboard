@@ -154,7 +154,7 @@ const getJobData = (dates, order, type) => {
   return knex.select(...fields, weeks).from('status_of_learners')
     .whereRaw('("metaStage" = ? OR "metaStage" = ?)  AND created_at >= ? AND created_at < ? ' ,
     ['Job Search', 'ISA Payment', dates.reportStart, dates.reportEnd])
-    .orderBy(order, 'desc')
+    .orderBy(order, 'asc')
     .then(rows => {
       return formatData(rows, type)
     })
@@ -335,38 +335,40 @@ const formatData = (data, type) => {
       if (learner.llf_income_percent) {
         status === 'FullTime' ? llfPercentFullTime.push(parseFloat(learner.llf_income_percent)) : llfPercentPartTime.push(parseFloat(learner.llf_income_percent))
       }
-      if (index === data.length - 1) {
-        segmentData.avgSalaryFullTime = salaryFullTime.length > 0 ? _.round(_.mean(salaryFullTime)) : 0
-        segmentData.avgSalaryPartTime = salaryPartTime.length > 0 ? _.round(_.mean(salaryPartTime)) : 0
-        segmentData.avgReportedSalaryFullTime = reportedSalaryFullTime.length > 0 ? _.round(_.mean(reportedSalaryFullTime)) : 0
-        segmentData.avgReportedSalaryPartTime = reportedSalaryPartTime.length > 0 ? _.round(_.mean(reportedSalaryPartTime)) : 0
-        segmentData.avgPIFPercentFullTime = pifPercentFullTime.length > 0 ? _.mean(pifPercentFullTime).toFixed(4) : 0
-        segmentData.avgPIFPercentPartTime = pifPercentPartTime.length > 0 ? _.mean(pifPercentPartTime).toFixed(4) : 0
-        segmentData.avgLLFPercentFullTime = llfPercentFullTime.length > 0 ? _.mean(llfPercentFullTime).toFixed(4) : 0
-        segmentData.avgLLFPercentPartTime = llfPercentPartTime.length > 0 ? _.mean(llfPercentPartTime).toFixed(4) : 0
-        segments.push(segmentData)
-      }
+    }
+    
+    if (index === data.length - 1) {
+      segmentData.avgSalaryFullTime = salaryFullTime.length > 0 ? _.round(_.mean(salaryFullTime)) : 0
+      segmentData.avgSalaryPartTime = salaryPartTime.length > 0 ? _.round(_.mean(salaryPartTime)) : 0
+      segmentData.avgReportedSalaryFullTime = reportedSalaryFullTime.length > 0 ? _.round(_.mean(reportedSalaryFullTime)) : 0
+      segmentData.avgReportedSalaryPartTime = reportedSalaryPartTime.length > 0 ? _.round(_.mean(reportedSalaryPartTime)) : 0
+      segmentData.avgPIFPercentFullTime = pifPercentFullTime.length > 0 ? _.mean(pifPercentFullTime).toFixed(4) : 0
+      segmentData.avgPIFPercentPartTime = pifPercentPartTime.length > 0 ? _.mean(pifPercentPartTime).toFixed(4) : 0
+      segmentData.avgLLFPercentFullTime = llfPercentFullTime.length > 0 ? _.mean(llfPercentFullTime).toFixed(4) : 0
+      segmentData.avgLLFPercentPartTime = llfPercentPartTime.length > 0 ? _.mean(llfPercentPartTime).toFixed(4) : 0
+      segments.push(segmentData)
     }
   })
   if (type === 'byIncome') {
     return orderIncomeSegments(segments)
   }
-
-  if (type === 'byWeeksInProgram' || type === 'byCohort') {
-    return _.reverse(segments)
-  }
   return segments
 }
 
 export const report =  async (dates, cb) => {
-  const reportData = {}
-  reportData.byCohort         = await getJobData(dates, 'enrollee_start_date', 'byCohort')
-  reportData.byGender         = await getJobData(dates, 'gender', 'byGender')
-  reportData.byRace           = await getJobData(dates, 'race', 'byRace')
-  reportData.byIncome         = await getJobData(dates, 'income_level', 'byIncome' )
-  reportData.byWeeksInProgram = await getJobData(dates, 'weeks', 'byWeeksInProgram')
-  reportData.total            = await getJobData(dates, 'enrollee_start_date', 'Total')
-  reportData.postGuildIncome  = await getPostGuildIncomeData()
-  reportData.incomeComparison = await getIncomeComparisonData(dates)
-  cb(reportData)
+  try {
+    const reportData = {}
+    reportData.byCohort         = await getJobData(dates, 'enrollee_start_date', 'byCohort')
+    reportData.byGender         = await getJobData(dates, 'gender', 'byGender')
+    reportData.byRace           = await getJobData(dates, 'race', 'byRace')
+    reportData.byIncome         = await getJobData(dates, 'income_level', 'byIncome' )
+    reportData.byWeeksInProgram = await getJobData(dates, 'weeks', 'byWeeksInProgram')
+    reportData.total            = await getJobData(dates, 'enrollee_start_date', 'Total')
+    reportData.postGuildIncome  = await getPostGuildIncomeData()
+    reportData.incomeComparison = await getIncomeComparisonData(dates)
+    cb(null, reportData)
+  } catch(err) {
+    console.log(err)
+    cb(err)
+  }
 }
