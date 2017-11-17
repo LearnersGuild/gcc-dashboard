@@ -74,5 +74,7 @@ exports.properties = [
   'phase_1_interview_outcome',
   'phase_2_interview_outcome',
   'phase_3_interview_outcome',
-  'phase_4_interview_outcome'
+  'phase_4_interview_outcome',
+  'isa_income_docs_received',
+  'isa_deferment_type'
 ]

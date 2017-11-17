@@ -55,7 +55,9 @@ export const clearHubspotData = (data, email) => {
       {property: 'llf_date_signed', value: ''},
       {property: 'llf_status', value: ''},
       {property: 'isa_data', value: ''},
-      {property: 'isa_payments_past_due', value: ''}
+      {property: 'isa_payments_past_due', value: ''},
+      {property: 'isa_deferment_type', value: ''},
+      {property: 'isa_income_docs_received', value: ''}
     ]
   }
   return clearedData
@@ -76,7 +78,9 @@ export const readWorkbook = (filepath, callback) => {
         pifCount: 0,
         isa_data: [],
         collectionStatus: false,
-        totalPaymentsReceived: false
+        totalPaymentsReceived: false,
+        isaDefermentType: false,
+        isaIncomeDocsReceived: false
       }
     }
     data[email].isa_data.push(row)
@@ -109,14 +113,23 @@ export const readWorkbook = (filepath, callback) => {
           data[email].totalPaymentsReceived = true
         }
 
+        if (row['Deferment Type'] && !data[email].isaDefermentType) {
+          data[email].properties.push({property: 'isa_deferment_type', value: row['Deferment Type']})
+          data[email].isaDefermentType = true
+        }
+
         if (row['Collection Status'] && !data[email].collectionStatus) {
           data[email].properties.push({property: 'isa_payments_past_due', value: 'TRUE'})
           data[email].collectionStatus = true
         }
 
-        if (row['Income Documents Received'] === 'Income Docs Received' && row['Learners Monthly Salary']) {
-          let value = row['Learners Monthly Salary'].replace(/[^0-9\.]+/g,"") * 12
-          data[email].properties.push({property: 'learner_s_starting_salary', value: value})
+        if (row['Income Documents Received'] === 'Income Docs Received' && !data[email].isaIncomeDocsReceived) {
+          if (row['Learners Monthly Salary']) {
+            let value = row['Learners Monthly Salary'].replace(/[^0-9\.]+/g,"") * 12
+            data[email].properties.push({property: 'learner_s_starting_salary', value: value})
+          }
+          data[email].properties.push({property: 'isa_income_docs_received', value: 'TRUE'})
+          data[email].isaIncomeDocsReceived = true
         }
 
         if (type === 'llf') {
