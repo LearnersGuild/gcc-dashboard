@@ -176,7 +176,7 @@ const formatData = (data, type) => {
   return segments
 }
 
-const report =  async (dates, cb) => {
+export const report =  async (cb) => {
   try {
     const reportData = {}
     const learnerData = await getISAData()
@@ -206,7 +206,7 @@ const report =  async (dates, cb) => {
     })
     reportData.noIncomeDocsReceived = _.filter(learnerData, o => { return !o.isa_income_docs_received })
     reportData.incomeDocsReceived = _.filter(learnerData, o => { return o.isa_income_docs_received }) 
-    reportData.hasMadePayments = _.filter(learnerData, o => { 
+    reportData.haveMadePayments = _.filter(learnerData, o => { 
       if (o.llf_payment_count > 0 || o.pif_payment_count > 0) {
         return o
       }
@@ -218,5 +218,3 @@ const report =  async (dates, cb) => {
     cb(err)
   }
 }
-
-report()
