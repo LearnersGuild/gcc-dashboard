@@ -44,4 +44,14 @@ router.get('/reports/createperformancereport', (req, res) => {
   })
 })
 
+router.get('/reports/createisareport', (req, res) => {
+  controllers.createISAReport.report((err, data) => {
+    if (err) {
+      res.status(501).send(err)
+    } else {
+      res.status(201).send(data)
+    }
+  })
+})
+
 module.exports = router
