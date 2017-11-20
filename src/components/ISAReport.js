@@ -5,6 +5,7 @@ import CardText from 'react-toolbox/lib/card/CardText'
 import CardTitle from 'react-toolbox/lib/card/CardTitle'
 import Tabs from 'react-toolbox/lib/tabs/Tabs'
 import Tab from 'react-toolbox/lib/tabs/Tab'
+import ISAReportDetailTable from './ISAReportDetailTable'
 
 
 class ISAReport extends Component {
@@ -31,44 +32,50 @@ class ISAReport extends Component {
   }
 
   render() {
-    return (
-      <div>
-        <Card style={{marginTop: '2em'}}>
-          <CardTitle title='Exited Learner Details'/>
-          <CardText>
-            <Tabs index={this.state.index} onChange={this.handleTabChange}>
-              <Tab label='Total w/Active ISAs'>
-                {/*<PerformanceReportPhaseAdvancementTable title='Demographic' data={this.state.reportData.demo} phase={'phase1'}/>*/}
-              </Tab>
-              <Tab label='School/Pending ISA Adjustment'>
-                
-              </Tab>
-              <Tab label='Grace'>
-                
-              </Tab>
-              <Tab label='Payment'>
-                
-              </Tab>
-              <Tab label='Deferment'>
-                
-              </Tab>
-              <Tab label='Income Docs Received'>
-                
-              </Tab>
-              <Tab label='No Income Docs Received'>
-                
-              </Tab>
-              <Tab label='Have Made Payments'>
-                
-              </Tab>
-              <Tab label='Past Due'>
-                
-              </Tab>
-            </Tabs>
-          </CardText>
-        </Card>
-      </div>
-    )
+    if (this.state.reportData) {
+      return (
+        <div>
+          <Card style={{marginTop: '2em'}}>
+            <CardTitle title='Exited Learner Details'/>
+            <CardText>
+              <Tabs index={this.state.index} onChange={this.handleTabChange}>
+                <Tab label='Total w/Active ISAs'>
+                  <ISAReportDetailTable data={this.state.reportData.exitedWithActiveISA}/>
+                </Tab>
+                <Tab label='School/Pending ISA Adjustment'>
+
+                </Tab>
+                <Tab label='Grace'>
+
+                </Tab>
+                <Tab label='Payment'>
+
+                </Tab>
+                <Tab label='Deferment'>
+
+                </Tab>
+                <Tab label='Income Docs Received'>
+
+                </Tab>
+                <Tab label='No Income Docs Received'>
+
+                </Tab>
+                <Tab label='Have Made Payments'>
+
+                </Tab>
+                <Tab label='Past Due'>
+
+                </Tab>
+              </Tabs>
+            </CardText>
+          </Card>
+        </div>
+      )
+    } else {
+      return (
+        <div>Getting Report Data</div>
+      )
+    }
   }
 }
 
