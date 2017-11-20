@@ -43,28 +43,28 @@ class ISAReport extends Component {
                   <ISAReportDetailTable data={this.state.reportData.exitedWithActiveISA}/>
                 </Tab>
                 <Tab label='School/Pending ISA Adjustment'>
-
+                  <ISAReportDetailTable data={this.state.reportData.schoolAndPending}/>
                 </Tab>
                 <Tab label='Grace'>
-
+                  <ISAReportDetailTable data={this.state.reportData.grace}/>
                 </Tab>
                 <Tab label='Payment'>
-
+                  <ISAReportDetailTable data={this.state.reportData.payment}/>
                 </Tab>
                 <Tab label='Deferment'>
-
+                  <ISAReportDetailTable data={this.state.reportData.deferment}/>
                 </Tab>
                 <Tab label='Income Docs Received'>
-
+                  <ISAReportDetailTable data={this.state.reportData.incomeDocsReceived}/>
                 </Tab>
                 <Tab label='No Income Docs Received'>
-
+                  <ISAReportDetailTable data={this.state.reportData.noIncomeDocsReceived}/>
                 </Tab>
                 <Tab label='Have Made Payments'>
-
+                  <ISAReportDetailTable data={this.state.reportData.haveMadePayments}/>
                 </Tab>
                 <Tab label='Past Due'>
-
+                  <ISAReportDetailTable data={this.state.reportData.pastDue}/>
                 </Tab>
               </Tabs>
             </CardText>

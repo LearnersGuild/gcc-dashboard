@@ -176,10 +176,55 @@ const formatData = (data, type) => {
   return segments
 }
 
+const formatLearnerData = learnerData => {
+  return learnerData.map(rawLearner => {
+    let learner = Object.assign({}, rawLearner)
+    learner.enrollee_start_date = moment(learner.enrollee_start_date).format('YYYY-MM-DD')
+    learner.resignation_date = moment(learner.resignation_date).format('YYYY-MM-DD')
+    learner.learner_s_starting_salary = learner.learner_s_starting_salary > 0 ? learner.learner_s_starting_salary : 0
+    learner.pif_income_percent = parseFloat(learner.pif_income_percent * 100).toFixed(1)
+    learner.llf_income_percent = parseFloat(learner.llf_income_percent * 100).toFixed(1)
+    learner.isa_payments_past_due = learner.isa_payments_past_due ? 'Past Due' : 'Current'
+    learner.isa_deferment_type = learner.isa_deferment_type ? learner.isa_deferment_type : ''
+    learner.isa_income_docs_received = learner.isa_income_docs_received ? 'Yes' : 'No'
+    learner.pif_monthly_payment_amount = parseFloat(learner.pif_monthly_payment_amount) > 0 ? learner.pif_monthly_payment_amount : 0
+    learner.llf_monthly_payment_amount = parseFloat(learner.llf_monthly_payment_amount) > 0 ? learner.llf_monthly_payment_amount : 0
+    if (parseInt(learner.pif_payment_count, 10) > 0 && parseInt(learner.llf_payment_count, 10) > 0) {
+      learner.total_payment_count = learner.pif_payment_count
+    } else if (parseInt(learner.pif_payment_count, 10) > 0) {
+      learner.total_payment_count = learner.pif_payment_count
+    } else if (parseInt(learner.llf_payment_count, 10) > 0) {
+      learner.total_payment_count = learner.llf_payment_count
+    } else {
+      learner.total_payment_count = 0
+    }
+    return learner
+  })
+
+  // 'firstname',
+  // 'lastname',
+  // 'enrollee_start_date',
+  // 'resignation_date',
+  // 'learner_s_starting_salary',
+  // 'llf_status',
+  // 'pif_status',
+  // 'llf_payment_count',
+  // 'pif_payment_count',
+  // 'llf_income_percent',
+  // 'pif_income_percent',
+  // 'isa_payments_past_due',
+  // 'isa_income_docs_received',
+  // 'isa_deferment_type',
+  // 'pif_monthly_payment_amount',
+  // 'llf_monthly_payment_amount'
+
+}
+
 export const report =  async (cb) => {
   try {
     const reportData = {}
-    const learnerData = await getISAData()
+    const rawLearnerData = await getISAData()
+    const learnerData = formatLearnerData(rawLearnerData)
     reportData.exitedWithActiveISA = learnerData
     reportData.schoolAndPending = _.filter(learnerData, o => { 
       if (o.pif_status === 'School' ||
@@ -204,17 +249,21 @@ export const report =  async (cb) => {
         return o
       }
     })
-    reportData.noIncomeDocsReceived = _.filter(learnerData, o => { return !o.isa_income_docs_received })
-    reportData.incomeDocsReceived = _.filter(learnerData, o => { return o.isa_income_docs_received }) 
-    reportData.haveMadePayments = _.filter(learnerData, o => { 
-      if (o.llf_payment_count > 0 || o.pif_payment_count > 0) {
-        return o
-      }
-    })
-    reportData.pastDue = _.filter(learnerData, o => { return o.isa_payments_past_due })
+    reportData.noIncomeDocsReceived = _.filter(learnerData, o => { return o.isa_income_docs_received === 'No' })
+    reportData.incomeDocsReceived = _.filter(learnerData, o => { return o.isa_income_docs_received === 'Yes' }) 
+    reportData.haveMadePayments = _.filter(learnerData, o => { return o.total_payment_count > 0 })
+    reportData.pastDue = _.filter(learnerData, o => { return o.isa_payments_past_due === 'Past Due' })
     cb(null, reportData)
   } catch(err) {
     console.log(err)
     cb(err)
   }
 }
+
+// const report =  async () => {
+//     const rawLearnerData = await getISAData()
+//     const learnerData = formatLearnerData(rawLearnerData)
+//     console.log(rawLearnerData[0])
+//     console.log(learnerData[0])
+// }
+// report()

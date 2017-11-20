@@ -31,16 +31,16 @@ class ISAReportDetailTable extends Component {
           return (
             <TableRow key={idx}>
               <TableCell>{item.firstname} {item.lastname}</TableCell>
-              <TableCell numeric>{moment(item.enrollee_start_date).format('YYYY-MM-DD')}</TableCell>
-              <TableCell numeric>{moment(item.resignation_date).format('YYYY-MM-DD')}</TableCell>
-              <TableCell numeric>${parseInt(item.learner_s_starting_salary, 10)}</TableCell>
-              <TableCell numeric>{parseFloat(item.pif_income_percent * 100).toFixed(1)}%</TableCell>
-              <TableCell numeric>{parseFloat(item.llf_income_percent * 100).toFixed(1)}%</TableCell>
-              <TableCell> </TableCell>
+              <TableCell numeric>{item.enrollee_start_date}</TableCell>
+              <TableCell numeric>{item.resignation_date}</TableCell>
+              <TableCell numeric>${item.learner_s_starting_salary}</TableCell>
+              <TableCell numeric>{item.pif_income_percent}%</TableCell>
+              <TableCell numeric>{item.llf_income_percent}%</TableCell>
+              <TableCell>{item.isa_payments_past_due}</TableCell>
               <TableCell>{item.isa_deferment_type}</TableCell>
               <TableCell>{item.isa_income_docs_received}</TableCell>
-              <TableCell numeric> </TableCell>
-              <TableCell numeric> </TableCell>
+              <TableCell numeric>${(parseFloat(item.llf_monthly_payment_amount) + parseFloat(item.pif_monthly_payment_amount)).toFixed(2)}</TableCell>
+              <TableCell numeric>{parseInt(item.total_payment_count, 10)}</TableCell>
             </TableRow>
           )
         })}
