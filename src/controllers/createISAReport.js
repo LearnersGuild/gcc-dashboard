@@ -23,12 +23,6 @@ const fields = [
   'llf_monthly_payment_amount'
 ]
 
-// const getISAData = async () => {
-//  //where resignation_date < today
-//  //and has_llf OR has_pif
- 
-// }
-
 const getISAData = () => {
   let today = moment.tz('America/Los_Angeles').format('YYYY-MM-DD')
   return knex.select(...fields).from('status_of_learners')
@@ -40,139 +34,86 @@ const getISAData = () => {
     })
     .catch(err => console.log(err))
 }
-getISAData()
 
-const getSegment = (learner, type) => {
-  if (type === 'byCohort') {
-      return moment(learner.enrollee_start_date).format('MMM-YY')
-  }
-  if (type === 'Total') {
-    return 'Total'
-  }
-}
-
-const formatData = (data, type) => {
+const formatSummaryData = (data) => {
   const segments = []
   let segmentData = {
           segment: '',
-          inJobSearch: 0,
-          inJobPartTime: 0,
-          inJobFullTime: 0,
-          inPaymentPartTime: 0,
-          inPaymentFullTime: 0,
-          inDefermentPartTime: 0,
-          inDefermentFullTime: 0,
-          currentOnPaymentsPartTime: 0,
-          currentOnPaymentsFullTime: 0,
-          noPaymentsMadePartTime: 0,
-          noPaymentsMadeFullTime: 0,
-          pastDueButHaveMadePaymentsPartTime: 0,
-          pastDueButHaveMadePaymentsFullTime: 0
+          exitedLearners: 0,
+          inSchoolOrPending: 0,
+          inGrace: 0,
+          inPayment: 0,
+          inDeferment: 0,
+          incomeDocsReceived: 0,
+          haveMadePayments: 0,
+          pastDue: 0,
+          currentOnPayments: 0,
+          pastDueButHaveMadePayments: 0
         }
-  let salaryPartTime = []
-  let salaryFullTime = []
-  let reportedSalaryPartTime = []
-  let reportedSalaryFullTime = []
-  let pifPercentPartTime = []
-  let pifPercentFullTime = []
-  let llfPercentPartTime = []
-  let llfPercentFullTime = []
-
+  const total = Object.assign({}, segmentData)
+  total.segment = 'Total'
+  segments.push(total)
+  let currentSegment
   data.forEach((learner, index) => {
-    let segment = getSegment(learner, type)
+    let segment = moment(learner.enrollee_start_date).format('YYYY-MM')
     if (index === 0) {
-      segmentData.segment = segment
+      currentSegment = Object.assign({}, segmentData)
+      currentSegment.segment = segment
     }
-    if (segmentData.segment !== segment) {
-      segmentData.avgSalaryFullTime = isNaN(_.round(_.mean(salaryFullTime))) ? 0 : _.round(_.mean(salaryFullTime))
-      segmentData.avgSalaryPartTime = isNaN(_.round(_.mean(salaryPartTime))) ? 0 : _.round(_.mean(salaryPartTime))
-      segmentData.avgReportedSalaryFullTime = isNaN(_.round(_.mean(reportedSalaryFullTime))) ? 0 : _.round(_.mean(reportedSalaryFullTime))
-      segmentData.avgReportedSalaryPartTime = isNaN(_.round(_.mean(reportedSalaryPartTime))) ? 0 : _.round(_.mean(reportedSalaryPartTime))
-      segmentData.avgPIFPercentFullTime = isNaN(_.mean(pifPercentFullTime).toFixed(4)) ? 0 : _.mean(pifPercentFullTime).toFixed(4)
-      segmentData.avgPIFPercentPartTime = isNaN(_.mean(pifPercentPartTime).toFixed(4)) ? 0 : _.mean(pifPercentPartTime).toFixed(4)
-      segmentData.avgLLFPercentFullTime = isNaN(_.mean(llfPercentFullTime).toFixed(4)) ? 0 : _.mean(llfPercentPartTime).toFixed(4)
-      segmentData.avgLLFPercentPartTime = isNaN(_.mean(llfPercentFullTime).toFixed(4)) ? 0 : _.mean(llfPercentPartTime).toFixed(4)
-      segments.push(segmentData)
-      segmentData = {
-        segment: segment,
-        inJobSearch: 0,
-        inJobPartTime: 0,
-        inJobFullTime: 0,
-        inPaymentPartTime: 0,
-        inPaymentFullTime: 0,
-        inDefermentPartTime: 0,
-        inDefermentFullTime: 0,
-        currentOnPaymentsPartTime: 0,
-        currentOnPaymentsFullTime: 0,
-        noPaymentsMadePartTime: 0,
-        noPaymentsMadeFullTime: 0,
-        pastDueButHaveMadePaymentsPartTime: 0,
-        pastDueButHaveMadePaymentsFullTime: 0
-      }
-      salaryPartTime = []
-      salaryFullTime = []
-      reportedSalaryPartTime = []
-      reportedSalaryFullTime = []
-      pifPercentPartTime = []
-      pifPercentFullTime = []
-      llfPercentPartTime = []
-      llfPercentFullTime = []
-    }
-
-    if (learner.employed_in_or_out_of_field !== 'Employed In Field' || !learner.employment_type) {
-      segmentData.inJobSearch++
-    } else {
-      let status = learner.employment_type === 'Full Time Position' ? 'FullTime' : 'PartTime'
-      segmentData[`inJob${status}`]++
-
-      if ((learner.pif_status === 'Payment' || learner.llf_status === 'Payment')) {
-        segmentData[`inPayment${status}`]++
-        if (!learner.isa_payments_past_due) {
-          segmentData[`currentOnPayments${status}`]++
-        }
-        if (learner.isa_payments_past_due) {
-          if (
-            parseInt(learner.pif_payment_count, 10)  ||
-            parseInt(learner.llf_payment_count, 10)
-          ) {
-            segmentData[`pastDueButHaveMadePayments${status}`]++
-          } else {
-            segmentData[`noPaymentsMade${status}`]++
-          }
-        }
-      }
-      if ((learner.pif_status === 'Deferment' || learner.llf_status === 'Deferment')) {
-        segmentData[`inDeferment${status}`]++
-      }
-      if (learner.learner_s_starting_salary) {
-        status === 'FullTime' ? salaryFullTime.push(parseFloat(learner.learner_s_starting_salary)) : salaryPartTime.push(parseFloat(learner.learner_s_starting_salary))
-      }
-      if (learner.learner_reported_salary) {
-        status === 'FullTime' ? reportedSalaryFullTime.push(parseFloat(learner.learner_reported_salary)) : reportedSalaryPartTime.push(parseFloat(learner.learner_reported_salary))
-      }
-      if (learner.pif_income_percent) {
-        status === 'FullTime' ? pifPercentFullTime.push(parseFloat(learner.pif_income_percent)) : pifPercentPartTime.push(parseFloat(learner.pif_income_percent))
-      }
-      if (learner.llf_income_percent) {
-        status === 'FullTime' ? llfPercentFullTime.push(parseFloat(learner.llf_income_percent)) : llfPercentPartTime.push(parseFloat(learner.llf_income_percent))
-      }
+    if (currentSegment.segment !== segment) {
+      segments.push(currentSegment)
+      currentSegment = Object.assign({}, segmentData)
+      currentSegment.segment = segment
     }
     
+    total.exitedLearners++
+    currentSegment.exitedLearners++
+
+    if (learner.pif_status === 'School' ||
+      learner.pif_status === 'Pending ISA Adjustment' ||
+      learner.llf_status === 'School' ||
+      learner.llf_status === 'Pending ISA Adjustment') {
+        total.inSchoolOrPending++
+        currentSegment.inSchoolOrPending++
+    } else if (learner.pif_status === 'Grace' || learner.llf_status === 'Grace') {
+      total.inGrace++
+      currentSegment.inGrace++
+    } else if (learner.pif_status === 'Payment' || learner.llf_status === 'Payment') {
+      total.inPayment++
+      currentSegment.inPayment++
+    } else if (learner.pif_status === 'Deferment' || learner.llf_status === 'Deferment') {
+      total.inDeferment++
+      currentSegment.inDeferment++
+    }
+    
+    if (learner.isa_income_docs_received === 'Yes') {
+      total.incomeDocsReceived++
+      currentSegment.incomeDocsReceived++
+    }
+
+    if (learner.total_payment_count > 0) {
+      total.haveMadePayments++
+      currentSegment.haveMadePayments++
+    }
+
+    if (learner.isa_payments_past_due === 'Past Due') {
+      total.pastDue++
+      currentSegment.pastDue++
+    }
+
+    if (learner.total_payment_count > 0 && learner.isa_payments_past_due === 'Current') {
+      total.currentOnPayments++
+      currentSegment.currentOnPayments++
+    }
+
+    if (learner.total_payment_count > 0 && learner.isa_payments_past_due === 'Past Due') {
+      total.pastDueButHaveMadePayments++
+      currentSegment.pastDueButHaveMadePayments++
+    }
     if (index === data.length - 1) {
-      segmentData.avgSalaryFullTime = salaryFullTime.length > 0 ? _.round(_.mean(salaryFullTime)) : 0
-      segmentData.avgSalaryPartTime = salaryPartTime.length > 0 ? _.round(_.mean(salaryPartTime)) : 0
-      segmentData.avgReportedSalaryFullTime = reportedSalaryFullTime.length > 0 ? _.round(_.mean(reportedSalaryFullTime)) : 0
-      segmentData.avgReportedSalaryPartTime = reportedSalaryPartTime.length > 0 ? _.round(_.mean(reportedSalaryPartTime)) : 0
-      segmentData.avgPIFPercentFullTime = pifPercentFullTime.length > 0 ? _.mean(pifPercentFullTime).toFixed(4) : 0
-      segmentData.avgPIFPercentPartTime = pifPercentPartTime.length > 0 ? _.mean(pifPercentPartTime).toFixed(4) : 0
-      segmentData.avgLLFPercentFullTime = llfPercentFullTime.length > 0 ? _.mean(llfPercentFullTime).toFixed(4) : 0
-      segmentData.avgLLFPercentPartTime = llfPercentPartTime.length > 0 ? _.mean(llfPercentPartTime).toFixed(4) : 0
-      segments.push(segmentData)
+      segments.push(currentSegment)
     }
   })
-  if (type === 'byIncome') {
-    return orderIncomeSegments(segments)
-  }
   return segments
 }
 
@@ -200,24 +141,6 @@ const formatLearnerData = learnerData => {
     }
     return learner
   })
-
-  // 'firstname',
-  // 'lastname',
-  // 'enrollee_start_date',
-  // 'resignation_date',
-  // 'learner_s_starting_salary',
-  // 'llf_status',
-  // 'pif_status',
-  // 'llf_payment_count',
-  // 'pif_payment_count',
-  // 'llf_income_percent',
-  // 'pif_income_percent',
-  // 'isa_payments_past_due',
-  // 'isa_income_docs_received',
-  // 'isa_deferment_type',
-  // 'pif_monthly_payment_amount',
-  // 'llf_monthly_payment_amount'
-
 }
 
 export const report =  async (cb) => {
@@ -225,6 +148,7 @@ export const report =  async (cb) => {
     const reportData = {}
     const rawLearnerData = await getISAData()
     const learnerData = formatLearnerData(rawLearnerData)
+    reportData.summary = formatSummaryData(learnerData)
     reportData.exitedWithActiveISA = learnerData
     reportData.schoolAndPending = _.filter(learnerData, o => { 
       if (o.pif_status === 'School' ||
@@ -259,11 +183,3 @@ export const report =  async (cb) => {
     cb(err)
   }
 }
-
-// const report =  async () => {
-//     const rawLearnerData = await getISAData()
-//     const learnerData = formatLearnerData(rawLearnerData)
-//     console.log(rawLearnerData[0])
-//     console.log(learnerData[0])
-// }
-// report()
