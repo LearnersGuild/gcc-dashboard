@@ -20,45 +20,24 @@ class JobsReportTable extends Component {
           <TableCell>{this.props.title}</TableCell>
           <TableCell numeric>In Job Search</TableCell>
           <TableCell numeric>In Job</TableCell>
-          <TableCell numeric>In Payment</TableCell>
-          <TableCell numeric>In Deferment</TableCell>
-          <TableCell numeric>Current On Payments</TableCell>
-          <TableCell numeric>No Payments Made</TableCell>
-          <TableCell numeric>Past Due but Have Made Payments</TableCell>
           <TableCell numeric>Avg Salary</TableCell>
           <TableCell numeric>Avg Reported Salary</TableCell>
-          <TableCell numeric>Avg PIF</TableCell>
-          <TableCell numeric>Avg LLF</TableCell>
         </TableHead>
         {reportData.map((item, idx) => (
           <TableRow key={idx}>
             <TableCell>{item.segment}</TableCell>
             <TableCell numeric>{item.inJobSearch}</TableCell>
             <TableCell numeric>{item[`inJob${type}`]}</TableCell>
-            <TableCell numeric>{item[`inPayment${type}`]}</TableCell>
-            <TableCell numeric>{item[`inDeferment${type}`]}</TableCell>
-            <TableCell numeric>{item[`currentOnPayments${type}`]}</TableCell>
-            <TableCell numeric>{item[`noPaymentsMade${type}`]}</TableCell>
-            <TableCell numeric>{item[`pastDueButHaveMadePayments${type}`]}</TableCell>
             <TableCell numeric>${item[`avgSalary${type}`]}</TableCell>
             <TableCell numeric>${item[`avgReportedSalary${type}`]}</TableCell>
-            <TableCell numeric>{(item[`avgPIFPercent${type}`] * 100).toFixed(2)}%</TableCell>
-            <TableCell numeric>{(item[`avgLLFPercent${type}`] * 100).toFixed(2)}%</TableCell>
           </TableRow>
         ))}
         <TableRow>
             <TableCell><strong>{total.segment}</strong></TableCell>
             <TableCell numeric><strong>{total.inJobSearch}</strong></TableCell>
             <TableCell numeric><strong>{total[`inJob${type}`]}</strong></TableCell>
-            <TableCell numeric><strong>{total[`inPayment${type}`]}</strong></TableCell>
-            <TableCell numeric><strong>{total[`inDeferment${type}`]}</strong></TableCell>
-            <TableCell numeric><strong>{total[`currentOnPayments${type}`]}</strong></TableCell>
-            <TableCell numeric><strong>{total[`noPaymentsMade${type}`]}</strong></TableCell>
-            <TableCell numeric><strong>{total[`pastDueButHaveMadePayments${type}`]}</strong></TableCell>
             <TableCell numeric><strong>${total[`avgSalary${type}`]}</strong></TableCell>
             <TableCell numeric><strong>${total[`avgReportedSalary${type}`]}</strong></TableCell>
-            <TableCell numeric><strong>{(total[`avgPIFPercent${type}`] * 100).toFixed(2)}%</strong></TableCell>
-            <TableCell numeric><strong>{(total[`avgLLFPercent${type}`] * 100).toFixed(2)}%</strong></TableCell>
           </TableRow>
       </Table>
     )
