@@ -81,6 +81,17 @@ const formatSummaryData = (data) => {
     } else if (learner.pif_status === 'Payment' || learner.llf_status === 'Payment') {
       total.inPayment++
       currentSegment.inPayment++
+      if (learner.total_payment_count > 0 && learner.isa_payments_past_due === 'Past Due') {
+        total.pastDueButHaveMadePayments++
+        currentSegment.pastDueButHaveMadePayments++
+      }
+      if (learner.isa_payments_past_due === 'Past Due') {
+        total.pastDue++
+        currentSegment.pastDue++
+      } else {
+        total.currentOnPayments++
+        currentSegment.currentOnPayments++
+      }
     } else if (learner.pif_status === 'Deferment' || learner.llf_status === 'Deferment') {
       total.inDeferment++
       currentSegment.inDeferment++
@@ -96,20 +107,6 @@ const formatSummaryData = (data) => {
       currentSegment.haveMadePayments++
     }
 
-    if (learner.isa_payments_past_due === 'Past Due') {
-      total.pastDue++
-      currentSegment.pastDue++
-    }
-
-    if (learner.total_payment_count > 0 && learner.isa_payments_past_due === 'Current') {
-      total.currentOnPayments++
-      currentSegment.currentOnPayments++
-    }
-
-    if (learner.total_payment_count > 0 && learner.isa_payments_past_due === 'Past Due') {
-      total.pastDueButHaveMadePayments++
-      currentSegment.pastDueButHaveMadePayments++
-    }
     if (index === data.length - 1) {
       segments.push(currentSegment)
     }

@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import Table from 'react-toolbox/lib/table/Table'
 import TableCell from 'react-toolbox/lib/table/TableCell'
 import TableRow from 'react-toolbox/lib/table/TableRow'
-import moment from 'moment'
 
 class ISAReportDetailTable extends Component {
   constructor(props) {

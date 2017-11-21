@@ -119,7 +119,7 @@ export const readWorkbook = (filepath, callback) => {
           data[email].isaDefermentType = true
         }
 
-        if (row['Collection Status'] && !data[email].collectionStatus) {
+        if (row['Collection Status'] === 'PAST DUE' && !data[email].collectionStatus) {
           data[email].properties.push({property: 'isa_payments_past_due', value: 'TRUE'})
           data[email].collectionStatus = true
         }

@@ -6,6 +6,7 @@ import CardTitle from 'react-toolbox/lib/card/CardTitle'
 import Tabs from 'react-toolbox/lib/tabs/Tabs'
 import Tab from 'react-toolbox/lib/tabs/Tab'
 import ISAReportDetailTable from './ISAReportDetailTable'
+import ISAReportSummaryTable from './ISAReportSummaryTable'
 
 
 class ISAReport extends Component {
@@ -35,6 +36,12 @@ class ISAReport extends Component {
     if (this.state.reportData) {
       return (
         <div>
+          <Card style={{marginTop: '2em'}}>
+            <CardTitle title='Exited Learner Summary'/>
+            <CardText>
+              <ISAReportSummaryTable data={this.state.reportData.summary}/>
+            </CardText>
+          </Card>
           <Card style={{marginTop: '2em'}}>
             <CardTitle title='Exited Learner Details'/>
             <CardText>
