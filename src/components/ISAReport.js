@@ -67,7 +67,7 @@ class ISAReport extends Component {
                 <Tab label='No Income Docs Received'>
                   <ISAReportDetailTable data={this.state.reportData.noIncomeDocsReceived}/>
                 </Tab>
-                <Tab label='Have Made Payments'>
+                <Tab label='Payments Made'>
                   <ISAReportDetailTable data={this.state.reportData.haveMadePayments}/>
                 </Tab>
                 <Tab label='Past Due'>

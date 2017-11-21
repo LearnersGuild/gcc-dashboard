@@ -10,6 +10,7 @@ const fields = [
   'enrollee_start_date',
   'resignation_date',
   'learner_s_starting_salary',
+  'learner_reported_salary',
   'llf_status',
   'pif_status',
   'llf_payment_count',
@@ -119,7 +120,14 @@ const formatLearnerData = learnerData => {
     let learner = Object.assign({}, rawLearner)
     learner.enrollee_start_date = moment(learner.enrollee_start_date).format('YYYY-MM-DD')
     learner.resignation_date = moment(learner.resignation_date).format('YYYY-MM-DD')
-    learner.learner_s_starting_salary = learner.learner_s_starting_salary > 0 ? learner.learner_s_starting_salary : 0
+
+    if (parseFloat(learner.learner_s_starting_salary) > 0) {
+      learner.learner_s_starting_salary = learner.learner_s_starting_salary
+    } else if (parseFloat(learner.learner_reported_salary) > 0) {
+      learner.learner_s_starting_salary = `${learner.learner_reported_salary}*`
+    } else {
+      learner.learner_s_starting_salary = 0
+    }
     learner.pif_income_percent = parseFloat(learner.pif_income_percent * 100).toFixed(1)
     learner.llf_income_percent = parseFloat(learner.llf_income_percent * 100).toFixed(1)
     learner.isa_payments_past_due = learner.isa_payments_past_due ? 'Past Due' : 'Current'

@@ -17,7 +17,7 @@ class ISAReportDetailTable extends Component {
           <TableCell><strong>Name</strong></TableCell>
           <TableCell numeric><strong>Start Date</strong></TableCell>
           <TableCell numeric><strong>Exit Date</strong></TableCell>
-          <TableCell numeric><strong>Starting Salary</strong></TableCell>
+          <TableCell numeric><strong>Starting Salary (* = Reported)</strong></TableCell>
           <TableCell numeric><strong>PIF %</strong></TableCell>
           <TableCell numeric><strong>LLF %</strong></TableCell>
           <TableCell><strong>Payment Status</strong></TableCell>

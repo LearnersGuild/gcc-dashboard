@@ -10,7 +10,7 @@ class ISAReportSummaryTable extends Component {
 
   render() {
       const reportData = this.props.data
-  
+
     return (
       <Table selectable={false} style={{ marginTop: '1em', tableLayout: 'fixed', width: '100%' }}>
         <TableRow style={{backgroundColor: '#e7f0f7'}}>
@@ -21,7 +21,7 @@ class ISAReportSummaryTable extends Component {
           <TableCell numeric><strong>In Payment</strong></TableCell>
           <TableCell numeric><strong>In Deferment</strong></TableCell>
           <TableCell numeric><strong>Income Docs Received</strong></TableCell>
-          <TableCell numeric><strong>Have Made Payments</strong></TableCell>
+          <TableCell numeric><strong>Payments Made</strong></TableCell>
           <TableCell numeric><strong>Past Due</strong></TableCell>
           <TableCell numeric><strong>Current on Payments</strong></TableCell>
           <TableCell numeric><strong>Past Due but Have Made Payments</strong></TableCell>
