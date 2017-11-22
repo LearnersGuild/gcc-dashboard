@@ -40,18 +40,19 @@ class PerformanceReport extends Component {
   }
 
   render() {
+
     return (
       <div>
         <Card style={{maxWidth: '40%', display: 'inline-block'}}>
-          <CardTitle title="Current Learners by Phase"/>
+          <CardTitle title="Learners by Phase (Current)"/>
           <CardText>
             <PerformanceReportPhaseDataTable data={this.state.reportData.currentLearners}/>
           </CardText>
         </Card>
         <Card style={{maxWidth: '40%', display: 'inline-block', marginLeft: '2em'}}>
-          <CardTitle title="Avg Weeks by Phase"/>
+          <CardTitle title="Avg Weeks A Learner Stays in Phase (All Time)"/>
           <CardText>
-            <PerformanceReportPhaseDataTable data={this.state.reportData.avgWeeks}/>
+            <PerformanceReportPhaseDataTable data={this.state.reportData.avgWeeks} type='avg'/>
           </CardText>
         </Card>
         <Card style={{marginTop: '2em'}}>

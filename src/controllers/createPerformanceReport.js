@@ -1,6 +1,6 @@
 'use strict'
 require('dotenv').config()
-const moment = require('moment')
+const moment = require('moment-timezone')
 const knex = require('../db')
 const _ = require('lodash')
 const utils = require('./utils/performanceReport')
@@ -261,18 +261,18 @@ const createAvgWeeksTableData = async learnerData => {
 
 const getCohorts = () => {
   return knex('status_of_learners').select(knex.raw('to_char(enrollee_start_date, \'YYYY-MM\')'))
-    .where('created_at', '>=', '2017-11-07')
+    .where('created_at', '>=', moment.tz('America/Los_Angeles').format('YYYY-MM-DD'))
     .groupByRaw('to_char(enrollee_start_date, \'YYYY-MM\')')
     .then(rows => {
       const cohorts = []
       rows.forEach(row => cohorts.push(row.to_char))
-      return cohorts
+      return cohorts.sort((a,b) => { return a - b })
     })
     .catch(err => console.log(err))
 }
 const getLearnerData = () => {
   return knex.select(...utils.fields).from('status_of_learners')
-    .where('created_at', '>=', moment().subtract(8, 'hours').format('YYYY-MM-DD'))
+    .where('created_at', '>=', moment.tz('America/Los_Angeles').format('YYYY-MM-DD'))
     .then(learners => {
       return learners
     })

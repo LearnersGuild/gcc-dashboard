@@ -1,6 +1,6 @@
 'use strict'
 require('dotenv').config()
-const moment = require('moment')
+const moment = require('moment-timezone')
 const knex = require('../db')
 const _ = require('lodash')
 
@@ -132,7 +132,7 @@ const formatPostGuildIncomeData = (data) => {
 const getPostGuildIncomeData = () => {
   return knex.select('learner_s_starting_salary', 'employment_type').from('status_of_learners')
     .whereRaw('employed_in_or_out_of_field = ? AND created_at >= ? AND learner_s_starting_salary > ?' ,
-    ['Employed In Field', moment().subtract(8, 'hours').format('YYYY-MM-DD'), 0])
+    ['Employed In Field', moment.tz('America/Los_Angeles').format('YYYY-MM-DD'), 0])
     .orderBy('learner_s_starting_salary', 'asc')
     .then(rows => {
       return formatPostGuildIncomeData(rows)
