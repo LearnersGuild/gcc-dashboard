@@ -5,6 +5,7 @@ import CardText from 'react-toolbox/lib/card/CardText'
 import CardTitle from 'react-toolbox/lib/card/CardTitle'
 import Tabs from 'react-toolbox/lib/tabs/Tabs'
 import Tab from 'react-toolbox/lib/tabs/Tab'
+import cardStyle from './cardStyle'
 import ISAReportDetailTable from './ISAReportDetailTable'
 import ISAReportSummaryTable from './ISAReportSummaryTable'
 
@@ -36,6 +37,12 @@ class ISAReport extends Component {
     if (this.state.reportData) {
       return (
         <div>
+          <Card style={cardStyle()}>
+            <CardTitle title='ISA Payment Rate'/>
+            <CardText>
+              Have Paid/In Payment: <strong>{((this.state.reportData.summary[0].haveMadePayments / this.state.reportData.summary[0].inPayment)* 100).toFixed(2)}%</strong>
+            </CardText>
+          </Card>
           <Card style={{marginTop: '2em'}}>
             <CardTitle title='Exited Learner Summary'/>
             <CardText>
