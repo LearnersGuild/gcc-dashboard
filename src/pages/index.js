@@ -12,6 +12,7 @@ import GCCFileDownload from '../components/GCCFileDownload'
 import JobsReport from '../components/JobsReport'
 import PerformanceReport from '../components/PerformanceReport'
 import ISAReport from '../components/ISAReport'
+import MissingDataReport from '../components/MissingDataReport'
 import FileUpload from '../components/FileUpload'
 
 // favicons
@@ -83,6 +84,7 @@ class index extends React.Component {
               <Tab label='Jobs Report'><JobsReport/></Tab>
               <Tab label='Performance Report'><PerformanceReport/></Tab>
               <Tab label='ISA Report'><ISAReport/></Tab>
+              <Tab label='Missing Data Report'><MissingDataReport/></Tab>
               <Tab label='Vemo File Upload'><FileUpload/></Tab>
             </Tabs>
           </div>

@@ -54,4 +54,14 @@ router.get('/reports/createisareport', (req, res) => {
   })
 })
 
+router.get('/reports/create-missing-data-report', (req, res) => {
+  controllers.createMissingDataReport.report((err, data) => {
+    if (err) {
+      res.status(501).send(err)
+    } else {
+      res.status(201).send(data)
+    }
+  })
+})
+
 module.exports = router
