@@ -80,5 +80,8 @@ exports.properties = [
   'pif_first_payment_due_date',
   'llf_first_payment_due_date',
   'pif_monthly_payment_amount',
-  'llf_monthly_payment_amount'
+  'llf_monthly_payment_amount',
+  'job_title',
+  'job_start_date',
+  'weekly_part_time_hours'
 ]

@@ -52,7 +52,10 @@ const fields = [
   'have_you_accepted_a_job_offer',
   'has_received_llf_financing',
   'total_payments_received',
-  'isa_payments_past_due'
+  'isa_payments_past_due',
+  'job_title',
+  'job_start_date',
+  'weekly_part_time_hours'
 ]
 
 export const numFields = [
@@ -70,7 +73,8 @@ export const numFields = [
   'pif_monthly_payment_amount',
   'learner_s_starting_salary',
   'learner_reported_salary',
-  'total_payments_received'
+  'total_payments_received',
+  'weekly_part_time_hours'
 ]
 
 export const dateFields = [
@@ -82,7 +86,8 @@ export const dateFields = [
   'llf_date_signed',
   'llf_first_payment_due_date',
   'pif_date_signed',
-  'pif_first_payment_due_date'
+  'pif_first_payment_due_date',
+  'job_start_date'
 ]
 
 const getLearnerData = dates => {

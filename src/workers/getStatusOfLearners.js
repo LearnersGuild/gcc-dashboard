@@ -37,13 +37,16 @@ const formatContacts = (contacts, listObject, listID) => {
               property === 'date_phase_2' ||
               property === 'date_phase_3' ||
               property === 'date_phase_4' ||
-              property === 'date_phase_5'
+              property === 'date_phase_5' ||
+              property === 'job_start_date'
           ) {
             const date = moment(parseInt(contact.properties[property].value, 10))
             const offset = moment.tz.zone('America/New_York').offset(date)
             record[property] = date.add(offset, 'minutes')
           } else if (property === 'race_new') {
             record.race = contact.properties[property].value
+          } else if (property === 'jobtitle') {
+            record.job_title = contact.properties[property].value
           } else {
             record[property] = contact.properties[property].value
           }
