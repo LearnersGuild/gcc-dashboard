@@ -21,7 +21,9 @@ const fields = [
   'isa_income_docs_received',
   'isa_deferment_type',
   'pif_monthly_payment_amount',
-  'llf_monthly_payment_amount'
+  'llf_monthly_payment_amount',
+  'llf_first_payment_due_date',
+  'pif_first_payment_due_date'
 ]
 
 const getISAData = () => {
@@ -43,13 +45,13 @@ const formatSummaryData = (data) => {
           exitedLearners: 0,
           inSchoolOrPending: 0,
           inGrace: 0,
+          inTransition: 0,
           inPayment: 0,
           inDeferment: 0,
           incomeDocsReceived: 0,
           haveMadePayments: 0,
           pastDue: 0,
           currentOnPayments: 0,
-          pastDueButHaveMadePayments: 0
         }
   const total = Object.assign({}, segmentData)
   total.segment = 'Total'
@@ -80,16 +82,21 @@ const formatSummaryData = (data) => {
       total.inGrace++
       currentSegment.inGrace++
     } else if (learner.pif_status === 'Payment' || learner.llf_status === 'Payment') {
-      total.inPayment++
-      currentSegment.inPayment++
+      if (learner.llf_first_payment_due_date > moment() || learner.pif_first_payment_due_date > moment()) {
+        total.inTransition++
+        currentSegment.inTransition++
+      } else {
+        total.inPayment++
+        currentSegment.inPayment++
+      }
       if (learner.total_payment_count > 0 && learner.isa_payments_past_due === 'Past Due') {
         total.pastDueButHaveMadePayments++
         currentSegment.pastDueButHaveMadePayments++
       }
-      if (learner.isa_payments_past_due === 'Past Due') {
+      if (learner.payment_status === 'Past Due') {
         total.pastDue++
         currentSegment.pastDue++
-      } else {
+      } else if (learner.payment_status === 'Current') {
         total.currentOnPayments++
         currentSegment.currentOnPayments++
       }
@@ -130,8 +137,6 @@ const formatLearnerData = learnerData => {
     }
     learner.pif_income_percent = parseFloat(learner.pif_income_percent * 100).toFixed(1)
     learner.llf_income_percent = parseFloat(learner.llf_income_percent * 100).toFixed(1)
-    learner.isa_payments_past_due = learner.isa_payments_past_due ? 'Past Due' : 'Current'
-    learner.isa_deferment_type = learner.isa_deferment_type ? learner.isa_deferment_type : ''
     learner.isa_income_docs_received = learner.isa_income_docs_received ? 'Yes' : 'No'
     learner.pif_monthly_payment_amount = parseFloat(learner.pif_monthly_payment_amount) > 0 ? learner.pif_monthly_payment_amount : 0
     learner.llf_monthly_payment_amount = parseFloat(learner.llf_monthly_payment_amount) > 0 ? learner.llf_monthly_payment_amount : 0
@@ -143,6 +148,27 @@ const formatLearnerData = learnerData => {
       learner.total_payment_count = learner.llf_payment_count
     } else {
       learner.total_payment_count = 0
+    }
+    if (learner.pif_first_payment_due_date) {
+      learner.first_payment_due_date = moment(learner.pif_first_payment_due_date).format('YYYY-MM-DD')
+    } else {
+      learner.first_payment_due_date = moment(learner.llf_first_payment_due_date).format('YYYY-MM-DD')
+    }
+    if (learner.pif_status === 'Grace' || learner.llf_status === 'Grace') {
+        learner.payment_status = 'Grace'
+    } else if (learner.pif_status === 'School' ||
+        learner.pif_status === 'Pending ISA Adjustment' ||
+        learner.llf_status === 'School' ||
+        learner.llf_status === 'Pending ISA Adjustment') {
+        learner.payment_status = 'School/Pending ISA Adjustment'
+    } else if ((learner.pif_status === 'Payment' || learner.llf_status === 'Payment') &&
+      (learner.pif_first_payment_due_date > moment() || learner.llf_first_payment_due_date > moment())) {
+        learner.payment_status = 'Transition'
+    } else if ((learner.pif_status === 'Payment' || learner.llf_status === 'Payment') &&
+      (learner.pif_first_payment_due_date < moment() || learner.llf_first_payment_due_date < moment())) {
+        learner.payment_status = learner.isa_payments_past_due ? 'Past Due' : 'Current'
+    } else if (learner.pif_status === 'Deferment' || learner.llf_status === 'Deferment') {
+        learner.payment_status = learner.isa_deferment_type
     }
     return learner
   })
@@ -168,8 +194,13 @@ export const report =  async (cb) => {
         return o
       }
     })
+    reportData.transition = _.filter(learnerData, o => {
+      if ((o.pif_status === 'Payment' || o.llf_status === 'Payment') && (o.pif_first_payment_due_date > moment() || o.llf_first_payment_due_date > moment())) {
+        return o
+      }
+    })
     reportData.payment = _.filter(learnerData, o => {
-      if (o.pif_status === 'Payment' || o.llf_status === 'Payment') {
+      if ((o.pif_status === 'Payment' || o.llf_status === 'Payment') && (o.pif_first_payment_due_date < moment() || o.llf_first_payment_due_date < moment())) {
         return o
       }
     })
@@ -179,7 +210,6 @@ export const report =  async (cb) => {
       }
     })
     reportData.noIncomeDocsReceived = _.filter(learnerData, o => { return o.isa_income_docs_received === 'No' })
-    reportData.incomeDocsReceived = _.filter(learnerData, o => { return o.isa_income_docs_received === 'Yes' }) 
     reportData.haveMadePayments = _.filter(learnerData, o => { return o.total_payment_count > 0 })
     reportData.pastDue = _.filter(learnerData, o => { return o.isa_payments_past_due === 'Past Due' })
     cb(null, reportData)

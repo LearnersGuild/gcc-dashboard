@@ -18,13 +18,13 @@ class ISAReportSummaryTable extends Component {
           <TableCell numeric><strong>Exited w/Active ISAs</strong></TableCell>
           <TableCell numeric><strong>In School/Pending ISA Adj</strong></TableCell>
           <TableCell numeric><strong>In Grace</strong></TableCell>
+          <TableCell numeric><strong>In Transition</strong></TableCell>
           <TableCell numeric><strong>In Payment</strong></TableCell>
           <TableCell numeric><strong>In Deferment</strong></TableCell>
           <TableCell numeric><strong>Income Docs Received</strong></TableCell>
           <TableCell numeric><strong>Payments Made</strong></TableCell>
           <TableCell numeric><strong>Past Due</strong></TableCell>
           <TableCell numeric><strong>Current on Payments</strong></TableCell>
-          <TableCell numeric><strong>Past Due but Have Made Payments</strong></TableCell>
         </TableRow>
         {reportData.map((item, idx) => {
           return (
@@ -33,13 +33,13 @@ class ISAReportSummaryTable extends Component {
               <TableCell numeric>{item.exitedLearners}</TableCell>
               <TableCell numeric>{item.inSchoolOrPending}</TableCell>
               <TableCell numeric>{item.inGrace}</TableCell>
+              <TableCell numeric>{item.inTransition}</TableCell>
               <TableCell numeric>{item.inPayment}</TableCell>
               <TableCell numeric>{item.inDeferment}</TableCell>
               <TableCell numeric>{item.incomeDocsReceived}</TableCell>
               <TableCell numeric>{item.haveMadePayments}</TableCell>
               <TableCell numeric>{item.pastDue}</TableCell>
               <TableCell numeric>{item.currentOnPayments}</TableCell>
-              <TableCell numeric>{item.pastDueButHaveMadePayments}</TableCell>
             </TableRow>
           )
         })}

@@ -40,7 +40,7 @@ class ISAReport extends Component {
           <Card style={cardStyle()}>
             <CardTitle title='ISA Payment Rate'/>
             <CardText>
-              Have Paid/In Payment: <strong>{((this.state.reportData.summary[0].haveMadePayments / this.state.reportData.summary[0].inPayment)* 100).toFixed(2)}%</strong>
+              Current/In Payment: <strong>{((this.state.reportData.summary[0].currentOnPayments / this.state.reportData.summary[0].inPayment)* 100).toFixed(2)}%</strong>
             </CardText>
           </Card>
           <Card style={{marginTop: '2em'}}>
@@ -62,23 +62,23 @@ class ISAReport extends Component {
                 <Tab label='Grace'>
                   <ISAReportDetailTable data={this.state.reportData.grace}/>
                 </Tab>
+                <Tab label='Transition'>
+                  <ISAReportDetailTable data={this.state.reportData.transition}/>
+                </Tab>
                 <Tab label='Payment'>
                   <ISAReportDetailTable data={this.state.reportData.payment}/>
                 </Tab>
                 <Tab label='Deferment'>
                   <ISAReportDetailTable data={this.state.reportData.deferment}/>
                 </Tab>
-                <Tab label='Income Docs Received'>
-                  <ISAReportDetailTable data={this.state.reportData.incomeDocsReceived}/>
+                <Tab label='Past Due'>
+                  <ISAReportDetailTable data={this.state.reportData.pastDue}/>
                 </Tab>
                 <Tab label='No Income Docs Received'>
                   <ISAReportDetailTable data={this.state.reportData.noIncomeDocsReceived}/>
                 </Tab>
                 <Tab label='Payments Made'>
                   <ISAReportDetailTable data={this.state.reportData.haveMadePayments}/>
-                </Tab>
-                <Tab label='Past Due'>
-                  <ISAReportDetailTable data={this.state.reportData.pastDue}/>
                 </Tab>
               </Tabs>
             </CardText>
