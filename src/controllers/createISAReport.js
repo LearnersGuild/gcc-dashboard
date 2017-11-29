@@ -182,25 +182,22 @@ export const report =  async (cb) => {
     reportData.summary = formatSummaryData(learnerData)
     reportData.exitedWithActiveISA = learnerData
     reportData.schoolAndPending = _.filter(learnerData, o => { 
-      if (o.pif_status === 'School' ||
-        o.pif_status === 'Pending ISA Adjustment' ||
-        o.llf_status === 'School' ||
-        o.llf_status === 'Pending ISA Adjustment') {
+      if (o.payment_status === 'School/Pending ISA Adjustment') {
         return o
       }
     })
     reportData.grace = _.filter(learnerData, o => {
-      if (o.pif_status === 'Grace' || o.llf_status === 'Grace') {
+      if (o.payment_status === 'Grace') {
         return o
       }
     })
     reportData.transition = _.filter(learnerData, o => {
-      if ((o.pif_status === 'Payment' || o.llf_status === 'Payment') && (o.pif_first_payment_due_date > moment() || o.llf_first_payment_due_date > moment())) {
+      if (o.payment_status === 'Transition') {
         return o
       }
     })
     reportData.payment = _.filter(learnerData, o => {
-      if ((o.pif_status === 'Payment' || o.llf_status === 'Payment') && (o.pif_first_payment_due_date < moment() || o.llf_first_payment_due_date < moment())) {
+      if (o.payment_status === 'Current' || o.payment_status === 'Past Due') {
         return o
       }
     })
@@ -211,7 +208,7 @@ export const report =  async (cb) => {
     })
     reportData.noIncomeDocsReceived = _.filter(learnerData, o => { return o.isa_income_docs_received === 'No' })
     reportData.haveMadePayments = _.filter(learnerData, o => { return o.total_payment_count > 0 })
-    reportData.pastDue = _.filter(learnerData, o => { return o.isa_payments_past_due === 'Past Due' })
+    reportData.pastDue = _.filter(learnerData, o => { return o.payment_status === 'Past Due' })
     cb(null, reportData)
   } catch(err) {
     console.log(err)
