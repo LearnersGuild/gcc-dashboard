@@ -35,7 +35,11 @@ class JobsReportPlacementRateTable extends Component {
           <TableCell numeric>{reportData.inJobFullTime + reportData.inJobPartTime + reportData.inJobSearch}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell><strong>Placement %</strong></TableCell>
+          <TableCell><strong>Full-Time Placement %</strong></TableCell>
+          <TableCell numeric><strong>{(reportData.inJobFullTime  / (reportData.inJobFullTime + reportData.inJobPartTime + reportData.inJobSearch) * 100).toFixed(1)}%</strong></TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell><strong>Total Placement %</strong></TableCell>
           <TableCell numeric><strong>{((reportData.inJobFullTime + reportData.inJobPartTime)  / (reportData.inJobFullTime + reportData.inJobPartTime + reportData.inJobSearch) * 100).toFixed(1)}%</strong></TableCell>
         </TableRow>
       </Table>
