@@ -6,6 +6,7 @@ import CardTitle from 'react-toolbox/lib/card/CardTitle'
 import Table from 'react-toolbox/lib/table/Table'
 import TableCell from 'react-toolbox/lib/table/TableCell'
 import TableRow from 'react-toolbox/lib/table/TableRow'
+import moment from 'moment'
 
 
 class MissingDataReport extends Component {
@@ -43,6 +44,7 @@ class MissingDataReport extends Component {
                 <TableCell numeric><strong>Weekly Part-Time Hours</strong></TableCell>
               </TableRow>
               {this.state.reportData.map((item, idx) => {
+                item.job_start_date = item.job_start_date ? moment(item.job_start_date).format('YYYY-MM-DD') : ''
                 return (
                   <TableRow key={idx}>
                     <TableCell>{item.firstname} {item.lastname}</TableCell>
