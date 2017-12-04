@@ -124,12 +124,12 @@ export const readWorkbook = (filepath, callback) => {
           data[email].collectionStatus = true
         }
 
-        if (row['Income Documents Received'] === 'Income Docs Received' && !data[email].isaIncomeDocsReceived) {
+        if (row['Income Documents Received'] === 'Reported' && !data[email].isaIncomeDocsReceived) {
           data[email].properties.push({property: 'isa_income_docs_received', value: 'TRUE'})
           data[email].isaIncomeDocsReceived = true
         }
         
-        if (row['Learners Monthly Salary'] && row['Income Documents Received'] === 'Income Docs Received') {
+        if (row['Learners Monthly Salary'] && row['Income Documents Received'] === 'Reported') {
           let value = row['Learners Monthly Salary'].replace(/[^0-9\.]+/g,"") * 12
           data[email].properties.push({property: 'learner_s_starting_salary', value: value})
         }
