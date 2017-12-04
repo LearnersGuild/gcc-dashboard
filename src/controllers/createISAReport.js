@@ -82,7 +82,7 @@ const formatSummaryData = (data) => {
       total.inGrace++
       currentSegment.inGrace++
     } else if (learner.pif_status === 'Payment' || learner.llf_status === 'Payment') {
-      if (learner.llf_first_payment_due_date > moment() || learner.pif_first_payment_due_date > moment()) {
+      if (learner.first_payment_due_date > moment().subtract(7, 'days').toDate()) {
         total.inTransition++
         currentSegment.inTransition++
       } else {
@@ -150,9 +150,9 @@ const formatLearnerData = learnerData => {
       learner.total_payment_count = 0
     }
     if (learner.pif_first_payment_due_date) {
-      learner.first_payment_due_date = moment(learner.pif_first_payment_due_date).format('YYYY-MM-DD')
+      learner.first_payment_due_date = learner.pif_first_payment_due_date
     } else {
-      learner.first_payment_due_date = moment(learner.llf_first_payment_due_date).format('YYYY-MM-DD')
+      learner.first_payment_due_date = learner.llf_first_payment_due_date
     }
     if (learner.pif_status === 'Grace' || learner.llf_status === 'Grace') {
         learner.payment_status = 'Grace'
@@ -162,10 +162,10 @@ const formatLearnerData = learnerData => {
         learner.llf_status === 'Pending ISA Adjustment') {
         learner.payment_status = 'School/Pending ISA Adjustment'
     } else if ((learner.pif_status === 'Payment' || learner.llf_status === 'Payment') &&
-      (learner.pif_first_payment_due_date > moment() || learner.llf_first_payment_due_date > moment())) {
+      learner.first_payment_due_date > moment().subtract(7, 'days')) {
         learner.payment_status = 'Transition'
     } else if ((learner.pif_status === 'Payment' || learner.llf_status === 'Payment') &&
-      (learner.pif_first_payment_due_date < moment() || learner.llf_first_payment_due_date < moment())) {
+      learner.first_payment_due_date < moment().subtract(7, 'days')) {
         learner.payment_status = learner.isa_payments_past_due ? 'Past Due' : 'Current'
     } else if (learner.pif_status === 'Deferment' || learner.llf_status === 'Deferment') {
         learner.payment_status = learner.isa_deferment_type

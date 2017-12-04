@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import Table from 'react-toolbox/lib/table/Table'
 import TableCell from 'react-toolbox/lib/table/TableCell'
 import TableRow from 'react-toolbox/lib/table/TableRow'
+import moment from 'moment'
 
 class ISAReportDetailTable extends Component {
   constructor(props) {
@@ -32,7 +33,7 @@ class ISAReportDetailTable extends Component {
               <TableCell>{item.firstname} {item.lastname}</TableCell>
               <TableCell numeric>{item.enrollee_start_date}</TableCell>
               <TableCell numeric>{item.resignation_date}</TableCell>
-              <TableCell numeric>{item.first_payment_due_date}</TableCell>
+              <TableCell numeric>{moment(item.first_payment_due_date).format('YYYY-MM-DD')}</TableCell>
               <TableCell numeric>${item.learner_s_starting_salary}</TableCell>
               <TableCell>{item.payment_status}</TableCell>
               <TableCell>{item.isa_income_docs_received}</TableCell>
