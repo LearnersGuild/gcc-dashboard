@@ -101,7 +101,7 @@ export const readWorkbook = (filepath, callback) => {
           {property: `${type}_payment_count`, value: row['Payments Completed']},
           {property: `${type}_income_percent`, value: row['Income Share']},
           {property: `${type}_date_signed`, value: moment.utc(row.Signed, 'MM-DD-YYYY').valueOf()},
-          {property: `${type}_status`, value: row['Current Status of Learner']},
+          {property: `${type}_status`, value: row['Current Status of Learner'].trim()},
           {property: `${type}_monthly_payment_amount`, value: row['Monthly Payment Amount']}
         ])
 
@@ -119,17 +119,17 @@ export const readWorkbook = (filepath, callback) => {
           data[email].isaDefermentType = true
         }
 
-        if (row['Collection Status'] === 'PAST DUE' && !data[email].collectionStatus) {
+        if (row['Collection Status'].trim() === 'PAST DUE' && !data[email].collectionStatus) {
           data[email].properties.push({property: 'isa_payments_past_due', value: 'TRUE'})
           data[email].collectionStatus = true
         }
 
-        if (row['Income Documents Received'] === 'Reported' && !data[email].isaIncomeDocsReceived) {
+        if (row['Income Documents Received'].trim() === 'Reported' && !data[email].isaIncomeDocsReceived) {
           data[email].properties.push({property: 'isa_income_docs_received', value: 'TRUE'})
           data[email].isaIncomeDocsReceived = true
         }
         
-        if (row['Learners Monthly Salary'] && row['Income Documents Received'] === 'Reported') {
+        if (row['Learners Monthly Salary'] && row['Income Documents Received'].trim() === 'Reported') {
           let value = row['Learners Monthly Salary'].replace(/[^0-9\.]+/g,"") * 12
           data[email].properties.push({property: 'learner_s_starting_salary', value: value})
         }
