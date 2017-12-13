@@ -108,8 +108,12 @@ const formatPostGuildIncomeData = (data) => {
       },
       {
         segment: 'Median Salary',
-        fullTimeValue: fullTime[Math.floor(fullTime.length / 2)].learner_s_starting_salary,
-        partTimeValue: partTime[Math.floor(partTime.length / 2)].learner_s_starting_salary
+        fullTimeValue: fullTime.length % 2 === 0 ? 
+                        ((parseInt(fullTime[(fullTime.length / 2) - 1].learner_s_starting_salary) + parseInt(fullTime[fullTime.length / 2].learner_s_starting_salary)) / 2).toFixed(2) :
+                        fullTime[Math.floor(fullTime.length / 2)].learner_s_starting_salary,
+        partTimeValue: partTime.length % 2 === 0 ? 
+                        ((parseInt(partTime[(partTime.length / 2) - 1].learner_s_starting_salary) + parseInt(partTime[partTime.length / 2].learner_s_starting_salary)) / 2).toFixed(2)  :
+                        partTime[Math.floor(partTime.length / 2)].learner_s_starting_salary
       },
       {
         segment: 'Max Salary',
