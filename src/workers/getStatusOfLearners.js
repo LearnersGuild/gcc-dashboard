@@ -60,32 +60,40 @@ const formatContacts = (contacts, listObject, listID) => {
 // pull the data for each list from HubSpot API
 let index = 0
 let interval = null
+let vidOffset = ''
 
 const work = () => {
   if (index < lists.length) {
     const list = lists[index]
     const listID = Object.keys(list)[0]
-    const fullUrl = `${urlStart}${listID}${urlEnd}${queryString}`
-    // let hasMore = true
+    let fullUrl = `${urlStart}${listID}${urlEnd}${queryString}`
+    let hasMore = false
 
   // need to account for list pagination
-  // while (hasMore) {
-  // }
-    axios.get(fullUrl)
-    .then(res => {
-      const contacts = res.data.contacts
-      return formatContacts(contacts, list[listID], listID)
-    })
-    .then(records => {
-      records.forEach(record => {
-        knex.insert(record).into('status_of_learners').catch(err => {
-          console.log(err)
-          console.log('record', record)
+      if (vidOffset !== '') {
+        fullUrl = fullUrl + '&vidOffset=' + vidOffset
+      }
+  
+      axios.get(fullUrl)
+      .then(res => {
+        const contacts = res.data.contacts
+        hasMore = res.data.hasMore
+        vidOffset = res.data['vid-offset']
+        return formatContacts(contacts, list[listID], listID)
+      })
+      .then(records => {
+        records.forEach(record => {
+          knex.insert(record).into('status_of_learners').catch(err => {
+            console.log(err)
+            console.log('record', record)
+          })
         })
       })
-    })
-    .catch(err => console.log(err))
-    index++
+      .catch(err => console.log(err))
+    if (!hasMore) {
+      index++
+      vidOffset = ''
+    }
   } else {
     clearInterval(interval)
     console.log('getStatusOfLearners Worker Complete')
