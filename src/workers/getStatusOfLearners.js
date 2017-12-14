@@ -77,7 +77,7 @@ const work = () => {
       axios.get(fullUrl)
       .then(res => {
         const contacts = res.data.contacts
-        hasMore = res.data.hasMore
+        hasMore = res.data['has-more']
         vidOffset = res.data['vid-offset']
         return formatContacts(contacts, list[listID], listID)
       })
