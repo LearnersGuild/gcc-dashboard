@@ -79,6 +79,10 @@ const work = () => {
         const contacts = res.data.contacts
         hasMore = res.data['has-more']
         vidOffset = res.data['vid-offset']
+        if (!hasMore) {
+          index++
+          vidOffset = ''
+        }
         return formatContacts(contacts, list[listID], listID)
       })
       .then(records => {
@@ -90,10 +94,7 @@ const work = () => {
         })
       })
       .catch(err => console.log(err))
-    if (!hasMore) {
-      index++
-      vidOffset = ''
-    }
+    
   } else {
     clearInterval(interval)
     console.log('getStatusOfLearners Worker Complete')
