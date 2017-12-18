@@ -97,7 +97,7 @@ export const readWorkbook = (filepath, callback) => {
           {property: `has_${type}`, value: 'TRUE'},
           {property: `${type}_amount_eligible`, value: row['Amount Eligible']},
           {property: `${type}_amount_accepted`, value: row['Amount Accepted']},
-          {property: `${type}_amount_received`, value: row['Amount of Stipend Received']},
+          {property: `${type}_amount_received`, value: row['Confirmed Disbursements']},
           {property: `${type}_payment_count`, value: row['Payments Completed']},
           {property: `${type}_income_percent`, value: row['Income Share']},
           {property: `${type}_date_signed`, value: moment.utc(row.Signed, 'MM-DD-YYYY').valueOf()},
@@ -146,7 +146,7 @@ export const readWorkbook = (filepath, callback) => {
           } else if (prop.property === `${type}_amount_accepted`) {
             prop.value = parseInt(prop.value, 10) + parseInt(row['Amount Accepted'], 10)
           } else if (prop.property === `${type}_amount_received`) {
-            prop.value = parseInt(prop.value, 10) + parseInt(row['Amount of Stipend Received'], 10)
+            prop.value = parseInt(prop.value, 10) + parseInt(row['Confirmed Disbursements'], 10)
           } else if (prop.property === `${type}_income_percent`) {
             prop.value = parseInt(prop.value, 10) + parseInt(row['Income Share'], 10)
           }
