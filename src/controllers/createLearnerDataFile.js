@@ -7,9 +7,7 @@ const utils = require('./utils/learnerDataFile')
 export const formatLearnerData = rows => {
   rows.forEach(row => {
     utils.numFields.forEach(field => {
-      if (row[field] === '') {
-        row[field] = 0
-      } else {
+      if (row[field]) {
         row[field] = parseFloat(row[field])
       }
     })
