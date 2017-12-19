@@ -19,8 +19,12 @@ router.post('/uploads', upload.single('workbook'), (req, res) => {
 })
 
 router.get('/reports', (req, res) => {
-  controllers.createLearnerDataFile.file(req.query, data => {
-    res.status(201).send(data)
+  controllers.createLearnerDataFile.file(req.query, (err, data) => {
+    if (err) {
+      res.status(501).send(err)
+    } else {
+      res.status(201).send(data)
+    }
   })
 })
 

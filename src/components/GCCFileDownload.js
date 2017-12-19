@@ -41,11 +41,11 @@ class GCCFileDownload extends Component {
           SheetNames: ['Learner Data Raw', 'Funnel by Stage Raw', 'Retention by Cohort Raw'],
           Sheets: {}
         }
-        const learnerData = XLSX.utils.json_to_sheet(response.data[0])
+        const learnerData = XLSX.utils.json_to_sheet(response.data.learnerData)
         wb.Sheets['Learner Data Raw'] = learnerData
-        const funnelByStageData = XLSX.utils.json_to_sheet(response.data[1])
+        const funnelByStageData = XLSX.utils.json_to_sheet(response.data.funnelData)
         wb.Sheets['Funnel by Stage Raw'] = funnelByStageData
-        const retentionByCohortData = XLSX.utils.json_to_sheet(response.data[2])
+        const retentionByCohortData = XLSX.utils.json_to_sheet(response.data.retentionData)
         wb.Sheets['Retention by Cohort Raw'] = retentionByCohortData
 
         const wopts = {bookType: 'xlsx', bookSST: false, type: 'binary'}
