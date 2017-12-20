@@ -60,29 +60,27 @@ const formatContacts = (contacts, listObject, listID) => {
 // pull the data for each list from HubSpot API
 let index = 0
 let interval = null
-let vidOffset = ''
 
 const work = () => {
   if (index < lists.length) {
     const list = lists[index]
     const listID = Object.keys(list)[0]
     let fullUrl = `${urlStart}${listID}${urlEnd}${queryString}`
-    let hasMore = false
 
   // need to account for list pagination
-      if (vidOffset !== '') {
-        fullUrl = fullUrl + '&vidOffset=' + vidOffset
-      }
+      // if (vidOffset !== '') {
+      //   fullUrl = fullUrl + '&vidOffset=' + vidOffset
+      // }
   
       axios.get(fullUrl)
       .then(res => {
         const contacts = res.data.contacts
-        hasMore = res.data['has-more']
-        vidOffset = res.data['vid-offset']
-        if (!hasMore) {
-          index++
-          vidOffset = ''
-        }
+        // hasMore = res.data['has-more']
+        // vidOffset = res.data['vid-offset']
+        // if (!hasMore) {
+        //   index++
+        //   vidOffset = ''
+        // }
         return formatContacts(contacts, list[listID], listID)
       })
       .then(records => {
@@ -94,7 +92,7 @@ const work = () => {
         })
       })
       .catch(err => console.log(err))
-    
+    index++
   } else {
     clearInterval(interval)
     console.log('getStatusOfLearners Worker Complete')
