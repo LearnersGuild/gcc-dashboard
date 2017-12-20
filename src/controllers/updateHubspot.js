@@ -85,8 +85,8 @@ export const readWorkbook = (filepath, callback) => {
     }
     data[email].isa_data.push(row)
 
-    if (row['Current Status of Learner'] !== 'Cancelled' &&
-        row['Current Status of Learner'] !== "Cancelled/Written Off" &&
+    if (row['Current Status of Learner'].trim() !== 'Cancelled' &&
+        row['Current Status of Learner'].trim() !== 'Written Off\/Cancelled' &&
         row['Internal Status'] !== '3 Day Notice Sent' && 
         row['Internal Status'] !== '3 Day Notice Timeout'
         ) {

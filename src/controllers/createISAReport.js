@@ -29,8 +29,8 @@ const fields = [
 const getISAData = () => {
   let today = moment.tz('America/Los_Angeles').format('YYYY-MM-DD')
   return knex.select(...fields).from('status_of_learners')
-    .whereRaw('created_at >= ? AND resignation_date < ? AND ((has_llf = ? AND llf_status != ?) OR (has_pif = ? AND pif_status != ?))' ,
-    [today, today, 'true', 'Written Off\/Cancelled', 'true', 'Written Off\/Cancelled'])
+    .whereRaw('created_at >= ? AND resignation_date < ? AND ((has_llf = ? AND llf_status != ? AND llf_status != ?) OR (has_pif = ? AND pif_status != ? AND pif_status != ?))' ,
+    [today, today, 'true', 'Written Off\/Cancelled', 'Cancelled', 'true', 'Written Off\/Cancelled', 'Cancelled'])
     .orderBy('enrollee_start_date', 'asc')
     .then(rows => {
       return rows
@@ -71,11 +71,13 @@ const formatSummaryData = (data) => {
     
     total.exitedLearners++
     currentSegment.exitedLearners++
-
+    if (learner.pif_status === 'School' || learner.llf_status === 'School') {
+      console.log(learner)
+    }
     if (learner.pif_status === 'School' ||
-      learner.pif_status === 'Pending ISA Adjustment' ||
+      learner.pif_status === 'Pending ISA Adjustment Form' ||
       learner.llf_status === 'School' ||
-      learner.llf_status === 'Pending ISA Adjustment') {
+      learner.llf_status === 'Pending ISA Adjustment Form') {
         total.inSchoolOrPending++
         currentSegment.inSchoolOrPending++
     } else if (learner.pif_status === 'Grace' || learner.llf_status === 'Grace') {
@@ -157,9 +159,9 @@ const formatLearnerData = learnerData => {
     if (learner.pif_status === 'Grace' || learner.llf_status === 'Grace') {
         learner.payment_status = 'Grace'
     } else if (learner.pif_status === 'School' ||
-        learner.pif_status === 'Pending ISA Adjustment' ||
+        learner.pif_status === 'Pending ISA Adjustment Form' ||
         learner.llf_status === 'School' ||
-        learner.llf_status === 'Pending ISA Adjustment') {
+        learner.llf_status === 'Pending ISA Adjustment Form') {
         learner.payment_status = 'School/Pending ISA Adjustment'
     } else if ((learner.pif_status === 'Payment' || learner.llf_status === 'Payment') &&
       learner.first_payment_due_date > moment().subtract(7, 'days')) {
