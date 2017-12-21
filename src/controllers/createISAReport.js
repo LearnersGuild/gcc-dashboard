@@ -71,9 +71,7 @@ const formatSummaryData = (data) => {
     
     total.exitedLearners++
     currentSegment.exitedLearners++
-    if (learner.pif_status === 'School' || learner.llf_status === 'School') {
-      console.log(learner)
-    }
+
     if (learner.pif_status === 'School' ||
       learner.pif_status === 'Pending ISA Adjustment Form' ||
       learner.llf_status === 'School' ||
