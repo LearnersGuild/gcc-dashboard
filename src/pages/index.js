@@ -10,6 +10,7 @@ import theme from '../static/theme'
 import iconsMetadata from '../static/icons-metadata'
 import GCCFileDownload from '../components/GCCFileDownload'
 import JobsReport from '../components/JobsReport'
+import LearnersInBuildingReport from '../components/LearnersInBuildingReport'
 // import PerformanceReport from '../components/PerformanceReport'
 import ISAReport from '../components/ISAReport'
 import MissingDataReport from '../components/MissingDataReport'
@@ -82,6 +83,7 @@ class index extends React.Component {
             <Tabs index={this.state.index} onChange={this.handleTabChange}>
               <Tab label='GCC Report Download'><GCCFileDownload/></Tab>
               <Tab label='Jobs Report'><JobsReport/></Tab>
+              <Tab label='Learners in Building Report'><LearnersInBuildingReport/></Tab>
               {/* <Tab label='Performance Report'><PerformanceReport/></Tab> */}
               <Tab label='ISA Report'><ISAReport/></Tab>
               <Tab label='Missing Data Report'><MissingDataReport/></Tab>
