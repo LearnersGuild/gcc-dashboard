@@ -6,6 +6,8 @@ import CardTitle from 'react-toolbox/lib/card/CardTitle'
 import Table from 'react-toolbox/lib/table/Table'
 import TableCell from 'react-toolbox/lib/table/TableCell'
 import TableRow from 'react-toolbox/lib/table/TableRow'
+import cardStyle from './cardStyle'
+import LearnersInBuildingReportTable from './LearnersInBuildingReportTable'
 
 
 class LearnersInBuildingReport extends Component {
@@ -17,49 +19,41 @@ class LearnersInBuildingReport extends Component {
   }
 
   componentDidMount() {
-    // axios.get('/api/reports/create-learners-in-building-report')
-    //   .then(response => {
-    //     this.setState({reportData: response.data})
-    //   }).catch(err => {
-    //     console.log(err.message)
-    //   })
+    axios.get('/api/reports/create-learners-in-building-report')
+      .then(response => {
+        this.setState({reportData: response.data})
+      }).catch(err => {
+        console.log(err.message)
+      })
   }
 
   render() {
     if (this.state.reportData) {
+      let reportData = this.state.reportData
       return (
-        <Card style={{marginTop: '2em'}}>
-          {/* <CardTitle title='Learners in Building Report'/>
-          <CardText> */}
-            {/* <Table selectable={false} style={{ marginTop: '1em', tableLayout: 'fixed', width: '100%' }}>
-              <TableRow style={{backgroundColor: '#e7f0f7'}}>
-                <TableCell><strong>Name</strong></TableCell>
-                <TableCell numeric><strong>Verified Salary (Vemo)</strong></TableCell>
-                <TableCell numeric><strong>Reported Salary (LG)</strong></TableCell>
-                <TableCell><strong>Job Title</strong></TableCell>
-                <TableCell numeric><strong>Job Start Date</strong></TableCell>
-                <TableCell><strong>Full Time/Part Time</strong></TableCell>
-                <TableCell><strong>In Field</strong></TableCell>
-                <TableCell numeric><strong>Weekly Part-Time Hours</strong></TableCell>
-              </TableRow>
-              {this.state.reportData.map((item, idx) => {
-                item.job_start_date = item.job_start_date ? moment(item.job_start_date).format('YYYY-MM-DD') : ''
-                return (
-                  <TableRow key={idx}>
-                    <TableCell>{item.firstname} {item.lastname}</TableCell>
-                    <TableCell numeric>${item.learner_s_starting_salary}</TableCell>
-                    <TableCell numeric>${item.learner_reported_salary}</TableCell>
-                    <TableCell>{item.job_title}</TableCell>
-                    <TableCell numeric>{item.job_start_date}</TableCell>
-                    <TableCell>{item.employment_type}</TableCell>
-                    <TableCell>{item.employed_in_or_out_of_field}</TableCell>
-                    <TableCell numeric>{item.weekly_part_time_hours}</TableCell>
-                  </TableRow>
-                )
-              })}
-            </Table>
-          </CardText> */}
-        </Card>
+        <div>
+          <div>
+            <Card style={cardStyle()}>
+              <CardText>
+                <h2>Total Learners In Building: {reportData.total}</h2>
+              </CardText>
+            </Card>
+          </div>
+          <div>
+            <Card style={cardStyle()}>
+            <CardTitle title="By Gender"/>
+              <CardText>
+                <LearnersInBuildingReportTable data={reportData.byGender} />
+              </CardText>
+            </Card>
+            <Card style={cardStyle()}>
+            <CardTitle title="By Race"/>
+              <CardText>
+                <LearnersInBuildingReportTable data={reportData.byRace} />
+              </CardText>
+            </Card>
+          </div>
+        </div>
       )
     } else {
       return (
