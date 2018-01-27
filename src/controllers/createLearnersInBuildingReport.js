@@ -22,13 +22,13 @@ const getTotal = () => {
     .catch(err => console.log(err))
 }
 
-const getByDemo = (demo) => {
+const getByCategory = (category) => {
   let today = moment.tz('America/Los_Angeles').format('YYYY-MM-DD')
   return knex('status_of_learners')
-    .select(knex.raw(`${demo} AS segment, count(*)`))
+    .select(knex.raw(`${category} AS segment, count(*)`))
     .whereRaw('phase IS NOT NULL')
     .andWhere('created_at', '>=', today)
-    .groupBy(demo)
+    .groupBy(category)
     .then(result => {
       let nullIndex = _.findIndex(result, o => o.segment === null)
       if (nullIndex >= 0) {
@@ -43,8 +43,9 @@ export const report =  async (cb) => {
   try {
     let reportData = {}
     reportData.total = await getTotal()
-    reportData.byGender = await getByDemo('gender')
-    reportData.byRace = await getByDemo('race')
+    reportData.byPhase = await getByCategory('phase')
+    reportData.byGender = await getByCategory('gender')
+    reportData.byRace = await getByCategory('race')
     cb(null, reportData)
   } catch(err) {
     console.log(err)

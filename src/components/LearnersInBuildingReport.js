@@ -41,6 +41,12 @@ class LearnersInBuildingReport extends Component {
           </div>
           <div>
             <Card style={cardStyle()}>
+            <CardTitle title="By Phase"/>
+              <CardText>
+                <LearnersInBuildingReportTable data={reportData.byPhase} />
+              </CardText>
+            </Card>
+            <Card style={cardStyle()}>
             <CardTitle title="By Gender"/>
               <CardText>
                 <LearnersInBuildingReportTable data={reportData.byGender} />
