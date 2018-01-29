@@ -15,6 +15,7 @@ import LearnersInBuildingReport from '../components/LearnersInBuildingReport'
 import ISAReport from '../components/ISAReport'
 import MissingDataReport from '../components/MissingDataReport'
 import FileUpload from '../components/FileUpload'
+import DashboardKey from '../components/DashboardKey'
 
 // favicons
 const h2r = new HtmlToReactParser()
@@ -88,6 +89,7 @@ class index extends React.Component {
               <Tab label='ISA Report'><ISAReport/></Tab>
               <Tab label='Missing Data Report'><MissingDataReport/></Tab>
               <Tab label='Vemo File Upload'><FileUpload/></Tab>
+              <Tab label='Dashboard Key'><DashboardKey/></Tab>
             </Tabs>
           </div>
         </ThemeProvider>
