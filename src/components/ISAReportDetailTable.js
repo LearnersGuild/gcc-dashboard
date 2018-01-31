@@ -35,7 +35,7 @@ class ISAReportDetailTable extends Component {
               <TableCell numeric>{item.resignation_date}</TableCell>
               <TableCell numeric>{moment(item.first_payment_due_date).format('YYYY-MM-DD')}</TableCell>
               <TableCell numeric>${item.learner_s_starting_salary}</TableCell>
-              <TableCell>{item.payment_status}</TableCell>
+              <TableCell>{item.payment_value}</TableCell>
               <TableCell>{item.isa_income_docs_received}</TableCell>
               <TableCell numeric>${(parseFloat(item.llf_monthly_payment_amount) + parseFloat(item.pif_monthly_payment_amount)).toFixed(2)}</TableCell>
               <TableCell numeric>{parseInt(item.total_payment_count, 10)}</TableCell>
