@@ -65,10 +65,11 @@ const getTotalPaymentCount = learner => {
 
 const getPaymentStatusAndValue = learner => {
   if (learner.pif_status === 'School' ||
-      learner.pif_status === 'Pending ISA Adjustment Form' ||
+      (learner.pif_status ? learner.pif_status.startsWith('Pending ISA Adjustment') : false) ||
       learner.llf_status === 'School' ||
-      learner.llf_status === 'Pending ISA Adjustment Form') {
-        return {status:'School/Pending ISA Adjustment', value: 'School/Pending ISA Adjustment'}
+      (learner.llf_status ? learner.llf_status.startsWith('Pending ISA Adjustment Form') : false)
+  ) {
+      return {status:'School/Pending ISA Adjustment', value: 'School/Pending ISA Adjustment'}
   } else if (learner.pif_status === 'Grace' || learner.llf_status === 'Grace') {
     return {status:'Grace', value: 'Grace'}
   } else if (learner.isa_deferment_type) {

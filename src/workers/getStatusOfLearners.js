@@ -41,7 +41,7 @@ const formatContacts = (contacts, listObject, listID) => {
               property === 'job_start_date'
           ) {
             const date = moment(parseInt(contact.properties[property].value, 10))
-            const offset = moment.tz.zone('America/New_York').offset(date)
+            const offset = moment.tz.zone('America/New_York').utcOffset(date)
             record[property] = date.add(offset, 'minutes')
           } else if (property === 'race_new') {
             record.race = contact.properties[property].value
