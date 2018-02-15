@@ -65,20 +65,24 @@ const getTotalPaymentCount = learner => {
 
 const getPaymentStatusAndValue = learner => {
   if (learner.pif_status === 'School' ||
-      (learner.pif_status ? learner.pif_status.startsWith('Pending ISA Adjustment') : false) ||
-      learner.llf_status === 'School' ||
-      (learner.llf_status ? learner.llf_status.startsWith('Pending ISA Adjustment Form') : false)
+    (learner.pif_status ? learner.pif_status.startsWith('Pending ISA Adjustment') : false) ||
+    learner.llf_status === 'School' ||
+    (learner.llf_status ? learner.llf_status.startsWith('Pending ISA Adjustment Form') : false)
   ) {
-      return {status:'School/Pending ISA Adjustment', value: 'School/Pending ISA Adjustment'}
+    return {status:'School/Pending ISA Adjustment', value: 'School/Pending ISA Adjustment'}
   } else if (learner.pif_status === 'Grace' || learner.llf_status === 'Grace') {
     return {status:'Grace', value: 'Grace'}
   } else if (learner.isa_deferment_type) {
     return {status: 'Deferment', value: learner.isa_deferment_type}
   } else if (learner.pif_status === 'Payment' || learner.llf_status === 'Payment') {
     if (learner.first_payment_due_date > moment().subtract(7, 'days') && !learner.isa_payments_past_due && learner.total_payment_count === 0) {
-        return {status: 'Transition', value: 'Transition'}
+      return {status: 'Transition', value: 'Transition'}
     } else {
-      return {status: 'Payment', value: learner.isa_payments_past_due ? 'Past Due' : 'Current'}
+      if (_.isNull(learner.isa_payments_past_due)) {
+        return {status: 'Unknown', value: 'Not defined by Vemo'}
+      } else {
+        return {status: 'Payment', value: learner.isa_payments_past_due ? 'Past Due' : 'Current'}
+      }
     }
   }
 }

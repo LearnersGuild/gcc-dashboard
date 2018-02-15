@@ -124,6 +124,11 @@ export const readWorkbook = (filepath, callback) => {
           data[email].collectionStatus = true
         }
 
+        if (row['Collection Status'].trim() === 'CURRENT' && !data[email].collectionStatus) {
+          data[email].properties.push({property: 'isa_payments_past_due', value: 'FALSE'})
+          data[email].collectionStatus = true
+        }
+
         if (row['Income Documents Received'].trim() === 'Reported' && !data[email].isaIncomeDocsReceived) {
           data[email].properties.push({property: 'isa_income_docs_received', value: 'TRUE'})
           data[email].isaIncomeDocsReceived = true
