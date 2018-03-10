@@ -158,7 +158,10 @@ const getJobData = (dates, order, type) => {
 
 const getSegment = (learner, type) => {
   if (type === 'byCohort') {
-      return moment(learner.enrollee_start_date).format('MMM-YY')
+    return moment(learner.enrollee_start_date).format('MMM-YY')
+  }
+  if (type === 'byExit') {
+    return moment(learner.resignation_date).format('MMM-YY')
   }
   if (type === 'byGender') {
     if (learner.gender) {
@@ -292,6 +295,7 @@ export const report =  async (dates, cb) => {
   try {
     const reportData = {}
     reportData.byCohort         = await getJobData(dates, 'enrollee_start_date', 'byCohort')
+    reportData.byExit           = await getJobData(dates, 'resignation_date', 'byExit')
     reportData.byGender         = await getJobData(dates, 'gender', 'byGender')
     reportData.byRace           = await getJobData(dates, 'race', 'byRace')
     reportData.byIncome         = await getJobData(dates, 'income_level', 'byIncome' )

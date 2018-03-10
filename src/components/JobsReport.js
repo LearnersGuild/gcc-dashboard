@@ -14,6 +14,7 @@ import JobsReportIncomeAvgTable from './JobsReportIncomeAvgTable'
 import JobsReportIncomeCountTable from './JobsReportIncomeCountTable'
 import JobsReportIncomeComparisonTable from './JobsReportIncomeComparisonTable'
 import JobsReportPlacementRateTable from './JobsReportPlacementRateTable'
+import JobsReportPlacementTable from './JobsReportPlacementTable'
 
 class JobsReport extends Component {
   constructor(props) {
@@ -80,6 +81,10 @@ class JobsReport extends Component {
             <JobsReportIncomeCountTable data={this.state.reportData.postGuildIncome}/>
           </CardText>
         </Card>
+        <div style={{marginTop: '3em', marginBottom: '3em'}}>
+          <h3>Placement by Exit Date</h3>
+          <JobsReportPlacementTable data={this.state.reportData.byExit}/>
+        </div>
         <div>
           <Card style={cardStyle()}>
             <CardTitle title="Select Report Date"/>
