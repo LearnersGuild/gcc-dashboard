@@ -83,7 +83,7 @@ class JobsReport extends Component {
         </Card>
         <div style={{marginTop: '3em', marginBottom: '3em'}}>
           <h3>Placement by Exit Date</h3>
-          <JobsReportPlacementTable data={this.state.reportData.byExit}/>
+          <JobsReportPlacementTable data={this.state.reportData.byExit} total={this.state.reportData.total}/>
         </div>
         <div>
           <Card style={cardStyle()}>

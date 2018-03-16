@@ -12,6 +12,9 @@ class JobsReportPlacementTable extends Component {
   render() {
     if (this.props.data) {
       const reportData = this.props.data
+      const total = this.props.total[0]
+      const graduated = total.inJobSearch + total.inJobFullTime + total.inJobPartTime
+      const employed = total.inJobFullTime + total.inJobPartTime
     return (
       <Table selectable={false} style={{ marginTop: 10 }}>
         <TableHead>
@@ -36,6 +39,15 @@ class JobsReportPlacementTable extends Component {
             </TableRow>
           )
         })}
+
+        <TableRow>
+          <TableCell><strong>{total.segment}</strong></TableCell>
+          <TableCell numeric><strong>{graduated}</strong></TableCell>
+          <TableCell numeric><strong>{employed}</strong></TableCell>
+          <TableCell numeric><strong>{((employed / graduated) * 100).toFixed(2)}%</strong></TableCell>
+          <TableCell numeric><strong>{total.inJobFullTime}</strong></TableCell>
+          <TableCell numeric><strong>{((total.inJobFullTime / graduated) * 100).toFixed(2)}%</strong></TableCell>
+        </TableRow>
       </Table>
     )
     } else {

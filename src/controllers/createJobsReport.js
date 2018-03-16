@@ -291,11 +291,36 @@ const formatData = (data, type) => {
   return segments
 }
 
+const formatExitTotals = exitData => {
+  const data = []
+  const segmentData = {
+    segment: '',
+    inJobSearch: 0,
+    inJobPartTime: 0,
+    inJobFullTime: 0,
+  }
+  let segmentName = ''
+  exitData.forEach(segment => {
+    let temp = `Total-${segment.segment.split('-')[1]}`
+    if (segmentName !== temp) {
+      data.push(Object.assign({}, segmentData))
+      data[data.length - 1].segment = temp
+      segmentName = temp
+    }
+    let currentSegment = data[data.length - 1]
+    currentSegment.inJobSearch += segment.inJobSearch
+    currentSegment.inJobPartTime += segment.inJobPartTime
+    currentSegment.inJobFullTime += segment.inJobFullTime
+  })
+  return data
+}
+
 export const report =  async (dates, cb) => {
   try {
     const reportData = {}
     reportData.byCohort         = await getJobData(dates, 'enrollee_start_date', 'byCohort')
     reportData.byExit           = await getJobData(dates, 'resignation_date', 'byExit')
+    reportData.byExit           = reportData.byExit.concat(formatExitTotals(reportData.byExit))
     reportData.byGender         = await getJobData(dates, 'gender', 'byGender')
     reportData.byRace           = await getJobData(dates, 'race', 'byRace')
     reportData.byIncome         = await getJobData(dates, 'income_level', 'byIncome' )
