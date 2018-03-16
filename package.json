@@ -2,7 +2,8 @@
   "name": "gcc-dashboar",
   "version": "0.1.0",
   "engines": {
-    "node": "^8.2"
+    "node": "^8.2",
+    "npm": "^5.7.0"
   },
   "scripts": {
     "dev": "node src/server",
