@@ -1,5 +1,3 @@
-// 'use strict'
-// require('dotenv').config()
 const querystring = require('querystring')
 const axios = require('axios')
 const moment = require('moment-timezone')
